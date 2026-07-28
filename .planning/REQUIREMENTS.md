@@ -94,22 +94,52 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ## Traceability
 
-Phase mapping to be finalized during roadmap creation (`/gsd-new-project` roadmap step). Suggested phase alignment from research SUMMARY.md:
+Finalized during roadmap creation. See `.planning/ROADMAP.md` for full phase goals, dependencies, and success criteria.
 
-| Requirement | Suggested Phase | Status |
-|-------------|------------------|--------|
-| INGEST-01, INGEST-02, INGEST-03, INGEST-04 | Phase 1: Content Ingestion | Pending |
-| ASSM-01, ASSM-02, ASSM-03, ENTRY-01, ENTRY-02, ENTRY-03 | Phase 2: Test Assembly & Attempt Lifecycle | Pending |
-| GRADE-01, GRADE-02, GRADE-03, GRADE-04, GRADE-05 | Phase 3: Grading & Scoring Engine | Pending |
-| UI-01, UI-02, UI-03, UI-04, UI-05 | Phase 4: Candidate-Facing Gamified Test UI | Pending |
-| INTEG-01, INTEG-02, INTEG-03, INTEG-04, INTEG-05, INTEG-06 | Phase 5: Integrity Monitoring | Pending |
-| REPORT-01, REPORT-02, ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04, ADMIN-05, ENTRY-04 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| ENTRY-01 | Phase 2: Candidate Entry & Test Assembly | Pending |
+| ENTRY-02 | Phase 2: Candidate Entry & Test Assembly | Pending |
+| ENTRY-03 | Phase 2: Candidate Entry & Test Assembly | Pending |
+| ENTRY-04 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| INGEST-01 | Phase 1: Content Ingestion & Question Bank | Pending |
+| INGEST-02 | Phase 1: Content Ingestion & Question Bank | Pending |
+| INGEST-03 | Phase 1: Content Ingestion & Question Bank | Pending |
+| INGEST-04 | Phase 1: Content Ingestion & Question Bank | Pending |
+| ASSM-01 | Phase 2: Candidate Entry & Test Assembly | Pending |
+| ASSM-02 | Phase 2: Candidate Entry & Test Assembly | Pending |
+| ASSM-03 | Phase 2: Candidate Entry & Test Assembly | Pending |
+| UI-01 | Phase 4: Candidate-Facing Gamified Test UI | Pending |
+| UI-02 | Phase 4: Candidate-Facing Gamified Test UI | Pending |
+| UI-03 | Phase 4: Candidate-Facing Gamified Test UI | Pending |
+| UI-04 | Phase 4: Candidate-Facing Gamified Test UI | Pending |
+| UI-05 | Phase 4: Candidate-Facing Gamified Test UI | Pending |
+| GRADE-01 | Phase 3: Grading & Scoring Engine | Pending |
+| GRADE-02 | Phase 3: Grading & Scoring Engine | Pending |
+| GRADE-03 | Phase 3: Grading & Scoring Engine | Pending |
+| GRADE-04 | Phase 3: Grading & Scoring Engine | Pending |
+| GRADE-05 | Phase 3: Grading & Scoring Engine | Pending |
+| INTEG-01 | Phase 5: Integrity Monitoring | Pending |
+| INTEG-02 | Phase 5: Integrity Monitoring | Pending |
+| INTEG-03 | Phase 5: Integrity Monitoring | Pending |
+| INTEG-04 | Phase 5: Integrity Monitoring | Pending |
+| INTEG-05 | Phase 5: Integrity Monitoring | Pending |
+| INTEG-06 | Phase 5: Integrity Monitoring | Pending |
+| REPORT-01 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| REPORT-02 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| ADMIN-01 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| ADMIN-02 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| ADMIN-03 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| ADMIN-04 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
+| ADMIN-05 | Phase 6: Shared Reporting & Recruiter Admin Panel | Pending |
 
 **Coverage:**
 - v1 requirements: 34 total
-- Mapped to suggested phases: 34
+- Mapped to phases: 34
 - Unmapped: 0 ✓
+
+**Phase note:** ENTRY-01/02/03 (candidate identity/duplicate-detection) were kept together with ASSM-01/02/03 in Phase 2 rather than split into their own phase — "candidate starts an attempt" and "attempt receives a frozen question set" are one coherent, fixture-testable capability, both provable server-side before the gamified UI (Phase 4) exists. ENTRY-04 stayed paired with its duplicate ADMIN-04 in Phase 6, since the override action requires the admin panel to exist first.
 
 ---
 *Requirements defined: 2026-07-29*
-*Last updated: 2026-07-29 after initial definition*
+*Last updated: 2026-07-29 after roadmap creation — traceability finalized against ROADMAP.md*

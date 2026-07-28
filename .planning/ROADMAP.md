@@ -30,7 +30,15 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Every question carries category, level/case-grouping, and a difficulty/ambiguity tier (straightforward/moderate/complex) tag
   3. Re-running ingestion against a deliberately malformed item (missing option, unmarked or inconsistent answer marker) fails loudly instead of silently importing bad data
   4. Per-category "questions to be given" quotas loaded from `FS QB Pattern.xlsx` are queryable and match the settled spreadsheet values
-**Plans**: TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Wave 0 foundation: pinned toolchain, Docker Postgres 16, pytest/vitest skeleton + docx fixture builders
+- [ ] 01-02-PLAN.md — TRACER: English Grammar slice end-to-end (parse → validate → artifact → schema push → seed → query) + slice tests
+- [ ] 01-03-PLAN.md — English remainder: open_text/hybrid parts (105 items) + e2e tests (A-OQ3 recorded)
+- [ ] 01-04-PLAN.md — Attention parser: 40 cases, verbatim tabs, table binding, ☑/☐ polarity (160 items) + e2e tests
+- [ ] 01-05-PLAN.md — Critical Thinking parser (120 items) + Sheet2 quota loader with unit annotation (A-OQ2 recorded)
+- [ ] 01-06-PLAN.md — Difficulty tiers (A-OQ1 heuristic, provisional), full 385-item run, atomic DB load, final gates
 
 ### Phase 2: Candidate Entry & Test Assembly
 **Goal**: A candidate can start exactly one official attempt — entering name+email through a simple entry form, with no invite link — and receive a randomly assembled, quota-correct, server-frozen question set, with the assembly and identity logic proven server-side before the gamified UI exists.
@@ -100,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Content Ingestion & Question Bank | 0/TBD | Not started | - |
+| 1. Content Ingestion & Question Bank | 0/6 | Planned | - |
 | 2. Candidate Entry & Test Assembly | 0/TBD | Not started | - |
 | 3. Grading & Scoring Engine | 0/TBD | Not started | - |
 | 4. Candidate-Facing Gamified Test UI | 0/TBD | Not started | - |

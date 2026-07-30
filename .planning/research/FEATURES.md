@@ -1,180 +1,158 @@
 # Feature Research
 
-**Domain:** Gamified, auto-graded hiring assessment platform with browser-based (no-paid-API) integrity monitoring, for a Fraud Support screening test
-**Researched:** 2026-07-29
-**Confidence:** MEDIUM (see Sources — live web search/fetch tools were unavailable this session; findings reflect the researcher's trained knowledge of well-established, widely-documented industry patterns, not live-verified sources)
+**Domain:** Hiring assessment platform — async report delivery, recruiter analytics, LLM-graded open-text grading, fraud/trust-and-safety-analyst evaluation quality
+**Milestone:** v1.1 Async Reporting, Trust Repairs & Evaluation Quality
+**Researched:** 2026-07-31
+**Confidence:** MEDIUM (see Sources — live web search/fetch was unavailable this session; findings are drawn from established ATS/assessment-platform UX patterns, standard psychometric item-analysis practice, and commonly documented LLM-as-judge evaluation principles. Nothing here is exotic or contested, but nothing was cross-checked against a live source this run — treat any vendor-specific claim as illustrative, not verified.)
 
 ## Feature Landscape
 
 ### Table Stakes (Users Expect These)
 
-Features candidates and recruiters assume exist. Missing these makes the product feel broken or untrustworthy.
-
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Pre-test instructions/onboarding screen (format, time limit, rules, "no going back once started") | Every assessment platform (HackerRank, Codility, TestGorilla, Mettl, Criteria Corp) shows this before the clock starts; candidates need to know the rules of engagement | LOW | Should state timer behavior, level count, and that answers are final once submitted |
-| Visible progress indicator (X of Y questions, or per-level progress bar) | Universal in timed tests; anxiety and abandonment rise sharply when candidates can't tell how much is left | LOW | Maps directly to the 3-bank/level structure already decided in PROJECT.md |
-| Visible countdown timer (overall and/or per-question) | Table stakes for any timed assessment; candidates actively distrust untimed "surprise cutoff" tests | LOW | Must be prominent, not hidden in a corner — ambiguity here reads as unfair |
-| Auto-submit on timeout | Safety net so a stalled candidate doesn't lose the whole attempt to one question/section | LOW-MEDIUM | Must gracefully save partial progress and move on, not fail the whole session |
-| End-of-test confirmation screen | Candidates need explicit confirmation their responses were received | LOW | "Your assessment has been submitted" — reduces support inquiries |
-| One-way linear navigation within a section (no back-and-forth once answered, for gamified/timed formats) | Matches the "level" framing already chosen and prevents answer-changing exploits in a randomized bank | LOW-MEDIUM | Consistent with per-question timer; free back-navigation would conflict with per-question timing |
-| Candidate identification capture (name + email) before starting | Needed to attach the report to a person and enforce one-attempt-per-email | LOW | Already an Active requirement in PROJECT.md |
-| Overall score + per-trait score breakdown in the report | Standard across every pre-employment testing vendor (SHL, Criteria Corp, Pymetrics, HackerRank, Vervoe) — a single number alone is considered too opaque to act on | LOW-MEDIUM | Already decided as 3-axis model in PROJECT.md |
-| Recommendation tier (e.g., Strong Fit / Consider / Not Recommended) | Recruiters do not want to interpret raw scores themselves; every commercial assessment tool ships some categorical verdict | LOW-MEDIUM | Requires defined score-to-tier thresholds, ideally calibrated by an SME before launch |
-| Candidate list view for recruiters (name, email, date, score) | This is the baseline of every hiring-tool admin screen; without it there is no way to triage candidates | LOW-MEDIUM | Already an Active requirement |
-| Detail view per candidate opened from the list | Recruiters always need to drill from summary → full report | LOW | |
-| Basic authentication gating the admin panel | An assessment report containing PII must not be publicly reachable | LOW-MEDIUM | Non-negotiable security table stake, not just UX |
-| Silent, non-interrupting integrity logging (tab-switch, blur, copy-paste, fullscreen-exit) | This is the accepted floor for any online, unproctored/lightly-proctored test today (TestGorilla, Mettl, Talview all offer this at the free/base tier) | MEDIUM | Already decided in PROJECT.md; must not interrupt the candidate mid-test |
+| Immediate "Thank You" confirmation screen on submit | Every assessment platform confirms receipt instantly even when scoring is async — candidates need to know the submit succeeded before they leave | LOW | Must be idempotent: refreshing the thank-you page or re-hitting submit must not double-submit or re-trigger grading |
+| "What happens next" messaging with a concrete timeframe | Vague "we'll be in touch" copy drives candidate support emails ("did it go through?"); stating an expected turnaround and confirming the destination email address sets an honest expectation | LOW | Copy must match reality — don't promise "instant" or "minutes" once grading is genuinely async/LLM-involved |
+| Immediate lightweight confirmation email, separate from the full report | Gives the candidate an inbox anchor immediately, confirms the email address was captured correctly, reduces anxiety while the full report is still computing | LOW | Distinct from the full report email; reuses existing MailApp/GmailApp integration |
+| Full report delivered as readable email content, not just a bare attachment/link | PDF-only or link-only emails frequently get clipped by Gmail, blocked by corporate filters, or ignored; inlining the key summary (scores, tier, narrative) in the email body itself is standard practice | MEDIUM | `GmailApp.sendEmail` supports HTML body — reuse the existing `ReportScreen.tsx` content model rather than building a second template from scratch |
+| Recruiter-team notification email on every completed attempt | Recruiters shouldn't have to poll the admin panel to know a candidate finished; a per-attempt summary email (concerns/positives/results) is the async-flow equivalent of the old instant on-screen result | LOW-MEDIUM | Needs a recruiter-team distribution address (Script Property), not per-recruiter fan-out, to avoid inbox spam as volume grows |
+| Question-level difficulty stats on the analytics dashboard (pass rate per question) | Standard psychometric "item analysis" — without it, a badly-worded or leaked question silently drags down the whole bank and nobody notices | MEDIUM | Requires joining `Responses` sheet by QuestionID against the static bank; Sheets isn't a real analytics DB, so this needs an aggregation function, likely cached given Apps Script quota limits |
+| Score trend over time | Recruiters need to know if scores are drifting (better/worse sourcing channel, a leaked answer key causing a spike, a bank getting stale) — a single point-in-time average is not actionable | MEDIUM | A rolling-average-by-week/cohort view is sufficient; don't over-build |
+| Violation/integrity summary correlated with score, not just raw counts | A raw "3 tab-switches" count means little alone; what matters is whether high-violation candidates also show anomalously high scores (cheating signal) vs. high violations with mediocre scores (probably a nervous candidate/unstable connection) | MEDIUM | Builds directly on existing `IntegrityLogs` + `Attempts.ViolationCount` — a correlation view, not new data collection |
+| Explicit rubric (not "grade this 0-10") behind every LLM-graded open-text question | The single biggest reliability lever for LLM-as-judge scoring — decomposed, weighted criteria per question produce far more consistent, defensible grades than an unconstrained holistic score | MEDIUM | Formalizes what `evaluateOpenTextBatch` in `Code.gs` currently does ad hoc (the F-03 audit finding); rubric should be structured data per question, not baked into a single prompt string |
+| Structured (JSON schema) LLM grading output: per-criterion score + overall + rationale | Freeform prose scores can't be tested, audited, or reliably parsed; structured output is what makes the F-03 test-mirror requirement and the recruiter override UI possible at all | MEDIUM | Gemini structured output/JSON mode should be used; direct dependency for both the pitfalls around grading drift and the recruiter override feature |
+| Recruiter-visible transcript + LLM verdict + rationale, with override control | Already a stated project constraint — once an LLM affects a real hiring decision, "zero human review" is no longer true, and the report must let a recruiter see exactly what the LLM saw and said, and overrule it | MEDIUM-HIGH | New field on the report data model (`openTextGrading[]`: question, candidate answer, per-criterion scores, rationale, override state) surfaced via `handleGetAttemptReport` plus a new admin UI affordance |
+| Graceful failure state for LLM grading (never silently pass or fail) | If the Gemini call errors or returns malformed JSON, the candidate must not get a default score — must surface as "grading incomplete, needs manual review" to the recruiter | LOW-MEDIUM | Directly covered by the already-scoped F-04 test-coverage requirement |
 
 ### Differentiators (Competitive Advantage)
 
-Not required, but valuable — and where this platform can meaningfully stand apart from generic assessment tools.
-
 | Feature | Value Proposition | Complexity | Notes |
-|---------|--------------------|------------|-------|
-| Narrative "out-of-the-box thinking" insight (auto-generated text, not just a number) | Only a few vendors (Vervoe, Pymetrics) attempt natural-language insight generation; this converts the hardest/most-ambiguous-case performance into something a recruiter can act on without themselves interpreting raw scores | MEDIUM | Requires difficulty/ambiguity tagging on the Critical Thinking items during ingestion — a dependency, see below |
-| Multi-tab "candidate dashboard" case simulation (Customer Report / Booking / Review / Property / Account tabs) | Directly mirrors the actual job task (cross-referencing fraud evidence); this is a much closer job-sample simulation than any generic MCQ test offers, and is the single strongest validity/face-validity asset this platform has | MEDIUM-HIGH | Already authored content; this is the platform's real differentiator versus HackerRank/Codility-style generic testing |
-| Violation/integrity summary embedded directly in the shared candidate+recruiter report | Most free/self-serve tools either omit integrity data entirely or bury it in a separate proctoring vendor dashboard; surfacing it inline, in plain language, in the same report as the scores is unusual and useful | LOW-MEDIUM | Already decided; keep language neutral (see Anti-Features/Pitfalls) |
-| Free, fully on-device webcam face-presence/face-count check (no frames uploaded, no paid vision API) | Most free/self-serve competitors skip webcam checks entirely (too costly to do server-side); running a lightweight in-browser model (e.g., a WASM/TF.js-class face detector) client-side, with nothing leaving the browser, sits near the frontier of what's achievable at zero marginal cost | MEDIUM-HIGH | This is more advanced than most "free tier" competitors attempt — a genuine differentiator, not just table stakes |
-| Identical report shown to candidate and recruiter | Most vendors show recruiters a rich report and candidates a thin "thank you" page; full transparency is a candidate-experience differentiator and pre-empts "black box rejection" complaints | LOW | Already decided in PROJECT.md — validate, don't second-guess this choice |
-| Level/mission narrative framing tied to the actual role story (fraud investigation theme) | Generic gamification (arcade points, unrelated badges) is common; theming the levels around the actual fraud-investigation narrative reinforces realistic job preview alongside engagement | LOW-MEDIUM | Keep restrained — see pitfall on over-gamification below |
-| Stratified/difficulty-balanced random draw (not naive uniform sampling across all 375 items) | Guarantees every candidate faces a comparable difficulty mix even though each attempt is unique — most lightweight in-house assessment tools skip this and get uneven, less comparable scores across candidates | MEDIUM | Requires difficulty/level tags at ingestion time; strengthens validity of cross-candidate comparison |
+|---------|-------------------|------------|-------|
+| Candidate-revisitable "grading status" link in the confirmation email | Reduces anxiety and support load if email delivery lags (Apps Script MailApp can be rate-limited at volume); candidate can check "in progress / complete" instead of only waiting | MEDIUM | Not essential if email delivery is reliable — build only if delivery latency becomes a real, measured problem |
+| LLM-generated dashboard narrative digest ("what changed, what to watch") | Turns raw item-analysis and trend stats into an action item recruiters will actually read (e.g., "pass rate on Case 12/Q3 dropped from 68%→40% this month — check for ambiguity or a leaked key") — this is what separates a useful dashboard from a wall of charts | MEDIUM-HIGH | Reuses the existing Gemini integration/API key already wired for open-text grading; keep strictly descriptive/diagnostic, never a per-candidate hire recommendation (see anti-feature below) |
+| Two-pass / self-consistency LLM grading with disagreement flagging | Running the rubric grading twice (or with a differently-worded second pass) and flagging cases where the two scores diverge meaningfully raises grading trust substantially for a small number of open-text items, at added cost/latency | MEDIUM | Worth adding once the single-pass version is validated in production — not for first ship |
+| Few-shot calibration anchors (gold-standard strong/medium/weak reference answers per question) in the grading prompt | Anchors the LLM's numeric scale to actual human judgment rather than the model's own drifting sense of "8/10" — a well-known lever for improving LLM-as-judge agreement with human raters | MEDIUM-HIGH | Needs a small authored reference-answer set per open-text question — real content work, not just engineering; do this after there's a corpus of real graded answers to draw examples from |
+| Confidence-calibration scoring (candidate states confidence alongside verdict on ambiguous cases) | Domain-specific: a fraud analyst who's right 60% of the time and knows it is a better hire than one who's right 60% of the time and claims 95% confidence — this directly tests the "no fixed playbook" judgment the role requires | MEDIUM | New discrete answer-input element (a fixed confidence scale — still deterministic, not free text) + a calibration-scoring formula; layers onto existing Critical Thinking cases, no new content authoring required |
+| False-positive vs. false-negative bias-direction indicator | Domain-specific: tags a candidate's wrong answers by whether they skew toward over-flagging (accusing legitimate reviews/accounts) or under-flagging (missing real fraud) — a directional trait, not just an accuracy number, that lets recruiters match candidates to team needs | LOW-MEDIUM | Pure scoring/aggregation change against already-answer-keyed MCQ items; requires tagging existing questions with a "direction" attribute where the wrong answer is classifiable — no new question content |
+| "Escalate / insufficient information" as a scored-valid answer path on select ambiguous cases | Domain-specific: forced binary fraud/not-fraud choices train and select for false confidence; real analysts escalate ambiguous cases rather than guessing — scoring escalation as correct on genuinely under-determined cases tests a real on-the-job behavior a forced-choice test structurally cannot | MEDIUM | Requires tagging a subset of existing Critical Thinking cases as "escalation-valid" and extending the grading engine to accept a second correct answer path — still fully deterministic, no conflict with the MCQ-determinism constraint |
+| Time-pressure accuracy-degradation signal | Domain-specific: compares accuracy on the first question of a case vs. later questions in the same case (which require more cross-tab synthesis) as a proxy for how the candidate holds up under queue/SLA-style time pressure, distinct from raw accuracy | LOW | Purely derived from timestamps already logged in `Responses` — no new content, UI, or grading changes needed |
+| Bottom-N discriminating-question review queue on the dashboard | Domain-specific application of item analysis: surfaces questions where getting it right correlates weakly or negatively with overall score (i.e., your best candidates are getting it "wrong") — worth a recruiter/SME re-read to decide if the question is appropriately ambiguous or just broken | MEDIUM | Needs a discrimination-index computation (point-biserial or simplified top/bottom-group split) in addition to raw pass-rate; pairs naturally with the question-difficulty table-stakes feature above |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that seem good but create validity, legal, or scope problems.
-
 | Feature | Why Requested | Why Problematic | Alternative |
-|---------|----------------|------------------|-------------|
-| Live per-question correct/incorrect feedback during the test | Feels more "game-like" and immediately rewarding | Lets candidates recalibrate mid-test on later similar items, undermining measurement validity; can also demoralize or falsely inflate confidence based on partial info | Show a live points/progress counter (activity, not correctness) or defer all correctness feedback to the final report |
-| Real-time leaderboard comparing the candidate to other candidates | Strong gamification hook, feels competitive/fun | Pressures candidates toward speed over accuracy (directly contradicts the "careful investigation" trait being measured for a Fraud Support role); legally risky as a disparate-impact vector; also requires exposing other candidates' data | Never show comparative data to the candidate in real time; keep any benchmarking recruiter-side only, and only once a meaningful sample exists (see below) |
-| Live points/score-reveal as literal gamification currency, uncapped and un-normalized | Explicitly requested in PROJECT.md as part of "gamified" framing | If points reward raw speed of answering rather than accuracy, it creates a perverse incentive to blitz through Attention-to-Detail dashboard cases — exactly the opposite of the "patient, careful cross-referencing" trait the job requires | Keep points cosmetic/structural (tied to level completion, not per-second speed), and never let the point mechanic outweigh or leak the actual scoring model |
-| True percentile/norm-group benchmarking shown from day one | "Feels" more rigorous and objective than a raw score | With zero or a handful of completed attempts, a percentile is statistically meaningless and can create false confidence in a hiring decision | Launch with raw score + SME-calibrated tier thresholds; only introduce true percentiles once a meaningful sample exists (order-of-magnitude: 100+ completed attempts) |
-| Fully automated hire/reject action with no human step (auto-send rejection email, auto-schedule interview) | Aligns with the "zero human evaluation" grading philosophy already decided | Grading being deterministic is fine; making the *employment decision* itself fully automated with no human review carries real legal exposure (adverse-impact/disparate-treatment risk under frameworks like US Title VII, and automated-employment-decision-tool rules such as NYC Local Law 144 in other contexts) | Automate scoring and reporting fully; keep the recommendation tier advisory — a human recruiter still clicks "reject" or "advance" |
-| Recruiter-side manual answer regrading/override UI in v1 | Feels like useful flexibility if a question is later found ambiguous | Reintroduces a human-in-the-loop grading path per-candidate, undermining the explicit "100% objective, no human grading" core value and creating scoring inconsistency across candidates | If a question is found flawed, fix or retire it in the content store and let the deterministic engine rescore; never hand-adjust one candidate's result |
-| Full ATS feature set bolted on (job postings, interview scheduling, offer letters, pipeline stages) | "While we're building a hiring tool, why not go all-in" | Massive scope creep; this is a screening instrument, not an applicant tracking system, and competing with dedicated ATS tools is not the goal | Keep scope to assessment + report + admin review; let recruiters copy the recommendation into whatever ATS/email workflow they already use |
-| Arcade-style gamification aesthetics (confetti, sound effects, mascot characters) | Increases "fun" and completion rates in consumer-app contexts | Can cheapen the perceived seriousness of a hiring decision; candidates report skepticism when a job screening feels like a mobile game, which undermines perceived fairness of the whole process | Keep gamification restrained and professional: level structure, progress, a coherent investigation narrative — not arcade polish |
-| Hard, un-overridable one-attempt-per-email block with zero admin escape hatch | Matches the "one official attempt" decision literally | A browser crash, refresh, or power outage during a legitimate attempt permanently disqualifies an innocent candidate with no recourse | Keep the one-attempt policy as the default rule, but give the recruiter admin a manual reset/override capability for a specific email in documented technical-failure cases |
+|---------|---------------|------------------|-------------|
+| Showing partial/instant scores on the thank-you screen (e.g., reveal MCQ score immediately, LLM score later) | MCQ grading is deterministic and fast, so it's tempting to show *something* right away | Creates a confusing two-stage reveal, undermines the "wait for the full holistic report" framing, and risks candidates reverse-engineering which sections are objectively vs. subjectively graded | Hold everything until the full report (MCQ + LLM sections) is ready; single reveal via email |
+| Auto-refreshing/polling the thank-you page for live grading status | Feels more "real-time" and modern | Apps Script backend isn't built for polling-friendly status endpoints at scale, and it re-introduces exactly the "must keep the tab open" anxiety the async flow was designed to remove | Push via email; only add a revisitable status link if delivery latency becomes a real, measured problem |
+| Fully autonomous LLM decision on open-text with no transcript or override | Feels efficient — "let the AI decide" | Directly conflicts with the project's own stated constraint once LLM grading affects a real hiring outcome; also a general anti-pattern for a defensible hiring pipeline (a score nobody can explain is a liability) | LLM produces a rubric sub-score with rationale that feeds the same deterministic aggregation MCQ scores already use; recruiter can always see and override it |
+| LLM used to set the pass/fail boundary or recommendation tier directly, bypassing the deterministic aggregation | Seems like a natural extension once the LLM is already grading open-text | Blends judgment into the "trusted" aggregate score in an opaque way and makes the whole report harder to defend or debug | Scope the LLM strictly to "grade this one answer against this one rubric" — the existing deterministic tier logic stays sole owner of the final recommendation |
+| Publishing the grading rubric to candidates ahead of time (for "transparency") | Feels fair and transparent | Turns the open-text section into a checklist-matching exercise, defeating its purpose of testing genuine judgment under ambiguity | Keep rubrics server-side only (same boundary as MCQ answer keys); transparency comes from the candidate's own post-hoc transcript+verdict, not a pre-published rubric |
+| Re-grading open-text answers fresh every time a recruiter opens the report | Seems harmless — "just call the LLM again" | Non-deterministic: could show a different score on different days for the same candidate, undermining trust and making audits meaningless | Grade once at submission time, persist verdict + transcript; only regenerate on an explicit, logged recruiter-triggered "regrade" action |
+| LLM-generated per-candidate hire/no-hire recommendations at the aggregate dashboard level | Sounds like a natural extension of the "LLM summary insights" differentiator | Crosses from descriptive/diagnostic analytics into automated hiring decisions across candidates — real adverse-impact/fairness exposure for a tool with zero human calibration at that layer | Keep the LLM dashboard summary strictly diagnostic (item-quality and trend narrative); hire/no-hire stays a per-candidate, human-reviewed decision fed by the report |
+| Raw "average score" or "total questions answered platform-wide" as headline dashboard numbers | Easy to compute, looks like progress | Classic vanity metrics — they don't segment by cohort/time, don't correlate with anything actionable, and don't drive a hiring decision | Lead the dashboard with score trend-by-cohort, question difficulty/discrimination, and violation-vs-score correlation instead |
+| A separate "AI-detection" hard-fail signal on open-text answers (auto-reject suspiciously fluent/generic text) | Real risk: remote, unproctored test + free LLM tools make copy-paste-from-AI easy | AI-text heuristics are unreliable as sole graders and produce false accusations against strong, articulate human candidates | Log heuristic signals (unusually fluent relative to the candidate's own English-proficiency-section performance, paste-event correlation) as a soft flag for recruiter review alongside the transcript — never an auto-fail |
 
 ## Feature Dependencies
 
 ```
-Question bank ingestion (375 items, tagged: category, level, difficulty/ambiguity)
-    └──requires──> Structured content store (answer keys server-side only)
-                       └──requires──> Deterministic auto-grading engine
-                                          └──requires──> Trait score computation (3-axis)
-                                                             └──requires──> Recommendation tier (score-to-tier thresholds)
-                                                             └──requires──> Narrative "out-of-the-box thinking" insight
-                                                                                (needs difficulty/ambiguity tags from ingestion)
+Async Report Delivery
+    └──requires──> Async grading pipeline (trigger-based, decoupled from doPost)
+                       [already a stated project constraint — must land first]
+    └──requires──> Email delivery via MailApp/GmailApp
+    └──enhances──> Recruiter-team summary email (concerns/positives/results)
 
-Randomized per-attempt test assembly (~50 items)
-    └──requires──> Question bank ingestion with category/level tags
-    └──enhances──> Stratified/difficulty-balanced sampling (differentiator, avoids uneven cross-candidate difficulty)
+Rubric-Based LLM Grading
+    └──requires──> F-03 grading-engine mirror sync (existing audit item)
+    └──requires──> Structured rubric schema per open-text question (new content/schema work)
+    └──enables──> Recruiter transcript + verdict + override UI (admin panel)
+    └──enables──> Confidence-calibration & bias-direction scoring (fraud-specific)
 
-Candidate identity capture (name + email)
-    └──requires──> One-attempt-per-email enforcement
-    └──requires──> Recruiter admin candidate list/report linkage
+Recruiter Analytics Dashboard
+    └──requires──> Sufficient historical attempt volume in Sheets (needs a documented low-N fallback state)
+    └──requires──> Question-level aggregation logic (new — joins Responses × question bank)
+    └──enhances-with──> Rubric-grading verdict data (open-text quality becomes a dashboard input)
+    └──optionally requires──> LLM summary generation (reuses existing Gemini integration/API key)
 
-Client-side integrity monitoring (tab/blur, copy-paste, fullscreen, devtools, webcam)
-    └──requires──> Backend logging endpoint tied to the candidate's attempt
-    └──enhances──> Violation summary in shared report
-    └──enhances──> Violation flag visibility in admin candidate list
-
-Gamified UI (levels, progress bar, per-question timer, live points reveal)
-    ──conflicts──> Live per-question correctness feedback (validity risk — see Anti-Features)
-    ──conflicts──> Speed-rewarding point mechanics (undermines the "careful investigation" trait for Attention to Detail / Critical Thinking sections)
-
-Fully automated recommendation tier
-    ──conflicts──> Fully automated hire/reject action (legal/adverse-impact exposure — keep tier advisory, human-actioned)
+Fraud-Specific Scoring Dimensions
+(confidence calibration, bias direction, escalation-valid answers, time-pressure degradation)
+    └──requires──> Extending grading engine (LOW-MEDIUM effort) + tagging existing question content
+    └──enhances──> Recruiter Analytics Dashboard (new report dimensions) and candidate/recruiter Report
+    └──conflicts with──> "MCQ/multi-select grading stays 100% deterministic" constraint IF implemented as
+                          free text — must be implemented as discrete, still-deterministic answer options
+                          (confidence as a fixed scale value, escalation as an additional valid MCQ choice)
 ```
 
 ### Dependency Notes
 
-- **Trait score computation requires question bank ingestion with tags:** the 3-axis model (Language / Attention to Detail / Critical Thinking) only works if every ingested item is reliably tagged to its source bank; this must happen at ingestion, not after the fact.
-- **Narrative insight requires difficulty/ambiguity tagging:** the "out-of-the-box thinking" narrative is explicitly derived from performance on the *hardest/most ambiguous* cases — this means Critical Thinking (and possibly Attention to Detail Level 2) items need a difficulty/ambiguity flag captured during ingestion, or this feature has nothing to key off of.
-- **Stratified sampling enhances randomized test assembly:** without difficulty balancing, pure uniform random draw from 375 items risks giving different candidates meaningfully different difficulty mixes, weakening score comparability — this is a should-fix-early item, not a nice-to-have polish.
-- **Gamified point mechanics conflict with per-question correctness feedback:** these two are commonly bundled together in generic "gamification" thinking, but for a role that specifically rewards care over speed, mixing them is actively counterproductive — treat them as separate design decisions, not a package deal.
-- **Automated recommendation tier conflicts with automated hiring action:** scoring can be 100% automated safely; the *decision* to reject or advance a person should retain a human click, to manage legal/adverse-impact exposure.
+- **Async Report Delivery requires the async grading pipeline:** the thank-you page's "check your email shortly" copy is only honest if grading genuinely survives the candidate closing the tab — this is already a hard constraint in PROJECT.md and must be the true foundation, not just a UI change.
+- **Rubric-Based LLM Grading requires F-03 mirror sync:** building recruiter-facing trust (transcript, override, structured output) on top of a grading path already known to have drifted from its test mirror (the F-03 audit finding) means fixing F-03 first, or the new trust-building UI is displaying an unverified grading engine.
+- **Analytics Dashboard requires sufficient volume:** question-difficulty and discrimination stats are meaningless (or misleading) at low N — the dashboard needs an explicit "not enough data yet" state rather than showing noisy stats as if they were reliable.
+- **Fraud-Specific Scoring Dimensions conflict with the determinism constraint if implemented as open text:** confidence and escalation signals must be discrete/structured inputs (a scale, an extra MCQ option) to stay inside the existing "MCQ/multi-select grading stays 100% deterministic" constraint — do not implement these as free-text fields requiring LLM interpretation.
+- **LLM Dashboard Summary enhances but does not replace the deterministic dashboard:** the narrative digest is a value-add layer on top of the numeric item-analysis/trend views, not a substitute for them — recruiters should be able to trust the numbers even if the LLM summary is ignored or disabled.
 
 ## MVP Definition
 
-### Launch With (v1)
+### Launch With (v1.1 — this milestone)
 
-Minimum viable product — already substantially matches PROJECT.md's Active requirements list; framed here by feature-research rationale.
+- [ ] Thank-you screen with async report + recruiter-team summary email — why essential: this is the headline requirement of the milestone and the foundation everything else in this research builds on
+- [ ] Rubric-based structured-output LLM grading for open-text (replacing the current ad hoc `evaluateOpenTextBatch` path) — why essential: without an explicit rubric and structured output, the recruiter override UI has nothing reliable to display
+- [ ] Recruiter-visible transcript + verdict + override for LLM-graded questions — why essential: explicitly required by PROJECT.md once LLM grading is reintroduced; without it the "zero human review" guarantee is silently broken
+- [ ] Core analytics dashboard: score trend, question-level difficulty (pass rate), violation-vs-score correlation — why essential: these are the metrics that actually drive better hiring/content decisions, not vanity counts, and directly serve the stated milestone goal
+- [ ] False-positive/false-negative bias-direction indicator — why essential: low complexity, no new content authoring, and the single most directly "fraud-analyst-fit" scoring addition available at this cost
 
-- [ ] Candidate self-serve entry (name + email) — needed to identify candidates and enforce one-attempt-per-email
-- [ ] Ingested, tagged 375-item content store (category, level, and at minimum a difficulty/ambiguity flag on Critical Thinking items) — every downstream feature depends on this
-- [ ] Randomized ~50-item stratified draw per attempt — comparability across candidates requires at least basic difficulty balancing, not pure uniform random
-- [ ] Gamified UI: level progress bar, per-question countdown timer, restrained (non-correctness-revealing) live progress/points indicator, auto-submit on timeout
-- [ ] Deterministic MCQ/multi-select auto-grading engine, answer keys server-side only
-- [ ] Baseline browser integrity signals, silently logged: tab/blur, copy-paste, fullscreen-exit, right-click block, soft devtools detection
-- [ ] Free on-device webcam face-presence check (no upload/storage of frames)
-- [ ] One-attempt-per-email enforcement
-- [ ] Shared candidate+recruiter report: overall score, 3 trait scores, narrative insight, recommendation tier (advisory, not auto-actioned), plain-language violation summary
-- [ ] Recruiter admin panel: authenticated candidate list (name, email, date, score, violation count) → full detail view
+### Add After Validation (v1.2)
 
-### Add After Validation (v1.x)
-
-- [ ] Admin-side attempt reset/override for a specific candidate email — add once the first legitimate "my browser crashed" support case occurs
-- [ ] Refine stratified sampling logic based on observed score distributions once real attempt data exists
-- [ ] CSV export of the candidate list — add once recruiters start requesting data outside the tool
-- [ ] Basic aggregate analytics (score distribution, average completion time, pass-rate trend) — add once there is enough volume (order of magnitude: dozens of completed attempts) for it to be meaningful
-- [ ] Differentiated per-question-type time budgets (reading-heavy dashboard cases vs. quick grammar MCQ) if early data shows a section is unfairly time-pressured
+- [ ] LLM-generated dashboard narrative digest — trigger for adding: once the core numeric dashboard is in production and recruiters are actually reading it, add the digest to reduce time-to-insight
+- [ ] Confidence-calibration scoring — trigger for adding: once the rubric-grading and dashboard foundations are stable; needs a small UI addition (confidence scale) worth sequencing after the core flow ships
+- [ ] Escalation/"insufficient information" valid-answer path — trigger for adding: requires tagging a subset of the existing Critical Thinking bank; do this as a deliberate content pass once the scoring-engine changes for it are validated
+- [ ] Bottom-N discrimination review queue — trigger for adding: once enough attempt volume exists for discrimination stats to be statistically meaningful
 
 ### Future Consideration (v2+)
 
-- [ ] True percentile/norm-group benchmarking — defer until a statistically meaningful sample exists (100+ completed attempts); shipping this earlier risks misleading precision
-- [ ] Candidate pipeline/status tracking (interviewed, hired, rejected) — edges into ATS territory; defer unless recruiters explicitly ask to stop using their existing tool for this
-- [ ] Role-based access control / multiple recruiter accounts with different permissions — defer while the hiring team is small and a shared login suffices
-- [ ] Visual score breakdown polish (radar/spider chart) — cosmetic, defer until core report content is validated
-- [ ] Downloadable/exportable PDF report — defer until there's a concrete compliance/archiving need
-- [ ] Any demographic-segmented adverse-impact monitoring — legally sensitive, requires HR/legal sign-off on data collection before consideration, not a casual add
+- [ ] Two-pass/self-consistency LLM grading — why defer: added cost/latency only justified once single-pass grading has a track record and known failure modes to compare against
+- [ ] Few-shot calibration anchors (gold-standard reference answers) — why defer: needs a real corpus of graded answers to build the reference set from; premature before v1.1 ships
+- [ ] Candidate-revisitable grading-status page — why defer: only worth building if email delivery latency proves to be a real, measured problem in production
+- [ ] Time-pressure accuracy-degradation signal — why defer: low complexity but lower priority than the bias-direction and difficulty-stat work; a nice-to-have refinement once the core dashboard exists
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|----------------------|----------|
-| Question bank ingestion with tags | HIGH | MEDIUM | P1 |
-| Deterministic auto-grading engine | HIGH | MEDIUM | P1 |
-| Randomized stratified test assembly | HIGH | MEDIUM | P1 |
-| Gamified level/progress/timer UI | HIGH | MEDIUM | P1 |
-| Baseline browser integrity monitoring | MEDIUM-HIGH | MEDIUM | P1 |
-| Free on-device webcam check | MEDIUM | HIGH | P1 (already decided, but flag as the highest-effort v1 item) |
-| Shared candidate+recruiter report w/ trait scores + tier | HIGH | MEDIUM | P1 |
-| Narrative "out-of-the-box thinking" insight | MEDIUM-HIGH | MEDIUM | P1 |
-| Recruiter admin candidate list + detail view | HIGH | LOW-MEDIUM | P1 |
-| Violation flag visibility in admin list | MEDIUM | LOW | P1 |
-| Admin-side attempt reset/override | MEDIUM | LOW | P2 |
-| CSV export | LOW-MEDIUM | LOW | P2 |
-| Aggregate analytics dashboard | MEDIUM | MEDIUM | P2 |
-| Differentiated per-question-type timing | MEDIUM | LOW-MEDIUM | P2 |
-| True percentile/norm benchmarking | MEDIUM | HIGH | P3 |
-| Candidate pipeline/status tracking | LOW | MEDIUM | P3 |
-| Role-based multi-recruiter access | LOW | MEDIUM | P3 |
-| PDF export / visual chart polish | LOW | LOW-MEDIUM | P3 |
+| Async thank-you + candidate/recruiter emails | HIGH | MEDIUM | P1 |
+| Rubric-based structured LLM grading | HIGH | MEDIUM | P1 |
+| Recruiter transcript + verdict + override UI | HIGH | MEDIUM-HIGH | P1 |
+| Core analytics dashboard (trend, difficulty, violation correlation) | HIGH | MEDIUM | P1 |
+| False-positive/false-negative bias-direction indicator | MEDIUM-HIGH | LOW-MEDIUM | P1 |
+| LLM-generated dashboard narrative digest | MEDIUM | MEDIUM-HIGH | P2 |
+| Confidence-calibration scoring | MEDIUM-HIGH | MEDIUM | P2 |
+| Escalation/"insufficient information" valid path | MEDIUM | MEDIUM | P2 |
+| Bottom-N discrimination review queue | MEDIUM | MEDIUM | P2 |
+| Two-pass/self-consistency LLM grading | MEDIUM | MEDIUM | P3 |
+| Few-shot calibration anchors | MEDIUM | MEDIUM-HIGH | P3 |
+| Candidate-revisitable grading-status page | LOW-MEDIUM | MEDIUM | P3 |
+| Time-pressure degradation signal | LOW-MEDIUM | LOW | P3 |
 
 **Priority key:**
-- P1: Must have for launch
-- P2: Should have, add when possible
-- P3: Nice to have, future consideration
+- P1: Must have for this milestone (v1.1)
+- P2: Should have, add once P1 is stable (v1.2)
+- P3: Nice to have, future consideration (v2+)
 
 ## Competitor Feature Analysis
 
-| Feature Area | HackerRank / Codility (technical-assessment lineage) | Pymetrics / Arctic Shores (game-based psychometrics) | TestGorilla / Mercer Mettl / Criteria Corp (SMB pre-employment testing) | Our Approach |
-|---------------|--------------------------------------------------------|--------------------------------------------------------|-----------------------------------------------------------------------------|--------------|
-| Test UI framing | Plain timed test, minimal gamification, IDE/code-runner style | Full game framing (neuroscience-style mini-games, abstract) | Timed MCQ blocks, light progress bar, minimal game framing | Level/mission framing tied to the actual fraud-investigation narrative — more restrained than Pymetrics, more engaging than TestGorilla |
-| Mid-test feedback | None (correctness withheld) | None (games don't reveal "correct/incorrect" by design) | None | None — restrained live progress indicator only, no correctness reveal (see Anti-Features) |
-| Results report | Score + code quality metrics, no narrative text | Proprietary trait scores + narrative "fit" summary | Score + percentile benchmark (large existing norm pool) + tier | Score + 3 trait scores + narrative insight + tier, but percentile deferred until sample size supports it |
-| Recruiter dashboard | Candidate list, detail view, some team collaboration features | Dashboard with fit-score comparisons across candidates | Candidate list, filters, CSV export, benchmark comparisons | Candidate list, detail view, violation flags in v1; export/analytics deferred to v1.x |
-| Integrity/proctoring | Basic tab-switch detection at free tier; paid video proctoring add-on | Typically none (games are harder to "cheat" at meaningfully) | Free tier: tab/blur, copy-paste, fullscreen; paid tier adds webcam/video review | Baseline signals matched to the free tiers above, plus a free on-device webcam check most competitors reserve for paid tiers |
-| Automated decisioning | Score threshold only, human still decides | Fit score, human still decides | Tier/recommendation, human still decides | Advisory recommendation tier, human recruiter still actions — consistent with all three lineages above |
+| Feature | General ATS/skills-assessment platforms (TestGorilla, HackerRank, Codility-style) | Structured-hiring / psychometric tools (SHL, Pymetrics-style) | Our Approach |
+|---------|--------------------------------------------------------------------------------|------------------------------------------------------------|--------------|
+| Post-submission UX | Instant "thank you" screen, results delivered later by email/dashboard once any manual or async component exists | Similar — heavy emphasis on setting turnaround expectations since scoring often involves norm-referencing against a population | Match this pattern: thank-you screen with honest timeframe, immediate confirmation email, full report email once async grading completes |
+| Analytics dashboard | Typically leads with completion rate, average score, time-on-test — often skews toward operational/vanity metrics unless the buyer specifically asks for item analysis | Stronger emphasis on item-level psychometrics (difficulty, discrimination) and norm groups, since defensibility against adverse-impact claims is a core selling point | Lead with item difficulty/discrimination and trend-by-cohort, not raw averages — closer to the psychometric-tool approach given this is a role with real judgment/fairness stakes |
+| Open-text/free-response grading | Increasingly common to offer "AI-assisted" grading, but transparency/override support varies widely and is often a black box in cheaper tools | Traditionally avoided free-response scoring entirely in favor of structured/forced-choice formats specifically to keep scoring defensible | Take the more cautious posture: structured rubric + mandatory transcript/override, closer in spirit to the psychometric tools' defensibility standard, while still allowing genuine open-text judgment testing |
+| Domain-specific judgment signals (calibration, bias direction, escalation paths) | Largely absent — most platforms are generic across job families and don't model direction of error or confidence calibration | Some presence in specialized risk/compliance-hiring products, but rarely exposed as recruiter-facing detail | This is where the platform can differentiate meaningfully — these signals map directly to what a fraud/trust-and-safety role actually needs, and are not standard even in higher-end tools |
 
 ## Sources
 
-- No live web search or web fetch was available in this research session: the `WebSearch` and `WebFetch` tools were both denied by environment permissions, no Brave Search API key was configured for the `gsd-tools` websearch fallback, and no MCP server providing general web research was available (only `pencil` for design files and `context7` for library documentation, neither applicable to this domain question).
-- This document is therefore built from the researcher's trained knowledge of widely-documented, well-established industry patterns as of training cutoff: HackerRank, Codility, TestGorilla, Mercer Mettl, Criteria Corp, Pymetrics, Arctic Shores, Vervoe, SHL, and proctoring vendors Proctorio/Examity/Honorlock, plus commonly cited concerns in HR-tech/EEOC and second-language-testing literature regarding timed tests and automated employment decision tools (e.g., discussions parallel to NYC Local Law 144-style automated-employment-decision-tool regulation).
-- **Recommendation:** treat this file's factual claims about specific competitor feature sets as MEDIUM confidence (consensus industry patterns, not freshly verified citations); if a live web-research pass becomes available later in this project, re-verify vendor-specific claims (especially anything version- or pricing-specific) before using them in external-facing documentation.
+- General, established practice knowledge of ATS/pre-employment-assessment UX patterns (thank-you/async-result flows), standard psychometric item-analysis (pass rate, discrimination index) used in test-bank quality management, and LLM-as-judge/rubric-grading reliability practices (structured output, few-shot calibration anchors, human-in-the-loop override) commonly documented in applied-AI-evaluation literature.
+- **Session limitation, disclosed for transparency:** live web search and web fetch tools were unavailable (permission denied by the environment) during this research session, and no Brave Search API key was configured for the `gsd-tools` websearch fallback, so no specific vendor pages, blog posts, or papers were fetched or cited this run. All findings above should be treated as MEDIUM-confidence domain synthesis rather than freshly verified sources — recommend a follow-up pass with live search enabled before treating any competitor-specific claim as authoritative.
+- Internal source: `.planning/PROJECT.md` (existing constraints: MCQ/multi-select determinism, no paid proctoring/email services, async-must-survive-tab-close) and `backend/Code.gs` (existing `evaluateOpenTextBatch`, `handleSubmitAnswers`, `handleGetAttemptReport`, `handleAdminListCandidates` — read directly to ground dependency claims in the actual codebase rather than assumption).
+- Prior milestone research: `.planning/research/FEATURES.md` (v1.0, dated 2026-07-29) covered table-stakes/differentiators for the original test-taking/reporting build — this document supersedes it for the v1.1 milestone scope (async delivery, analytics dashboard, LLM grading, fraud-fit evaluation quality) and does not repeat v1.0-validated features already shipped.
 
 ---
-*Feature research for: Gamified, auto-graded hiring assessment platform (Fraud Support screening)*
-*Researched: 2026-07-29*
+*Feature research for: Hiring assessment platform (fraud/trust-and-safety analyst vertical) — v1.1 async reporting, analytics dashboard, LLM open-text grading*
+*Researched: 2026-07-31*

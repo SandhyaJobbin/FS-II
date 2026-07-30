@@ -1,236 +1,224 @@
-# Architecture Research
+# Architecture Research — v1.1 Async Reporting, Analytics, Grading Sync, Fullscreen Lock, Dead Code Removal
 
-**Domain:** Auto-graded gamified hiring assessment platform (randomized test assembly, server-side answer-key security, browser-based integrity monitoring)
-**Researched:** 2026-07-29
-**Confidence:** MEDIUM (browser integrity APIs verified against official MDN docs = HIGH; overall system-architecture synthesis is based on well-established, stable software-engineering patterns for quiz/LMS/e-assessment systems rather than a freshly web-searched source set — live web search/product-research tooling was unavailable in this research session; see Sources)
+**Domain:** Subsequent-milestone architecture for an existing static-export Next.js frontend + single-file Google Apps Script backend + Google Sheets datastore (gamified hiring assessment platform)
+**Researched:** 2026-07-31
+**Confidence:** HIGH for structural findings (verified directly against `backend/Code.gs`, `tests/grading/grading-engine.ts`, `assessment-app/src/**`, `.github/workflows/deploy.yml`, and repo-wide grep — not generic domain research). MEDIUM for Apps Script trigger/quota specifics (well-established platform behavior, not re-verified against 2026 docs in this session).
 
-## Standard Architecture
+This file supersedes the v1.0 `ARCHITECTURE.md` (system-overview-level, written 2026-07-29) with milestone-specific, code-grounded integration design for the 5 v1.1 architecture questions.
 
-### System Overview
+## Ground Truth From the Existing Codebase
 
-```
-CLIENT (Candidate Browser)
-- Entry/Auth (name+email)
-- Gamified Test UI (levels, timer, dashboard tabs)
-- Integrity Monitor (JS): tab/blur/copy/devtools + on-device face check
-- Recruiter Admin Panel <-> Shared Report Component (read-only)
+These facts drive every recommendation below — confirmed by reading the actual files, not assumed:
 
-        |  HTTPS/JSON (sanitized payloads / events only)
-        v
+| Fact | Where confirmed |
+|------|------------------|
+| `handleSubmitAnswers` is **fully synchronous today** — it calls `evaluateOpenTextBatch()` (blocking `UrlFetchApp.fetchAll` to Gemini/fallback LLM) inline inside `doPost`, then computes score/tier/narrative and returns the full report in the same HTTP response | `backend/Code.gs:407-620` |
+| `page.tsx.handleTestSubmit` `await`s that same response and jumps straight to the `'report'` screen — there is no "Thank You" state today | `assessment-app/src/app/page.tsx:115-159` |
+| Attempts sheet is a **fixed-index** row: `A..N` = AttemptID, Name, Email, StartTime, EndTime, Status, FrozenQuestionIDs, OverallScore, LanguageScore, ResearchScore, CriticalScore, ViolationCount, RecommendationTier, NarrativeInsight. Status today is only `"active"` \| `"submitted"` | `backend/Code.gs:239-265`, `292-361`, `592-619` |
+| Sheets are named `Attempts`, `Responses`, `IntegrityLogs` (not "Answers"/"Integrity Telemetry" as loosely described in milestone context) | `backend/Code.gs:239-264` |
+| No `MailApp`/`GmailApp`, no `ScriptApp.newTrigger`, no `LockService`, no `CacheService` usage anywhere in `Code.gs` today | grep across `backend/Code.gs` |
+| `ADMIN_TOKEN` is a hardcoded server-side `const` (fine — never shipped to client) but is **not** in `PropertiesService` like the LLM keys are; only used for `getAttemptReport`, `adminListCandidates`, `adminResetAttempt` | `backend/Code.gs:48` |
+| `tests/grading/grading-engine.ts` lives at **repo root** (`tests/`), not inside `assessment-app/` — it's tested by a separate root-level `package.json` (`vitest`), while `assessment-app/package.json` has no test setup at all | root `package.json` vs `assessment-app/package.json` |
+| F-03 confirmed live: `grading-engine.ts`'s `gradeAttempt` hardcodes `open_text` as `isCorrect = true` (line 86), while `Code.gs`'s real logic is `isCorrect = llmResults[qId] === true` with a Gemini→fallback→"safe default true" cascade | `tests/grading/grading-engine.ts:84-87` vs `backend/Code.gs:512-515` |
+| Both `Code.gs` and `grading-engine.ts` already share identical `// GRADE-01`…`// GRADE-05` section-marker comments — this is an existing, reusable anti-drift convention, not something to invent from scratch | `backend/Code.gs:439,485,522,551,559,602` and `tests/grading/grading-engine.ts` throughout |
+| Only CI workflow in the repo is `.github/workflows/deploy.yml`, which builds/deploys `assessment-app/` to GitHub Pages. **There is no CI job that runs `npm test` at all** — F-04's "CI check" requirement is currently unmet at the infrastructure level, not just the test-content level | `.github/workflows/deploy.yml` |
+| `frontend/{app.js,index.html,style.css}` is **not referenced** by `deploy.yml` (only builds `assessment-app/`), not referenced by any `assessment-app/` config or component (only a false-positive text match: `WelcomeScreen.tsx:95` says "this frontend" referring to itself, not the directory) | repo-wide grep for `frontend` |
+| `handleGetAttemptReport` already requires `token === ADMIN_TOKEN` (F-01 fixed) — candidates have **no token** of their own. Today candidates get their report only as the *direct synchronous response* to `submitAnswers`, never via a second authenticated fetch | `backend/Code.gs:622-624` |
+| AssemblyScreen already gates test entry on `document.fullscreenElement` (`isFullscreen && hasCamera`); TestScreen already listens for `fullscreenchange` and silently logs `fullscreen_exit` (INTEG-04) but does nothing to stop or penalize it | `assessment-app/src/components/AssemblyScreen.tsx:16-144`, `TestScreen.tsx:306-318` |
+| Question content is generated by a Python ingestion pipeline (`ingestion/run.py` etc.) into an embedded `const QUESTIONS = [...]` array inside `Code.gs` itself (19k+ lines) — there is no external JSON `Code.gs` loads at runtime | `backend/Code.gs:791-793`, `ingestion/*` |
 
-SERVER (API / Application Layer)
-- Attempt/Identity Guard (1 attempt per email)
-- Test Assembly Engine (quota sampling per category/level)
-- Grading & Scoring Engine (server-only, never exposed)
-- Integrity Event Aggregator (log only, no live blocking)
-- Reporting Service (shared: candidate report == recruiter detail view)
-
-        |
-        v
-
-DATA LAYER (server-side only)
-- Question Bank (content, category, level)
-- Answer Keys (never joined into any client response)
-- Attempts (assigned item set, timing)
-- Results (scores, tier, narrative insight)
-- Events (violation log)
-
-        ^
-        | one-time / admin-triggered ingestion
-        |
-OFFLINE: Content Ingestion Pipeline (build-time/CLI)
-.docx / .xlsx source -> parse -> normalize -> validate -> load
-```
-
-### Component Responsibilities
-
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|-------------------------|
-| Content Ingestion Pipeline | One-time/rare transform of authored `.docx`/`.xlsx` question banks into structured, validated, answer-keyed rows in the content store | A CLI/admin script (Node/TS): `mammoth` or `docx4js` to extract docx text+structure, `exceljs`/`xlsx` to read the quota spreadsheet, a normalizer that maps checkmark/checkbox markers to `isCorrect` flags, and a validator that fails loudly on malformed items before they ever reach the DB |
-| Question Bank (content store) | Canonical store of all ~375 authored items: text, options, category, level/case grouping, difficulty tier, and answer key | Relational DB (Postgres) with `questions`, `options` (with `is_correct`), `cases`/`dashboards` (for multi-tab Attention-to-Detail/Critical-Thinking scenarios) tables |
-| Test Assembly Engine | Given an attempt, draws a random quota-based subset per category/level from the full bank (~50 of 375) and freezes it as that attempt's fixed item set | Server-side service seeded per-attempt; persists the assigned question ID list + order to the `attempts` table so it is never re-derived or trusted from the client |
-| Attempt/Identity Guard | Enforces "one official attempt per email," creates/looks up the attempt record, tracks start time and deadline | Server-side check on submit of name+email before assembly is invoked; unique constraint on `attempts.email` (or hashed email) |
-| Candidate-facing Test UI | Renders the gamified experience: level progression bar across the 3 banks-as-levels, per-question countdown, dashboard tabs for case questions, live point/score reveal | SPA/SSR frontend (React-based) driven purely by the sanitized question payload the server returns (never the answer key) |
-| Grading & Scoring Engine | Deterministically grades raw answers against the server-held answer key, computes per-category raw scores, then maps those into the 3 trait scores + narrative "out-of-the-box thinking" insight + recommendation tier | Pure server-side module invoked once atomically on submit; stateless/deterministic function of `(assigned question IDs, submitted answers, answer key)` so re-running it is idempotent and auditable |
-| Integrity Monitor (client) | Silently logs tab-switch/blur count+duration, copy/paste attempts, devtools-open heuristic, fullscreen-exit count, right-click blocking, and on-device webcam face-presence/face-count — never interrupts the candidate | Browser event listeners (`visibilitychange`, `fullscreenchange`, `copy`/`paste`/`cut`, `contextmenu`, devtools-size heuristics) + an in-browser face-detection model (e.g., a lightweight WASM/TF.js model) running on live video frames, never uploading raw video |
-| Integrity Event Aggregator | Receives periodic event batches from the client, stores raw counts, and derives a violation summary per attempt (flag if above threshold) | A dedicated ingest endpoint keyed by attempt ID, decoupled from the answer-submission endpoint so integrity logging can never block or leak grading data |
-| Reporting Service | Produces the single report data shape consumed identically by candidate and recruiter views: overall score, 3 trait scores, narrative insight, recommendation tier, integrity summary | A read model built once at grading time and persisted as an immutable `results` row — both UIs are pure read-only projections of that row, guaranteeing candidate/recruiter parity |
-| Recruiter Admin Panel | Lists all candidates (name, email, date, score, violation count) and opens into the same shared report component for detail, with visible flags for multi-violation candidates | Authenticated internal-only UI/route; reads `attempts` + `results` joined, no separate scoring/report logic of its own |
-
-## Recommended Project Structure
+## System Overview (v1.1)
 
 ```
-src/
-  ingestion/            offline/admin-only content pipeline (not part of runtime request path)
-    parsers/              docx + xlsx readers (mammoth, exceljs)
-    normalize.ts          maps checkmark/checkbox markers -> structured answer keys
-    validate.ts           schema + completeness checks before DB load
-    load.ts               writes questions/options/cases into the content store
-  content/              question bank domain logic (read-mostly)
-    schema/                 DB models: questions, options, cases, categories, levels
-    repository.ts           query interface used by assembly engine only
-  assembly/             test-assembly engine
-    quota-config.ts         per-category/level quotas (from FS QB Pattern.xlsx)
-    sampler.ts               random draw honoring quotas, no repeats within attempt
-    attempt-manifest.ts      persists assigned question IDs + order per attempt
-  attempts/             attempt lifecycle & identity guard
-    start.ts                 name+email intake, one-attempt-per-email enforcement
-    session.ts               timing, deadline, submission-window validation
-    submit.ts                receives answers, hands off to grading (never touches keys directly)
-  grading/              deterministic scoring -- most security-sensitive module
-    grade.ts                 raw per-question correctness against answer key
-    score-mapping.ts         raw category scores -> 3 trait scores
-    recommendation.ts        trait scores -> tier (Strong Fit / Consider / Not Recommended)
-    narrative-insight.ts     derives "out-of-the-box thinking" from hardest-tier items
-  integrity/            split client/server
-    client/                  event listeners + on-device face-detection runner
-    server/                  ingest endpoint + violation-summary aggregation
-  reporting/            shared report data + view, consumed by both candidate & recruiter UIs
-    build-report.ts
-    ReportView.tsx (or equivalent shared component)
-  admin/                recruiter-only surface
-    candidate-list.ts
-    candidate-detail.ts      thin wrapper around reporting/ReportView
-  api/                  HTTP boundary -- this is where answer-key sanitization is enforced
-    attempt-start.ts
-    attempt-submit.ts
-    integrity-events.ts
-    report.ts
+CLIENT (Candidate Browser, static export on GitHub Pages)
+┌─────────────────────────────────────────────────────────────────────┐
+│ WelcomeScreen → AssemblyScreen (fullscreen+camera gate)              │
+│   → TestScreen (fullscreen-LOCK enforcement — NEW)                   │
+│   → ThankYouScreen (NEW — replaces immediate ReportScreen)           │
+│                                                                        │
+│ Admin: /admin (token login) → Candidate table + AnalyticsPanel (NEW)  │
+└───────────────────────────┬────────────────────────────────────────┘
+                             │ HTTPS fetch() — action-routed JSON, no server push possible
+                             ▼
+GOOGLE APPS SCRIPT WEB APP (backend/Code.gs — single doGet/doPost router)
+┌─────────────────────────────────────────────────────────────────────┐
+│ doPost(submitAnswers)  →  FAST PATH (MODIFIED):                      │
+│   validate attempt, freeze answers, write PendingGrading row,        │
+│   set Attempts.Status="pending_grading", RETURN IMMEDIATELY          │
+│                                                                        │
+│ processGradingQueue()  →  NEW time-driven trigger (every 5 min):     │
+│   LockService.tryLock() → drain PendingGrading (small batch)         │
+│   → gradeAndFinalizeAttempt() [extracted from old handleSubmitAnswers]│
+│   → evaluateOpenTextBatch() [UNCHANGED, existing LLM call]           │
+│   → write final Attempts columns → Status="graded"                   │
+│   → sendCandidateReportEmail() + sendRecruiterNotificationEmail()    │
+│      [NEW, MailApp.sendEmail] → Status="emailed"                     │
+│   → on failure: increment retry, cap at N, Status="grading_failed"   │
+│                                                                        │
+│ doGet(adminAnalytics)  →  NEW: on-demand aggregation over            │
+│   Attempts + Responses + IntegrityLogs (no precompute in v1.1)       │
+└───────────────────────────┬────────────────────────────────────────┘
+                             ▼
+GOOGLE SHEETS (single spreadsheet, tab-per-table)
+  Attempts (MODIFIED: Status enum extended)
+  Responses (unchanged schema)
+  IntegrityLogs (unchanged schema)
+  PendingGrading (NEW — async job queue)
 ```
 
-### Structure Rationale
+## Component Responsibilities
 
-- **`ingestion/` is isolated from the runtime path:** it only ever runs as an admin/CLI step against source docs, never in a candidate-facing request. Keeping it separate prevents accidental coupling between "one-time content authoring" concerns and "per-attempt serving" concerns.
-- **`grading/` is the most sensitive module and is kept server-only, dependency-light, and pure:** given the constraint that answer keys must never reach the client, this module should have the smallest possible surface area and be unit-testable purely with fixture data (question set + answers in, score object out) — no HTTP, no DB writes inside the core scoring functions themselves.
-- **`api/` is the explicit sanitization boundary:** every response that could theoretically contain a `correct`/`isCorrect` flag or point-weight must be stripped exactly once, at this layer, so there is a single reviewable place where "does this JSON contain answer-key data?" can be audited.
-- **`reporting/` is shared, not duplicated per role:** candidate and recruiter views must be provably identical, so both call the same `build-report.ts`/`ReportView` rather than each re-deriving scores or narrative text.
-- **`integrity/client` vs `integrity/server` are split because the trust boundary matters:** the client only ever emits aggregated events/counts (never raw video, never a "should I flag this" decision) and the server owns all thresholding/flagging logic, so tampering with the client cannot suppress or fabricate what actually gets stored.
+| Component | Responsibility | New / Modified |
+|-----------|-----------------|-----------------|
+| `backend/Code.gs :: handleSubmitAnswers` | Validate + freeze candidate answers, enqueue for grading, return immediately | **Modified** (slimmed from ~215 lines to ~30) |
+| `backend/Code.gs :: gradeAndFinalizeAttempt(attemptRowIdx, attemptRow, frozenIds, candidateAnswers)` | The extracted grading body (deterministic + LLM call + tier/narrative + Attempts row write) — same logic, new caller | **New** (extracted, not rewritten — de-risks the refactor) |
+| `backend/Code.gs :: processGradingQueue` | Time-driven trigger entrypoint: drain `PendingGrading`, call `gradeAndFinalizeAttempt`, send emails, handle retries | **New** |
+| `backend/Code.gs :: ensureGradingTrigger` | One-time idempotent trigger installer (checks `ScriptApp.getProjectTriggers()` before creating) — run manually once from the Apps Script editor after deploy | **New** |
+| `backend/Code.gs :: sendCandidateReportEmail / sendRecruiterNotificationEmail` | `MailApp.sendEmail` templates | **New** |
+| `backend/Code.gs :: handleAdminAnalytics` | On-demand aggregation (score trends, question difficulty, violation patterns) over existing sheets | **New** |
+| `PendingGrading` sheet | Durable async job queue, decoupled from the fixed-index `Attempts` row layout | **New** |
+| `assessment-app/src/components/ThankYouScreen.tsx` | Post-submit screen; tells candidate to check email; no polling by default | **New** |
+| `assessment-app/src/app/page.tsx` | Screen state machine: add `'thankyou'` state, stop awaiting a report from `submitAnswers` | **Modified** |
+| `assessment-app/src/app/admin/page.tsx` | Handle new Status values (`pending_grading`/`graded`/`emailed`/`grading_failed`) in status badge + "View Report" gating; host `AnalyticsPanel` | **Modified** |
+| `assessment-app/src/components/AnalyticsPanel.tsx` | Renders `adminAnalytics` response: trend chart, question-difficulty table, violation breakdown | **New** |
+| `tests/grading/grading-engine.ts` | Deterministic + LLM-mirrored grading, now accepts injected `llmResults` instead of hardcoding `open_text` correct | **Modified (F-03)** |
+| `tests/grading/fixtures/*.json` | Shared golden test cases for grading behavior | **New** |
+| `scripts/check-grading-sync.mjs` (or `tests/grading/check-sync.mjs`) | CI script diffing GRADE-0n threshold/narrative constants between `Code.gs` and `grading-engine.ts` | **New** |
+| `.github/workflows/test.yml` | New CI job: `npm ci && npm test && npm run test:sync` on every PR | **New** |
+| `frontend/` (`app.js`, `index.html`, `style.css`) | Dead legacy vanilla-JS build, superseded by `assessment-app/` | **Deleted** |
+| `assessment-app/src/components/TestScreen.tsx` | Fullscreen-exit handling upgraded from silent-log to blocking re-entry gate | **Modified** |
 
 ## Architectural Patterns
 
-### Pattern 1: Server-Authoritative Test Assembly with Frozen Attempt Manifest
+### Pattern 1: Split-phase submit — "enqueue fast, grade slow" (answers question a)
 
-**What:** On attempt start, the server randomly samples the quota-based subset from the full question bank and persists that exact set of question IDs (with order) against the attempt record. The client only ever receives the sanitized content for that frozen set — it never receives, generates, or re-derives the sample itself.
-**When to use:** Any scenario where "randomized per-attempt content" must also be tamper-proof and where answer keys must stay server-side (this is the core requirement here).
-**Trade-offs:** Requires an extra persisted table/row per attempt (small storage cost) but is the only way to guarantee the same random draw is used consistently for serving questions, validating submitted answers, and grading — without this, a client could submit answers for questions it was never actually shown, or the server could accidentally grade against a different random draw than what was served.
+**What:** `doPost(submitAnswers)` does the minimum possible work synchronously (row lookup + validation + one `appendRow` to a queue sheet + one status write), then returns. All grading — including the LLM calls, which are the only genuinely slow/unreliable part — moves into a function called only by a time-driven trigger.
 
-**Example:**
-```typescript
-// assembly/attempt-manifest.ts
-async function startAttempt(email: string) {
-  await assertNoExistingAttempt(email); // one-attempt-per-email guard
-  const manifest = sampleByQuota(QUOTA_CONFIG); // e.g. 15 English, 20 AttentionToDetail, 15 CriticalThinking
-  const attempt = await db.attempts.create({ email, questionIds: manifest, startedAt: now() });
-  return sanitize(await getQuestions(manifest)); // strips isCorrect / answer-key fields
+**Why this is the minimal-risk shape for Apps Script specifically:**
+- Apps Script has **no event-driven "trigger on programmatic sheet write"** mechanism usable here: `onEdit`/`onFormSubmit`-style installable triggers do not reliably fire for edits made by the same script's own `SpreadsheetApp` calls (they're designed for direct end-user spreadsheet edits or actual Google Form submissions — neither applies to a Web App `doPost`). **Time-driven (`ScriptApp.newTrigger(...).timeBased().everyMinutes(N)`) is the standard, documented Apps Script pattern for "do this work outside the request/response cycle."** Do not attempt an `onEdit` trigger here — it's a dead end for this platform.
+- Reuses the *exact* existing grading logic (`gradeAndFinalizeAttempt` is an extraction, not a rewrite) — the highest-risk part of this milestone (touching scoring/narrative/tier logic) is explicitly avoided; only the *caller* changes.
+- A new `PendingGrading` sheet — rather than new columns bolted onto `Attempts` — is deliberate: `Code.gs` reads/writes `Attempts` almost entirely by **numeric column index** (`data[i][7]`, `getRange(attemptRowIdx, 8, 1, 4)`, etc.) in half a dozen functions. Inserting a new column into `Attempts` risks silently shifting every one of those indices. A separate queue sheet has zero blast radius on existing index-based code; only `Attempts.Status` (column F, existing) gains new enum values.
+
+**Status lifecycle (Attempts.Status, column F):**
+```
+active → pending_grading → graded → emailed        (happy path)
+                         ↘ grading_failed            (after N retries — needs manual recruiter attention)
+```
+
+**Trade-offs:** Candidate never sees their score in-browser unless you also build (ii) below — acceptable and *recommended* per the "minimal risk" framing, and it sidesteps re-opening the exact class of bug F-01 just closed (see Pattern 2). Trigger polling interval (recommend 5 min) means worst-case candidate wait for email is ~5–10 min after submit, which is fine for an async/emailed report.
+
+**Example (sketch, not final code):**
+```javascript
+// MODIFIED — was ~215 lines, now enqueue-and-return
+function handleSubmitAnswers(attemptId, candidateAnswers) {
+  const attemptRowIdx = findAttemptRow(attemptId); // existing lookup, extracted
+  if (attemptRowIdx === -1) return { success: false, error: "Attempt not found" };
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.getSheetByName("PendingGrading").appendRow([
+    attemptId, JSON.stringify(candidateAnswers), new Date().toISOString(), 0, ""
+  ]);
+  ss.getSheetByName("Attempts").getRange(attemptRowIdx, 5, 1, 2)
+    .setValues([[new Date().toISOString(), "pending_grading"]]); // E:F
+  return { success: true, status: "pending_grading" };
+}
+
+// NEW — trigger entrypoint, batches to respect the 6-min execution limit
+function processGradingQueue() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return; // another run still in progress
+  try {
+    const queue = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("PendingGrading");
+    const rows = queue.getDataRange().getValues().slice(1, 6); // cap batch size
+    rows.forEach(row => { /* gradeAndFinalizeAttempt + email + dequeue, with try/catch + retry-count */ });
+  } finally { lock.releaseLock(); }
 }
 ```
 
-### Pattern 2: Deterministic Grading as a Pure, Idempotent Function
+### Pattern 2: Email is the sole delivery channel — no new unauthenticated read path (answers question b)
 
-**What:** Grading is expressed as a pure function of `(assignedQuestionIds, submittedAnswers, answerKeySnapshot)` that always produces the same score for the same inputs — no LLM, no human step, no hidden mutable state.
-**When to use:** Whenever the product decision is "100% objective, deterministic auto-grading" (explicitly required here) — this pattern makes the grading logic independently testable against fixtures and auditable/re-runnable if a bug is later found (re-grade historical attempts without re-collecting answers).
-**Trade-offs:** Requires locking down the answer-key format early (MCQ/multi-select only, no partial-credit ambiguity) — but that constraint is already satisfied by the existing authored content, so this is a natural fit rather than a limitation.
+**What:** `ThankYouScreen.tsx` tells the candidate to check their email and does **not** poll a status endpoint by default.
 
-**Example:**
-```typescript
-// grading/grade.ts
-function gradeAttempt(assigned: Question[], answers: Record<string, string[]>): CategoryScores {
-  return assigned.reduce((scores, q) => {
-    const correct = isExactMatch(q.correctOptionIds, answers[q.id] ?? []);
-    scores[q.category].raw += correct ? q.points : 0;
-    scores[q.category].max += q.points;
-    return scores;
-  }, initCategoryScores());
-}
-```
+**Why (this is the opinionated call, not a coin-flip):** `handleGetAttemptReport` currently requires `ADMIN_TOKEN` — a shared secret candidates never have. Building "poll for completion, then show the report in-tab" requires *either* (a) a new unauthenticated-by-attemptId endpoint (this literally reopens the vulnerability class F-01 just fixed: "any attempt ID can retrieve any candidate's report" — the milestone's own project history flags this as a known risk pattern), or (b) minting a new per-attempt, unguessable candidate token at `startAttempt` time, storing it in a new `Attempts` column, and building a second auth path parallel to `ADMIN_TOKEN`. Both are real scope additions to a feature whose actual requirement (per `PROJECT.md`) is "email delivered" — not "live in-tab reveal." Ship the email-only version first.
 
-### Pattern 3: Non-Blocking, Batched Client-Side Integrity Telemetry
+**If live in-tab reveal becomes a hard requirement later:** implement (b) — per-attempt random token (`Utilities.getUuid()`), a new `PendingGrading`/`Attempts` column, a new `checkGradingStatus(attemptId, attemptToken)` doGet action validated against that per-row token (never the shared `ADMIN_TOKEN`), and `ThankYouScreen` polls it every ~10–15s for a bounded window (e.g. 5 min) before falling back to "check your email." Flag this explicitly as a separate, security-sensitive roadmap item — do not bundle it into the base async-flow phase.
 
-**What:** All integrity signals (tab/blur, copy/paste, devtools, fullscreen-exit, right-click, on-device face presence) are captured via passive browser event listeners and an in-browser face-detection loop, buffered client-side, and flushed to the server periodically (e.g., every N seconds or on question-change) — never surfaced to the candidate and never blocking progression.
-**When to use:** Any "silent monitoring, no live interruption" requirement, especially where the underlying signals (Page Visibility API, Fullscreen API, Clipboard events) are all standard, well-supported browser APIs rather than anything proprietary.
-**Trade-offs:** Because signals are only heuristic (e.g., devtools-open detection is inherently a size/timing heuristic, not a guaranteed API), the aggregator should treat all of it as advisory "violation signal," feeding a count/flag rather than an automatic disqualification — matching the project's own framing of "logged, not blocking."
+### Pattern 3: On-demand analytics aggregation, no precompute (answers question c)
 
-**Example:**
-```typescript
-// integrity/client/monitors.ts
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) buffer.push({ type: "tab_blur_start", t: Date.now() });
-  else buffer.push({ type: "tab_blur_end", t: Date.now() });
-});
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) buffer.push({ type: "fullscreen_exit", t: Date.now() });
-});
-document.addEventListener("copy", (e) => { e.preventDefault(); buffer.push({ type: "copy_attempt", t: Date.now() }); });
-```
-*(Page Visibility, Fullscreen, and Clipboard APIs verified against MDN — see Sources.)*
+**What:** `handleAdminAnalytics(token)` reads `Attempts` + `Responses` + `IntegrityLogs` fresh on every admin panel load and aggregates in memory (score trend by date bucket, per-question/category pass rate via `QUESTIONS` lookup, violation-type frequency).
 
-## Data Flow
+**Why:** This is a low-volume internal hiring tool (tens to low hundreds of attempts, not a multi-tenant SaaS) — `getDataRange().getValues()` over three sheets of that size is sub-second in Apps Script. Precomputing into a "Summary" tab (updated by `processGradingQueue`) or caching via `CacheService` adds real complexity (cache invalidation, a second write path, `CacheService`'s 100KB-per-key limit for larger aggregate blobs) for no measured benefit yet.
 
-### Request Flow — Attempt Lifecycle
+**When to revisit:** only once attempt volume is measured in the thousands and admin-panel load time is actually observed to be slow. At that point, the *cheapest* upgrade is a `CacheService.getScriptCache().put("admin_analytics", json, 300)` wrapper around the existing pure `handleAdminAnalytics` — the function's contract doesn't need to change, only its caller gets a cache-check added in front of it. Design `handleAdminAnalytics` as a pure function of sheet data now specifically so this upgrade path stays cheap.
+
+**Trade-off accepted:** every admin panel load/refresh re-scans `Responses` (which grows ~50 rows per candidate). Fine at hiring-tool scale; would need revisiting only at high volume.
+
+### Pattern 4: Fixture-driven anti-drift via the existing GRADE-0n marker convention (answers question d)
+
+**What:** Both `Code.gs` and `grading-engine.ts` already annotate their scoring logic with matching `// GRADE-01` … `// GRADE-05` comments. Use this as the shared contract instead of inventing a new one:
+
+1. **Fix F-03 first, in isolation:** change `gradeAttempt`'s signature to accept an `llmResults?: Record<string, boolean | "FAILED">` parameter and replicate `Code.gs`'s exact cascade (`isCorrect = llmResults[qId] === true`, with hybrid = `mcqCorrect && textCorrect`) rather than a simplified version — the mirror's whole purpose is to test the *exact* production behavior, including the "fail open to correct" safety fallback in `evaluateOpenTextBatch`.
+2. **Add `tests/grading/fixtures/*.json`:** input questions + candidate answers + mocked `llmResults` + expected `GradeResult`, so the same scenarios (LLM says correct / incorrect / call-fails-so-fallback-true / hybrid mcq+text) are named and reviewable independent of the TS test file.
+3. **Add a CI sync-check script** (new `scripts/check-grading-sync.mjs`) that extracts the numeric thresholds (`80`/`75`/`75`, `60`, `0.25`, `0.6`) and narrative string literals from both files, bounded by the `GRADE-0n` markers, and fails the build if they diverge. This is crude (text/regex extraction, not an AST diff) but achievable without any GAS-side tooling — `Code.gs` cannot be `import`ed into Node, so a textual/marker-based check is the pragmatic ceiling here, not a compromise.
+4. **New CI workflow** `.github/workflows/test.yml` (there is currently **no** test-running CI at all — this is a gap, not just missing content): `npm ci && npm test && node scripts/check-grading-sync.mjs` on every PR touching `backend/Code.gs` or `tests/grading/**`.
+5. **F-04 admin-auth tests:** `Code.gs`'s auth checks are one-line (`token !== ADMIN_TOKEN`) and not independently unit-testable without `clasp`+a GAS test shim. Recommended minimum: mirror the check itself into a tiny pure function (same pattern as `grading-engine.ts`) so it's unit-testable, *and* treat true end-to-end auth verification as an integration-test concern (a Node script hitting a deployed test Web App with valid/invalid tokens) — flag this as a phase-planning decision rather than solving it silently, since it's the one item here that doesn't have a clean Apps-Script-native answer.
+
+### Pattern 5: Fullscreen "lock" = detect-and-gate, not prevent (client-side constraint, no server role)
+
+**What:** The Fullscreen API spec **does not allow JavaScript to prevent a user-initiated exit** (Esc key, browser chrome) — this is a deliberate browser security guarantee and cannot be defeated from client code. "Lock fullscreen-exit toggling" therefore cannot mean literal prevention; it must mean **immediate detection + a hard blocking gate**, upgraded from today's silent `INTEG-04` log-only behavior in `TestScreen.tsx:306-318`.
+
+**Recommended shape:** on `fullscreenchange` with `!document.fullscreenElement`, in addition to the existing `silentLog('fullscreen_exit', ...)`, pause the test timer and render a full-viewport blocking overlay ("Fullscreen was exited — click to resume") whose button click (a real user gesture, required by the API) calls `requestFullscreen()` again. Escalate the violation weight for this specific event type in the existing violation-count column so admin panel flagging (`hasViolations = row.violationCount >= 3`, `admin/page.tsx:337`) reflects it appropriately — no backend schema change needed, this reuses the existing `IntegrityLogs`/violation-count plumbing (`handleLogIntegrity`, `backend/Code.gs:384-405`) as-is.
+
+## Data Flow — Async Job Lifecycle (the core new flow)
 
 ```
-Candidate enters name+email
-  -> Attempt/Identity Guard (reject if email already attempted)
-  -> Test Assembly Engine queries Question Bank (quota sample)
-  -> Attempt Manifest persisted (question IDs + order, server-side)
-  -> Sanitized question payload served to client (no answer keys, no point weights tied to options)
-  -> Candidate answers + Integrity Monitor run in parallel
-       - Answers buffered/synced per question
-       - Event batches flushed to Integrity Aggregator
-  -> Submit -> Grading & Scoring Engine (looks up Answer Keys, server-only)
-  -> Result persisted: overall score, 3 trait scores, narrative insight, recommendation tier
-  -> Reporting Service builds shared report row (joins Result + Integrity Summary)
-       - Candidate sees report immediately
-       - Recruiter Admin Panel lists attempt, opens same report
+1. Candidate clicks Submit (TestScreen)
+      │  POST action=submitAnswers { attemptId, answers }
+      ▼
+2. Code.gs doPost → handleSubmitAnswers [MODIFIED, now fast]
+      - validate attempt is "active"
+      - PendingGrading.appendRow([attemptId, JSON(answers), now, 0, ""])
+      - Attempts row: EndTime=now, Status="pending_grading"
+      - return { success:true, status:"pending_grading" }   ← ~100-300ms, no LLM call
+      ▼
+3. page.tsx.handleTestSubmit [MODIFIED]
+      - clears localStorage session (as today)
+      - screen = 'thankyou'  (NEW ThankYouScreen, no report shown)
+      ▼
+4. (up to ~5 min later) processGradingQueue fires [NEW time-driven trigger]
+      - LockService guard
+      - reads PendingGrading batch (cap ~5-10 rows/run to respect 6-min execution ceiling)
+      - for each row → gradeAndFinalizeAttempt(...) [EXTRACTED, same logic as old inline path]
+          - evaluateOpenTextBatch(...) [UNCHANGED — Gemini → fallback → safe-true cascade]
+          - writes Attempts H:K (scores), M:N (tier, narrative) [UNCHANGED write shape]
+          - Attempts.Status = "graded"
+      - sendCandidateReportEmail(report)   [NEW — MailApp, full report inline in email body]
+      - sendRecruiterNotificationEmail(report, violationSummary) [NEW — MailApp, to a
+        PropertiesService-configured recipient list, NOT hardcoded like ADMIN_TOKEN is today]
+      - Attempts.Status = "emailed"
+      - PendingGrading row removed
+      - on any thrown error: retry-count++ on the PendingGrading row; after N (e.g. 3) failures,
+        Attempts.Status = "grading_failed" + one alert email to recruiters, row removed from
+        active queue so it stops being retried forever
 ```
 
-### Key Data Flows
-
-1. **Content authoring → serving:** `.docx`/`.xlsx` → Ingestion Pipeline → Question Bank (one-way, admin-triggered, rare — not a live user-facing flow). This must complete and be validated *before* any candidate-facing flow can work, since the Test Assembly Engine depends entirely on a populated, validated bank.
-2. **Assembly → grading consistency:** the exact question ID set frozen in the Attempt Manifest at start-time is the same set used to (a) serve sanitized content, (b) validate submitted answers belong to this attempt, and (c) grade — a single source of truth prevents any mismatch or tampering window.
-3. **Integrity events are one-directional and decoupled from grading:** the client never learns whether a violation was "counted" or what the threshold is; the aggregator only ever writes forward into the attempt's violation log, and the Reporting Service reads that log after the fact — this keeps the "never interrupt the candidate" requirement structurally true rather than just a UI convention.
-4. **Reporting is a pure read projection, not a computation site:** both candidate and recruiter views fetch the same persisted `results` row; no scoring or narrative-generation logic should live in either UI, only in the Grading & Scoring Engine that ran once at submit time.
-
-## Scaling Considerations
-
-This is an internal hiring tool (not a public product), so realistic load is low (likely tens to low hundreds of candidates at a time, bursty around hiring pushes) — architecture should optimize for **correctness and security of the answer-key boundary**, not throughput.
-
-| Scale | Architecture Adjustments |
-|-------|--------------------------|
-| 0–1k attempts | Single monolithic app + single relational DB instance is more than sufficient. No queueing, no microservices needed. Focus all effort on the sanitization boundary and deterministic grading correctness. |
-| 1k–100k attempts | Add indexes on `attempts.email`/`attempts.status`; consider read-replicas for the Admin Panel's candidate-list query if it starts joining large `results`/`events` tables; batch/rate-limit the integrity-event ingest endpoint if event volume grows. |
-| 100k+ attempts | Unlikely for this project's use case, but if ever needed: separate the Integrity Event Aggregator into its own append-only store (time-series or log-oriented) since violation-event volume grows much faster than attempt volume, and it's the component least coupled to the transactional grading path. |
-
-### Scaling Priorities
-
-1. **First (and likely only relevant) bottleneck:** Admin Panel candidate-list query performance once `attempts`/`results`/`events` accumulate — mitigate with a denormalized "attempt summary" row (score, violation count) written once at grading time so the list view never has to aggregate on read.
-2. **Second (unlikely to matter at this scale):** Integrity event ingest write volume if face-detection runs and reports at high frequency — mitigate by batching client-side flushes (e.g., every 5–10s) rather than one HTTP call per event.
+**Failure-mode note:** because the whole grading step now runs *outside* the HTTP request/response cycle, a transient LLM API failure no longer corrupts the candidate's UX (no more "the page hung / errored on submit") — it just delays their email by one more trigger cycle, bounded by the retry cap.
 
 ## Anti-Patterns
 
-### Anti-Pattern 1: Sending the Full Question Object (Including Answer Key) and Filtering Client-Side
+### Anti-Pattern 1: Adding columns into the middle of `Attempts`
+**What people do:** insert a new "GradingStatus" or "AnswersJSON" column into `Attempts` between existing columns.
+**Why it's wrong:** `Code.gs` reads/writes this sheet by **hardcoded numeric index** in `handleStartAttempt`, `handleCheckAttempt`, `handleLogIntegrity`, `handleSubmitAnswers`, `handleGetAttemptReport`, `handleAdminListCandidates` — six call sites, all currently correct only because the layout is stable. A misplaced insert silently shifts every one of them with no compile-time signal (GAS has no type-checked sheet schema).
+**Instead:** append new columns only at the end of `Attempts` if truly needed, or — as recommended here — use a separate `PendingGrading` sheet for the new async machinery so `Attempts`'s existing index map is untouched except for new *values* in the existing `Status` column.
 
-**What people do:** Return the full question row — including `isCorrect`/`correctOptionId`/point weights — from the API and rely on the frontend to simply not *display* the correct answer.
-**Why it's wrong:** Anyone can read the network response in DevTools and see the answer key; this is the single most common and most damaging mistake in auto-graded assessment platforms, and directly violates this project's explicit "answer keys must never be exposed to the candidate-facing client" constraint.
-**Do this instead:** Strip answer-key fields at the API boundary (`api/attempt-start.ts` in the recommended structure) before serialization — never at the component/render layer. Treat "does this endpoint's response contain any correctness data" as a mandatory code-review/test checklist item.
+### Anti-Pattern 2: Polling as the primary delivery mechanism
+**What people do:** build client-side polling as the main way candidates learn their result, treating email as a backup.
+**Why it's wrong:** requires a new unauthenticated-by-attemptId (or new per-attempt-token) read path — directly working against the F-01 hardening just shipped, and it's dead weight for the ~100% of candidates who close the tab before grading finishes (this is explicitly a "candidate may leave" flow per `PROJECT.md`'s async constraint).
+**Instead:** email is the delivery mechanism; polling (if ever added) is a nice-to-have UX layer on top, gated behind its own token design (Pattern 2 above).
 
-### Anti-Pattern 2: Re-Deriving the Random Question Sample or Trusting Client-Reported Timing
-
-**What people do:** Let the client pick/shuffle its own random subset of questions (needing the full bank client-side to do so), or trust a client-reported elapsed time / submission timestamp for grading deadlines.
-**Why it's wrong:** Either the client ends up holding the full answer-keyed bank (defeats the entire security model), or a manipulated client clock/timer can extend time limits or replay/tamper with submissions.
-**Do this instead:** Assembly always happens server-side and is frozen per attempt (Pattern 1). All timing (start, deadline, submission acceptance) is validated against server-side timestamps; the client-shown countdown is cosmetic only.
-
-### Anti-Pattern 3: Continuous Webcam Recording/Upload for "Proctoring"
-
-**What people do:** Stream or periodically upload raw webcam frames/video to a server or third-party vision API for "face verification."
-**Why it's wrong:** Directly contradicts this project's explicit constraints (no paid cloud vision API, no continuous recording/storage) and creates unnecessary privacy/compliance/storage burden for a low-stakes internal screening tool.
-**Do this instead:** Run face-presence/face-count detection entirely on-device using a lightweight in-browser model; only transmit small aggregated signals (e.g., "no-face-detected seconds," "multiple-faces-detected count") — never raw frames or video.
-
-### Anti-Pattern 4: Duplicating Scoring/Narrative Logic Between Candidate and Recruiter Views
-
-**What people do:** Build the candidate results page and the recruiter detail page as two separate implementations that each independently compute or format scores.
-**Why it's wrong:** Guarantees eventual drift (a bug fix or scoring-model tweak applied to one but not the other), directly undermining the explicit requirement that both views show "the same report."
-**Do this instead:** One Reporting Service builds a single immutable report data shape at grading time; both UIs are thin, read-only renderers of that same shape (Pattern in `reporting/` structure above).
+### Anti-Pattern 3: Rewriting `grading-engine.ts`'s open-text logic instead of mirroring `Code.gs`'s cascade
+**What people do:** "fix" F-03 by making open-text grading in the mirror always call a mocked LLM and always return the mock's answer, ignoring `Code.gs`'s actual fail-open-to-`true` safety fallback when both API keys are missing/failing.
+**Why it's wrong:** the mirror's entire purpose is catching *production* drift. A simplified mirror that doesn't replicate the fallback cascade will pass tests while `Code.gs`'s real behavior diverges from it — the same failure mode F-03 already describes, just moved one level deeper.
+**Instead:** parameterize `gradeAttempt` to accept the same `qId -> true | false | "FAILED"` shape `evaluateOpenTextBatch` actually produces, and test all three states plus the fallback path explicitly.
 
 ## Integration Points
 
@@ -238,40 +226,42 @@ This is an internal hiring tool (not a public product), so realistic load is low
 
 | Service | Integration Pattern | Notes |
 |---------|---------------------|-------|
-| None required for grading/assembly/reporting | N/A | Entire scoring pipeline is self-contained and deterministic by design — no external API dependency, which also means no external outage risk for the core hiring-decision path |
-| On-device face-detection model | Bundled/CDN-loaded JS/WASM model (e.g., a lightweight browser-based face detector), loaded once client-side | Not a network service at inference time — the model runs entirely in the browser using the local webcam stream via `getUserMedia`; only aggregated signals are sent to the server, never frames |
-| Source content files (.docx/.xlsx) | One-time/rare offline ingestion, not a live integration | Treat as a build-time/admin-time input, versioned so re-ingestion is auditable if the source docs are revised |
+| Gemini API (`gemini-1.5-flash`) | `UrlFetchApp.fetchAll`, key from `PropertiesService`, called from `evaluateOpenTextBatch` | **Unchanged** by this milestone — only its *caller* moves from inline `doPost` to `processGradingQueue` |
+| OpenCode/OpenRouter fallback LLM | Same pattern, `FALLBACK_API_KEY` from `PropertiesService` | Unchanged |
+| `MailApp.sendEmail` (candidate + recruiter notification) | New, called only from `processGradingQueue` | Google Workspace/consumer accounts have daily send quotas (100/day consumer, 1500/day Workspace-class) — trivial at this project's expected volume, but worth a comment in code since it's a hard ceiling with no graceful backoff built into `MailApp` |
+| GitHub Pages (static hosting) | `output: 'export'`, `basePath: "/FS-assessment"`, deployed via `.github/workflows/deploy.yml` | Unaffected by this milestone; new `AnalyticsPanel`/`ThankYouScreen` are just more static-exported React components |
 
 ### Internal Boundaries
 
 | Boundary | Communication | Notes |
 |----------|---------------|-------|
-| Test Assembly Engine ↔ Question Bank | Direct server-side query/repository call | Never exposed as a client-callable endpoint that returns raw bank contents |
-| Client Test UI ↔ API layer | HTTPS/JSON, sanitized payloads only | This is the critical trust boundary — every payload crossing it must be reviewed for answer-key leakage |
-| Integrity Monitor (client) ↔ Integrity Aggregator (server) | Separate endpoint from answer submission, fire-and-forget batched POSTs | Decoupling prevents integrity logging from ever blocking or interfering with the grading-critical submit path |
-| Grading Engine ↔ Reporting Service | Internal call/event at submit time, writes one immutable `results` row | Reporting never re-computes; it only reads |
-| Recruiter Admin Panel ↔ Reporting Service | Same read path as candidate view, plus an auth/role check | No parallel scoring logic in the admin panel |
+| `assessment-app` (client) ↔ `Code.gs` (server) | `fetch()` to the deployed Web App URL, `action`-routed JSON over GET/POST — no change to this transport in v1.1 | No server push is possible from Apps Script to a static site; this is *why* the email-first design (Pattern 2) is correct, not a workaround |
+| `handleSubmitAnswers` ↔ `processGradingQueue` | Shared `PendingGrading` sheet as the queue/handoff, plus the extracted `gradeAndFinalizeAttempt` function as the shared logic | New coupling introduced by this milestone — keep the extraction faithful (no logic changes) to de-risk |
+| `Code.gs` scoring logic ↔ `tests/grading/grading-engine.ts` | Textual mirror, now enforced by the `GRADE-0n`-marker CI sync-check (Pattern 4) instead of convention alone | This is the one boundary in the whole system with no compiler/type-system backing it — treat the CI check as load-bearing, not optional |
+| `Code.gs` report data ↔ email body ↔ `ReportScreen.tsx` | Currently two independent renderings of "the report" (React component vs. hand-built HTML email string) | Flag for the roadmap: without a shared copy/wording source, the emailed report and on-screen `ReportScreen.tsx` will drift the same way the grading mirror did — worth a lightweight shared constants module (narrative strings, tier labels) if scope allows |
 
-## Suggested Build Order (Dependency-Driven)
+## Build Order Across the 5 Items
 
-1. **Content Ingestion Pipeline + Question Bank schema** — everything else depends on structured, validated, answer-keyed data existing. Nothing else can be meaningfully built or tested without this (~375 items across 3 banks, quota config from the settled `.xlsx`).
-2. **Test Assembly Engine + Attempt data model (server-only, API/script-testable)** — build and test the quota-based random sampler and attempt-manifest persistence against the real bank before any UI exists; this is where the "never leak the answer key" boundary is designed and enforced first.
-3. **Grading & Scoring Engine (deterministic, fixture-testable)** — build against known fixture answer sets independent of any UI; this is the highest-risk-of-rewrite component if scoring rules are wrong, so nail it early with unit tests before layering UI on top.
-4. **Candidate-facing gamified Test UI** — now consumes a stable assembly + grading API; levels/progress bar, per-question timer, dashboard tabs for case questions, and the submit flow.
-5. **Integrity Monitoring (client events + on-device webcam)** — additive and non-blocking by design; can be layered onto the existing test-taking flow without touching assembly/grading, and could even ship in a later phase without risk to the core scoring pipeline.
-6. **Shared Reporting component** — consumes the Grading Engine's persisted `results` row; build once, prove candidate-facing rendering works.
-7. **Recruiter Admin Panel** — thin wrapper: candidate list (reads attempt summaries) + detail (reuses the same Reporting component from step 6). This naturally comes last since it has no logic of its own beyond auth and listing.
+1. **F-06 — Remove `frontend/`.** Zero dependencies, zero risk (confirmed via repo-wide grep — no references outside one false-positive text match). Do it first to clear noise.
+2. **F-03 — Fix `grading-engine.ts` mirror + fixtures.** Must land *before* the async refactor: `processGradingQueue` will call the same `gradeAndFinalizeAttempt` extraction, so you want the mirror already correct and tested against today's (still-synchronous) production behavior — any regression introduced while restructuring `Code.gs`'s control flow is then catchable by tests that already reflect correct open-text semantics.
+3. **F-04 — CI wiring (`test.yml` + sync-check script).** Lands together with #2 — there's currently no test-running CI at all, so this is a real gap, not just missing coverage; do it while F-03's fixtures are fresh.
+4. **Async grading/report flow** (`PendingGrading` sheet, `processGradingQueue`, trigger installer, `doPost` split, `ThankYouScreen`, email templates). The largest structural change; depends on #2 because it reuses the now-verified grading extraction.
+5. **Recruiter analytics dashboard.** Independently buildable, but sequence after #4 so it can rely on the finalized `Status` enum (`pending_grading`/`graded`/`emailed`/`grading_failed`) rather than being built against the old two-state (`active`/`submitted`) model and needing rework.
+6. **Fullscreen-lock upgrade.** Fully client-side, no backend dependency — can run in parallel with #4/#5 as a separate workstream if resourcing allows.
+7. **F-05 — ARIA landmarks on `ReportScreen.tsx`.** Small, independent, no ordering constraint — but note it only touches the in-browser report render, not the new email template, which is a separate deliverable even though both present "the report."
 
-**Rationale:** steps 1–3 are pure server/data-model work that can be fully tested via scripts/fixtures without any frontend — this front-loads the highest-security, highest-rewrite-risk work (answer-key boundary, deterministic scoring) before UI investment. Steps 4–7 are progressively thinner UI layers over already-stable APIs, with integrity monitoring deliberately placed as an additive, low-coupling feature that doesn't gate the core candidate → score → report path.
+**Not in this question set but flagged from `PROJECT.md`'s v1.1 scope:** rubric-based open-text grading criteria, recruiter-visible transcript+verdict, and anti-cheat signal for open-text answers all extend `evaluateOpenTextBatch`'s prompt/response shape and the `Responses` sheet schema (a verdict/rationale column). This touches the same code path as F-03/the async refactor — worth scoping as a follow-on phase *after* item 4 above, not bolted into it, since it changes the LLM response contract (`{score:1|0}` → something richer) that both `Code.gs` and the fixed mirror now depend on.
 
 ## Sources
 
-- MDN Web Docs — Page Visibility API: https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API (official docs, HIGH confidence) — confirms `visibilitychange`/`document.hidden` as the standard mechanism for tab-switch/blur detection used in the Integrity Monitor.
-- MDN Web Docs — Fullscreen API: https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API (official docs, HIGH confidence) — confirms `fullscreenchange`/`document.fullscreenElement` as the standard mechanism for fullscreen-exit detection.
-- MDN Web Docs — Clipboard API: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API (official docs, HIGH confidence) — confirms `copy`/`paste`/`cut` events as the standard mechanism for copy-paste attempt logging.
-- General architecture synthesis (server-authoritative test assembly, deterministic grading, shared reporting projection, answer-key sanitization boundary) is based on well-established, stable patterns common to e-assessment/LMS/quiz-engine systems (e.g., the "never trust the client with grading data" principle, and "assemble server-side, freeze per attempt" pattern used across most randomized-exam systems) — this synthesis is MEDIUM confidence: it reflects conventional, low-controversy software-architecture practice rather than a specific verified case study, since live web search/product-research tooling was unavailable in this research session (WebSearch and most WebFetch domains were denied by the environment's permission policy; only `developer.mozilla.org` was reachable via WebFetch).
-- **Gap/flag for later phase-specific research:** if a specific on-device face-detection library needs to be chosen (vs. this document's generic recommendation), that library-specific evaluation (bundle size, WASM/WebGL requirements, accuracy at low resolution, licensing) should be a targeted spike during the integrity-monitoring build phase, since it could not be verified with live documentation lookup in this session.
+- Direct inspection: `backend/Code.gs` (full read of routing, sheet init, all action handlers, `evaluateOpenTextBatch`, `assembleQuestionSet`)
+- Direct inspection: `tests/grading/grading-engine.ts`, `tests/grading/test_grading.ts`
+- Direct inspection: `assessment-app/src/app/page.tsx`, `assessment-app/src/app/admin/page.tsx`, `assessment-app/src/components/{AssemblyScreen,TestScreen}.tsx`
+- Direct inspection: `.github/workflows/deploy.yml`, root `package.json`, `assessment-app/package.json`
+- Repo-wide grep for `frontend` references (confirmed dead-code removal is safe)
+- Google Apps Script platform behavior (installable triggers, time-driven triggers, `LockService`, `MailApp` quotas, execution-time limits): general platform knowledge, MEDIUM confidence — recommend a quick doc check against current Apps Script quotas immediately before implementing the trigger/email work, since quota numbers do shift over time
+- Fullscreen API spec behavior (cannot block user-initiated exit): well-established web-platform constraint, HIGH confidence
 
 ---
-*Architecture research for: Auto-graded gamified hiring assessment platform*
-*Researched: 2026-07-29*
+*Architecture research for: Fraud Support Gamified Assessment Platform — v1.1 milestone*
+*Researched: 2026-07-31*

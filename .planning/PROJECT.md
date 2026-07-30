@@ -14,32 +14,47 @@ Every candidate gets a fair, consistent, fully automated read on their language 
 - **Revenue model**: Internal hiring tool — not monetized; value is time saved on manual screening + more consistent signal on candidate fit
 - **Success metric**: Recruiters can make a confident shortlist/reject decision from the report alone, without re-interviewing for baseline skill checks
 
+## Current Milestone: v1.1 Async Reporting, Trust Repairs & Evaluation Quality
+
+**Goal:** Move report generation off the critical path (thank-you screen + emailed report instead of instant on-screen results), close the F-03..F-06 audit gaps, raise UI quality, ship a recruiter analytics admin panel, upgrade proctoring, and deliberately reintroduce LLM-graded open-text questions — with the rubric/audit-trail safeguards needed to keep that trustworthy.
+
+**Target features:**
+- Async grading + report flow: "Thank You" screen on submit, candidate report delivered by email, recruiter team notified by email (concerns/positives/results) — compute continues server-side even if candidate closes the tab
+- F-03: sync `tests/grading/grading-engine.ts` mirror with the real LLM open-text grading path in `Code.gs`
+- F-04: add tests for admin auth and Code.gs↔mirror sync
+- F-05: ARIA landmarks on `ReportScreen.tsx`
+- F-06: remove dead legacy `frontend/` (app.js/index.html/style.css)
+- UI quality pass across candidate + report screens
+- Recruiter admin panel: analytics dashboard (score trends, question difficulty, violation patterns), optionally LLM-summarized insights
+- Proctoring upgrade: evaluate free alternatives to current BlazeFace/TensorFlow.js setup; lock fullscreen-exit toggling once entered (currently exitable) as a hard integrity signal
+- Expand open-ended (LLM-graded) question share — reverses the original v1.0 "no LLM grading" decision (see Key Decisions)
+- Evaluation-quality improvements (open scope, refined during requirements): rubric-based open-text grading criteria instead of binary correct/incorrect, recruiter-visible transcript + LLM verdict for spot-checking/override (since LLM grading reduces the original "zero human review" guarantee), anti-cheat signal for open-text answers (remote unproctored test + free LLM tools make copy-paste-from-AI a real risk)
+
 ## Requirements
 
-### Validated
+### Validated (v1.0, all phases 1-6)
 
-(None yet — ship to validate)
+- [x] Candidate self-serve entry (no invite link) capturing name + email before starting
+- [x] Ingest the ~375 existing authored questions (English Proficiency, Attention to Detail, Critical Thinking docs) with their embedded answer keys into a structured, queryable content store
+- [x] Assemble a randomized ~50-item test per attempt, drawn per-category/level from the full banks, so each attempt differs
+- [x] Gamified test-taking UI: level progression through the 3 banks (treated as levels/missions with a progress bar), per-question countdown timer, live points/scoring reveal
+- [x] Deterministic auto-grading engine for MCQ + multi-select against answer keys
+- [x] In-browser integrity monitoring: tab-switch/window-blur count & duration, copy-paste attempts, dev-tools detection, fullscreen-exit detection, right-click/context-menu blocking — all logged silently (no live interruption of the candidate)
+- [x] Free, on-device (client-side) webcam presence/face-count checks for integrity signal — no continuous video recording/storage, no paid cloud vision API
+- [x] One official attempt per email; repeat attempts from the same email are blocked or flagged as a retake
+- [x] Auto-generated results report, identical for candidate and recruiter: overall score, three trait scores, narrative insight, recommendation tier, integrity/violation summary
+- [x] Recruiter/HR admin panel: candidate list opening into each candidate's full detail report; multiple-violation candidates visibly flagged
 
 ### Active
 
-- [ ] Candidate self-serve entry (no invite link) capturing name + email before starting
-- [ ] Ingest the ~375 existing authored questions (English Proficiency, Attention to Detail, Critical Thinking docs) with their embedded answer keys into a structured, queryable content store
-- [ ] Assemble a randomized ~50-item test per attempt, drawn per-category/level from the full banks, so each attempt differs
-- [ ] Gamified test-taking UI: level progression through the 3 banks (treated as levels/missions with a progress bar), per-question countdown timer, live points/scoring reveal
-- [ ] Fully objective, deterministic auto-grading engine (MCQ + multi-select against answer keys) — no free text, no LLM-in-the-loop grading
-- [ ] In-browser integrity monitoring: tab-switch/window-blur count & duration, copy-paste attempts, dev-tools detection, fullscreen-exit detection, right-click/context-menu blocking — all logged silently (no live interruption of the candidate)
-- [ ] Free, on-device (client-side) webcam presence/face-count checks for integrity signal — no continuous video recording/storage, no paid cloud vision API
-- [ ] One official attempt per email; repeat attempts from the same email are blocked or flagged as a retake
-- [ ] Auto-generated results report, identical for candidate and recruiter: overall score, three trait scores (Language Expertise ← English Proficiency, Attention to Detail & Research ← Attention to Detail, Logical/Critical Thinking ← Critical Thinking), a narrative "out-of-the-box thinking" insight derived from performance on the hardest/most ambiguous cases specifically, a recommendation tier (e.g. Strong Fit / Consider / Not Recommended), and an integrity/violation summary
-- [ ] Recruiter/HR admin panel: candidate list (name, email, date, overall score, violation count) opening into each candidate's full detail report; multiple-violation candidates visibly flagged
+(Populated via REQUIREMENTS.md for v1.1 — see Target features above)
 
 ### Out of Scope
 
-- Free-text/open-ended questions graded by an LLM — considered, but rejected in favor of staying 100% objective and deterministic; all existing authored content is already MCQ/multi-select with baked-in answer keys, and the user chose reliability over the extra nuance AI grading could add
-- Full video-based proctoring or third-party proctoring service integration — too costly/complex for this build; browser-behavior signals + free on-device webcam checks give meaningful integrity signal at zero marginal API/storage cost
-- Invite-link or token-gated access — open self-serve entry (name + email) was chosen instead
+- Full video-based proctoring or third-party paid proctoring service integration — too costly/complex; browser-behavior signals + free on-device webcam checks give meaningful integrity signal at zero marginal API/storage cost
+- Invite-link or token-gated access — open self-serve entry (name + email) stays
 - Retakes / cooldown-based re-testing — one official attempt per email only, for now
-- A separate, dedicated "research skill" section — the existing Attention to Detail (cross-referencing dashboard tabs) and Critical Thinking (evidence evaluation) cases already exercise the research/investigation skill; no new content category needed
+- A separate, dedicated "research skill" section — existing Attention to Detail / Critical Thinking cases already exercise research/investigation skill
 
 ## Context
 
@@ -57,15 +72,17 @@ Every candidate gets a fair, consistent, fully automated read on their language 
 ## Constraints
 
 - **Content source**: v1 question content must come from ingesting the existing authored docs/answer keys, not be written from scratch
-- **Grading**: Must remain 100% deterministic/objective — no LLM or human in the scoring loop, per explicit decision
+- **Grading**: MCQ/multi-select grading stays 100% deterministic. Open-text grading uses an LLM against an explicit rubric (as of v1.1) — must be covered by tests (F-03/F-04) and paired with a recruiter-visible transcript+verdict for spot-check/override, since it's no longer a zero-human-review guarantee
 - **Proctoring cost**: No paid third-party proctoring or cloud vision APIs — integrity signals are limited to what's achievable client-side for free
 - **Security**: Answer keys must never be exposed to the candidate-facing client — grading and correct-answer data must live server-side only
+- **Async compute**: Report generation must survive the candidate closing the browser tab — Apps Script trigger/queue based, not tied to an open connection; email delivery via Apps Script MailApp/GmailApp, no new paid email service, unless revisited later
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Stay 100% objective grading, no AI-graded free text | All existing content is already answer-keyed; keeps "zero human evaluation" scoring deterministic and reliable rather than resting on an LLM grader's consistency | — Pending |
+| v1.1: Reverse "no LLM grading" — reintroduce LLM-graded open-text questions with rubric + recruiter override | v1.0's objective-only stance was clean but the LLM open-text grading path (Code.gs `evaluateOpenTextBatch`) was already added ad hoc without updating this doc (F-03 audit finding) and the user wants a better read on ambiguous fraud judgment, which MCQ alone struggles to capture | — Pending |
+| Stay 100% objective grading for MCQ/multi-select portion | All existing content is already answer-keyed; keeps this slice deterministic and reliable | Validated (v1.0) |
 | Random per-attempt draw from full banks, single fixed test length (~50 items) | Bank size (375) far exceeds per-attempt quota; prevents answer-sharing between candidates and fits the "every fraud case is different" philosophy | — Pending |
 | Open self-serve access (no invite link), name + email required | Simplifies distribution while still identifying candidates for the report and admin panel | — Pending |
 | One official attempt per email, with integrity flagging | Prevents easy retake-gaming while acknowledging this is a remote, unproctored-by-default test | — Pending |
@@ -91,4 +108,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-29 after initialization*
+*Last updated: 2026-07-30 — milestone v1.1 started*

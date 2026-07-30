@@ -35,8 +35,10 @@ export default function AdminPage() {
     setGasUrl(savedUrl);
 
     const savedAuth = sessionStorage.getItem('fs_admin_authenticated');
-    if (savedAuth === 'true') {
+    const savedToken = sessionStorage.getItem('fs_admin_token');
+    if (savedAuth === 'true' && savedToken) {
       setIsAuthenticated(true);
+      setPasscode(savedToken);
     }
   }, []);
 
@@ -49,8 +51,8 @@ export default function AdminPage() {
     setLoading(true);
     setError(null);
     try {
-      const token = 'FS_RECRUITER_SECRET_2026';
-      const fetchUrl = `${urlToUse}${urlToUse.includes('?') ? '&' : '?'}action=adminListCandidates&token=${token}`;
+      const token = sessionStorage.getItem('fs_admin_token') || passcode;
+      const fetchUrl = `${urlToUse}${urlToUse.includes('?') ? '&' : '?'}action=adminListCandidates&token=${encodeURIComponent(token)}`;
       const res = await fetch(fetchUrl);
       const data = await res.json();
 
@@ -73,20 +75,39 @@ export default function AdminPage() {
     }
   }, [isAuthenticated, gasUrl]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode === 'FS_RECRUITER_SECRET_2026') {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('fs_admin_authenticated', 'true');
-      setError(null);
-    } else {
-      setError('Invalid passcode.');
+    if (!gasUrl) {
+      setError('Please configure the Apps Script Web App URL first.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const fetchUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=adminListCandidates&token=${encodeURIComponent(passcode)}`;
+      const res = await fetch(fetchUrl);
+      const data = await res.json();
+
+      if (data.success) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('fs_admin_authenticated', 'true');
+        sessionStorage.setItem('fs_admin_token', passcode);
+        setCandidates(data.list || []);
+      } else {
+        setError(data.error || 'Invalid passcode.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Connection failed. Verify that your Apps Script Web App is deployed with CORS enabled for access.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('fs_admin_authenticated');
+    sessionStorage.removeItem('fs_admin_token');
     setCandidates([]);
   };
 
@@ -107,7 +128,7 @@ export default function AdminPage() {
         body: JSON.stringify({
           action: 'adminResetAttempt',
           email,
-          token: 'FS_RECRUITER_SECRET_2026',
+          token: sessionStorage.getItem('fs_admin_token') || passcode,
         }),
       });
       const data = await res.json();
@@ -131,7 +152,8 @@ export default function AdminPage() {
     setLoadingReport(true);
     setError(null);
     try {
-      const fetchUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=getAttemptReport&attemptId=${attemptId}`;
+      const token = sessionStorage.getItem('fs_admin_token') || passcode;
+      const fetchUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=getAttemptReport&attemptId=${attemptId}&token=${encodeURIComponent(token)}`;
       const res = await fetch(fetchUrl);
       const data = await res.json();
 

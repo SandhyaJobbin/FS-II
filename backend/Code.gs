@@ -182,7 +182,7 @@ function doGet(e) {
     if (action === "checkAttempt") {
       return jsonResponse(handleCheckAttempt(params.attemptId));
     } else if (action === "getAttemptReport") {
-      return jsonResponse(handleGetAttemptReport(params.attemptId));
+      return jsonResponse(handleGetAttemptReport(params.attemptId, params.token));
     } else if (action === "adminListCandidates") {
       return jsonResponse(handleAdminListCandidates(params.token));
     }
@@ -617,9 +617,10 @@ function handleSubmitAnswers(attemptId, candidateAnswers) {
   };
 }
 
-function handleGetAttemptReport(attemptId) {
+function handleGetAttemptReport(attemptId, token) {
   if (!attemptId) return { success: false, error: "Missing attempt ID" };
-  
+  if (token !== ADMIN_TOKEN) return { success: false, error: "Unauthorized" };
+
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const attemptsSheet = ss.getSheetByName("Attempts");
   const data = attemptsSheet.getDataRange().getValues();

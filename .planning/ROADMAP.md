@@ -20,6 +20,14 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: Shared Reporting & Recruiter Admin Panel** - Recruiters log in to a candidate list and open the identical detailed report the candidate sees, with violations flagged
 - [ ] **Phase 7: Live Interview / Final Verification** - Review and wrap up the entire application end-to-end
 
+**v1.1 Milestone — Async Reporting, Trust Repairs & Evaluation Quality**
+- [ ] **Phase 8: Cleanup & Test-Safety Net (F-06, F-03, F-04)** - Frontend dead-code removal, grading-mirror divergence fixture set, real-auth admin tests, CI workflow gating PRs
+- [ ] **Phase 9: Async Grading & Report Delivery Pipeline** - Fast doPost enqueue to PendingGrading queue, single recurring trigger under LockService, MailApp candidate+recruiter emails, ThankYouScreen
+- [ ] **Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override** - Gemini responseSchema rubric grading, persisted rationale/transcript, override audit trail, distinct ungraded state, updated candidate copy
+- [ ] **Phase 11: Recruiter Analytics Dashboard** - On-demand uncached aggregation: score trend, question pass-rate, violation-vs-score correlation, bias-direction indicator, low-N fallback
+- [ ] **Phase 12: Proctoring Upgrade (Fullscreen Detect-and-Escalate + MediaPipe Migration)** - Blocking re-entry modal on fullscreen exit, MediaPipe tasks-vision FaceDetector replacing BlazeFace/TF.js CDN
+- [ ] **Phase 13: Accessibility (F-05) & Remaining Polish** - ARIA landmarks/roles on ReportScreen.tsx
+
 ## Phase Details
 
 ### Phase 1: Content Ingestion & Question Bank
@@ -102,10 +110,78 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
+### Phase 8: Cleanup & Test-Safety Net (F-06, F-03, F-04)
+**Goal**: Frontend legacy dead code removed; grading-engine.ts mirror fixed with divergence-test fixtures; test_admin.ts rewritten to exercise real extracted auth-check; new .github/workflows/test.yml running npm test + sync-check on every PR — table-stakes reliability foundation before async/grading refactor.
+**Depends on**: Nothing (v1.1 first phase)
+**Requirements**: TBD (bug-fix F-03, F-04, F-06)
+**Success Criteria** (what must be TRUE):
+  1. frontend/ legacy dead code removed with no behavior loss
+  2. grading-engine.ts mirror passes a divergence-test fixture set vs Code.gs (drift detectable in CI, not just by convention)
+  3. test_admin.ts exercises the real extracted auth-check function, not a local reimplementation
+  4. New test.yml workflow runs npm test + sync-check on every PR
+**Plans**: TBD
+
+### Phase 9: Async Grading & Report Delivery Pipeline
+**Goal**: doPost(submitAnswers) returns fast (~100-300ms) after enqueueing to a new PendingGrading queue sheet; a single recurring time-driven trigger drains the queue under LockService, calls extracted gradeAndFinalizeAttempt, sends candidate-report + recruiter-notification emails via MailApp with distinct email_status tracking; ThankYouScreen.tsx added (email-only delivery, no polling).
+**Depends on**: Phase 8
+**Requirements**: TBD (async report delivery, recruiter notification)
+**Success Criteria** (what must be TRUE):
+  1. PendingGrading sheet exists as durable queue, separate from Attempts (no breaking of 6 numeric-indexed call sites)
+  2. doPost validates + one appendRow + status write, returns under ~300ms
+  3. Exactly one recurring processGradingQueue trigger installed at setup (never per-attempt) under LockService with retry/batch-cap
+  4. MailApp candidate-report + recruiter-notification emails sent with distinct email_status (pending/sent/failed/retried); Attempts.Status enum extended pending_grading/graded/emailed/grading_failed
+  5. ThankYouScreen.tsx shows confirmation + honest turnaround copy; no default polling (avoids reopening F-01 unauthenticated-report-read class)
+**Plans**: TBD
+
+### Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override
+**Goal**: Gemini responseSchema-constrained rubric grading replaces ad hoc evaluateOpenTextBatch; persisted rationale/transcript per open-text answer; recruiter-visible transcript + verdict + logged attributable override UI; distinct "ungraded" state never merged into "correct"; updated candidate-facing copy removing stale "fully automated, no human review" claims — ships together with compliance/trust safeguards.
+**Depends on**: Phase 9
+**Requirements**: TBD (rubric grading, transcript+verdict+override, bias-direction indicator)
+**Success Criteria** (what must be TRUE):
+  1. Gemini grading via responseSchema yields structured {verdict, criteriaMet[], rationale}; no more try/catch → "FAILED" sentinel fragility
+  2. Per-question rubric versioned; rationale persisted per open-text answer (not just boolean)
+  3. Recruiter transcript + verdict UI with logged, attributable override audit trail
+  4. API failure produces distinct "ungraded" state, never merged into "correct"; ungraded counts surfaced in report + dashboard
+  5. Candidate-facing copy updated to remove now-false "zero human grading" claims
+**Plans**: TBD
+
+### Phase 11: Recruiter Analytics Dashboard
+**Goal**: handleAdminAnalytics on-demand (uncached) aggregation over Attempts/Responses/IntegrityLogs: score trend, question-level difficulty/pass-rate, violation-vs-score correlation, bias-direction indicator; explicit "not enough data yet" low-N fallback; ungraded-question counts surfaced, not hidden.
+**Depends on**: Phase 9, Phase 10
+**Requirements**: TBD (core analytics dashboard, bias-direction indicator)
+**Success Criteria** (what must be TRUE):
+  1. Dashboard renders score trend, question-level pass-rate, violation-vs-score correlation, bias-direction indicator
+  2. On-demand aggregation, no precompute (documented CacheService upgrade path if volume requires)
+  3. Low-N fallback state shown when "not enough data yet"
+  4. Ungraded-question counts surfaced as data-quality caveat, not hidden
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 12: Proctoring Upgrade (Fullscreen Detect-and-Escalate + MediaPipe Migration)
+**Goal**: Fullscreen-exit handling upgraded from silent logging to blocking re-entry modal with escalating violation severity; @mediapipe/tasks-vision FaceDetector (short_range) replaces BlazeFace/TF.js CDN dependency as a proper npm-managed package. Fully client-side, parallelizable with Phases 9-11.
+**Depends on**: Nothing (client-only, parallelizable)
+**Requirements**: TBD (proctoring upgrade)
+**Success Criteria** (what must be TRUE):
+  1. Fullscreen-exit triggers blocking re-entry modal (not silent log); requires fresh user gesture to re-enter
+  2. Escalating violation severity on repeated exits
+  3. @mediapipe/tasks-vision FaceDetector wired as npm package; existing BlazeFace/TF.js CDN dependency removed (fixes documented load-order bug)
+  4. No literal "block fullscreen exit" promise (verified against MDN — impossible in any browser)
+**Plans**: TBD
+
+### Phase 13: Accessibility (F-05) & Remaining Polish
+**Goal**: ARIA landmarks/roles added to ReportScreen.tsx; small independent a11y remediation, no ordering constraint on rest of milestone.
+**Depends on**: Nothing
+**Requirements**: TBD (F-05)
+**Success Criteria** (what must be TRUE):
+  1. ReportScreen.tsx has ARIA landmarks + roles; passes axe-core baseline
+  2. Touches only in-browser report render, separate from Phase 9 email template
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
+v1 phases executed in numeric order: 1 → 2 → 3 → 4 → 5 → 6 (complete).
+v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongside 9-11.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -115,8 +191,15 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | 4. Candidate-Facing Gamified Test UI | 1/1 | Complete | 2026-07-29 |
 | 5. Integrity Monitoring | 1/1 | Complete | 2026-07-29 |
 | 6. Shared Reporting & Recruiter Admin Panel | 1/1 | Complete | 2026-07-29 |
+| 7. Live Interview / Final Verification | 0/0 | Pending | — |
+| 8. Cleanup & Test-Safety Net | 0/0 | Not started | — |
+| 9. Async Grading & Report Delivery Pipeline | 0/0 | Not started | — |
+| 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
+| 11. Recruiter Analytics Dashboard | 0/0 | Not started | — |
+| 12. Proctoring Upgrade (MediaPipe + Fullscreen) | 0/0 | Not started | — |
+| 13. Accessibility (F-05) & Polish | 0/0 | Not started | — |
 
 ---
 *Roadmap created: 2026-07-29*
 *Granularity: standard (6 phases)*
-*Coverage: 34/34 v1 requirements mapped*
+*Coverage: 34/34 v1 requirements mapped; v1.1 phases derived from research SUMMARY.md (F-03/F-04/F-05/F-06 + async/rubric/analytics/proctoring capabilities)*

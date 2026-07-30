@@ -48,9 +48,11 @@ const QUOTAS = {
 const ADMIN_TOKEN = "FS_RECRUITER_SECRET_2026";
 
 // --- LLM AUTOGRADING CONFIG ---
-const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
-const FALLBACK_API_KEY = "YOUR_OPENCODE_GO_API_KEY_HERE"; 
-const FALLBACK_API_URL = "https://opencode.ai/zen/go/v1/chat/completions"; 
+// API keys are read from Script Properties (Project Settings > Script Properties),
+// never hardcoded in source -- set GEMINI_API_KEY / FALLBACK_API_KEY there.
+const GEMINI_API_KEY = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY") || "";
+const FALLBACK_API_KEY = PropertiesService.getScriptProperties().getProperty("FALLBACK_API_KEY") || "";
+const FALLBACK_API_URL = "https://opencode.ai/zen/go/v1/chat/completions";
 const FALLBACK_MODEL = "gpt-4o"; // Or whichever model you want to use from OpenCode
 
 /**
@@ -64,14 +66,14 @@ function evaluateOpenTextBatch(gradingRequests) {
   
   const systemInstruction = "You are an expert English grader. Evaluate the candidate's response based on the question prompt. Score 1 if grammar is perfect, tone is professional, and all instructions are followed. Score 0 if there are any significant errors or missed instructions. Output strictly valid JSON like {\"score\": 1} or {\"score\": 0}.";
   
-  if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" && FALLBACK_API_KEY === "YOUR_FALLBACK_API_KEY_HERE") {
+  if (!GEMINI_API_KEY && !FALLBACK_API_KEY) {
     // If no keys are set, fallback to treating everything as correct to avoid breaking
     gradingRequests.forEach(req => { results[req.qId] = true; });
     return results;
   }
 
   // 1. Try Gemini First
-  if (GEMINI_API_KEY !== "YOUR_GEMINI_API_KEY_HERE") {
+  if (GEMINI_API_KEY) {
     const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
     const fetchRequests = gradingRequests.map(req => {
       const payload = {
@@ -119,7 +121,7 @@ function evaluateOpenTextBatch(gradingRequests) {
   // 2. Fallback for failed requests
   const failedRequests = gradingRequests.filter(req => results[req.qId] === "FAILED");
   if (failedRequests.length > 0) {
-    if (FALLBACK_API_KEY !== "YOUR_FALLBACK_API_KEY_HERE") {
+    if (FALLBACK_API_KEY) {
       const fallbackFetchRequests = failedRequests.map(req => {
         const payload = {
           "model": FALLBACK_MODEL,

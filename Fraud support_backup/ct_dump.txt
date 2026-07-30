@@ -1,0 +1,90 @@
+0: Critical Thinking Question Bank
+1: Objective
+2: Assess the candidate's ability to evaluate evidence, identify potential risks, analyze conflicting information, prioritize investigations, and make balanced business decisions based solely on the information provided.
+3: Instructions
+4: Read each case carefully before answering.
+5: Some questions have one correct answer.
+6: Some questions require you to Select ALL that apply.
+7: Base your answers only on the information provided in the case.
+8: Do not make assumptions beyond the available evidence.
+9: Each case contains 4 questions designed to assess logical reasoning, evidence evaluation, and decision-making skills rather than prior industry knowledge.
+10: Question Design Principles
+11: Across the 30 cases, questions will assess the candidate's ability to:
+12: Analyze available evidence
+13: Distinguish relevant information from irrelevant information
+14: Identify potential risk indicators
+15: Avoid making assumptions without evidence
+16: Select the most appropriate next step
+17: Make balanced business decisions
+18: Prioritize investigations
+19: Recommend escalation only when justified
+20: Evaluate conflicting information objectively
+21: Balance customer trust with fraud prevention
+22: Question Types Used
+23: Single Correct Answer
+24: Multiple Correct Answers (Select ALL that apply)
+25: Best Next Action
+26: Best Business Decision
+27: Most Relevant Evidence
+28: Primary Risk Indicator
+29: Additional Information Required
+30: Investigation Prioritization
+31: Escalation Decision
+32: Business Judgment
+33: Which option is NOT supported by the evidence?
+34: Competencies Assessed
+35: Critical Thinking
+36: Logical Reasoning
+37: Evidence Evaluation
+38: Risk Assessment
+39: Decision Making
+40: Investigation Planning
+41: Business Judgment
+42: Problem Solving
+43: Analytical Thinking
+44: Attention to Context
+45: Difficulty Approach
+46: The assessment includes a natural mix of straightforward, moderate, and complex scenarios. Candidates are not informed of the difficulty level. Each case should be evaluated independently based on the available evidence.
+47: Understood. I’ll avoid questions like:
+48: “What should be investigated first?”
+49: “What should be reviewed first?”
+50: “What information should be checked first?”
+51: Any question that tests workflow knowledge.
+52: I’ll keep the focus on:
+53: Risk assessment
+54: Evidence interpretation
+55: Logical reasoning
+56: Decision-making
+57: Identifying relevant vs irrelevant information
+58: Balancing fraud prevention and customer trust
+59: CASE 1 – High-Risk Coordinated Activity
+60: Case File
+61: Within one hour, six newly created accounts posted five-star reviews for the same property. The reviews contain very similar wording, were posted from the same IP address, and none are linked to verified bookings. One reviewer has uploaded travel photos and completed profile information
+62: Question 1
+63: What is the biggest risk indicator in this case?
+64: A. The reviews are positive.
+65: ✅ B. Multiple accounts showing similar activity patterns
+66: C. One reviewer uploaded travel photos.
+67: D. The property received multiple reviews.
+68: Question 2 (Select ALL that apply.)
+69: Which details increase the possibility of coordinated activity?
+70: ✅ A. Multiple newly created accounts
+71: ✅ B. Similar review wording
+72: ✅ C. Reviews posted within a short time period
+73: ✅ D. Same IP address
+74: Question 3
+75: Which statement is NOT supported by the available evidence?
+76: A. The activity may require further assessment.
+77: B. Multiple risk indicators are present.
+78: ✅ C. The reviews are definitely fraudulent.
+79: D. The accounts show unusual similarities.
+80: Question 4
+81: Which business decision best balances customer trust and fraud prevention?
+82: A. Remove all reviews immediately.
+83: ✅ B. Evaluate the evidence further before taking enforcement action.
+84: C. Ignore the activity because the reviews are positive.
+85: D. Approve the reviews because one account appears complete.
+86: CASE 2 – Trusted Reviewer with One Reported Issue
+87: Case File
+88: A reviewer has an eight-year account history, more than 300 reviews, verified bookings, and no previous violations. A property owner reports one recent review as suspicious. The review includes detailed information about the stay, but two sentences are similar to another review for the same property.
+89: Question 1

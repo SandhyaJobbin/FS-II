@@ -12,12 +12,13 @@ This roadmap builds outward from the trust boundary at the center of the product
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Content Ingestion & Question Bank** - Parse the 375-item authored question banks into a validated, tagged, queryable content store with server-only answer keys
-- [ ] **Phase 2: Candidate Entry & Test Assembly** - Candidates start one official attempt via name+email and receive a random, quota-correct, server-frozen question set
-- [ ] **Phase 3: Grading & Scoring Engine** - Every submitted attempt is graded deterministically into trait scores, a narrative insight, and an advisory recommendation tier
-- [ ] **Phase 4: Candidate-Facing Gamified Test UI** - Candidates take the full test in a gamified, timed, level-based browser experience with no correctness/speed leakage
-- [ ] **Phase 5: Integrity Monitoring** - Every attempt silently accumulates a per-signal integrity trail without ever interrupting or gating the candidate
-- [ ] **Phase 6: Shared Reporting & Recruiter Admin Panel** - Recruiters log in to a candidate list and open the identical detailed report the candidate sees, with violations flagged
+- [x] **Phase 1: Content Ingestion & Question Bank** - Parse the 375-item authored question banks into a validated, tagged, queryable content store with server-only answer keys
+- [x] **Phase 2: Candidate Entry & Test Assembly** - Candidates start one official attempt via name+email and receive a random, quota-correct, server-frozen question set
+- [x] **Phase 3: Grading & Scoring Engine** - Every submitted attempt is graded deterministically into trait scores, a narrative insight, and an advisory recommendation tier
+- [x] **Phase 4: Candidate-Facing Gamified Test UI** - Candidates take the full test in a gamified, timed, multi-tab candidate experience with no correctness/speed leakage
+- [x] **Phase 5: Integrity Monitoring** - Every attempt silently accumulates a per-signal integrity trail without ever interrupting or gating the candidate
+- [x] **Phase 6: Shared Reporting & Recruiter Admin Panel** - Recruiters log in to a candidate list and open the identical detailed report the candidate sees, with violations flagged
+- [ ] **Phase 7: Live Interview / Final Verification** - Review and wrap up the entire application end-to-end
 
 ## Phase Details
 
@@ -49,7 +50,7 @@ Plans:
   2. Submitting a second attempt from a normalized-duplicate email (Gmail dot/plus variants, case differences) is blocked with a clear message
   3. Each new attempt is assigned a random ~50-item set honoring per-category/level quotas, with case-based questions (Attention to Detail, Critical Thinking) drawn as whole 4-question cases rather than individually
   4. The assigned question set is frozen at attempt start — re-fetching the same attempt always returns the identical set used for serving, validation, and grading
-**Plans**: TBD
+**Plans**: 3 (complete)
 **UI hint**: yes
 
 ### Phase 3: Grading & Scoring Engine
@@ -74,7 +75,7 @@ Plans:
   3. The points/score display shown during the test is cosmetic only and never reveals correctness or rewards speed
   4. Case-based questions render a multi-tab dashboard (Customer Report, Booking Details, Review Information, Property Listing Information, Account Information) the candidate can cross-reference
   5. Right-clicking anywhere during the test is disabled
-**Plans**: TBD
+**Plans**: 1 (complete)
 **UI hint**: yes
 
 ### Phase 5: Integrity Monitoring
@@ -108,12 +109,12 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Content Ingestion & Question Bank | 0/6 | Planned | - |
-| 2. Candidate Entry & Test Assembly | 0/TBD | Not started | - |
-| 3. Grading & Scoring Engine | 0/TBD | Not started | - |
-| 4. Candidate-Facing Gamified Test UI | 0/TBD | Not started | - |
-| 5. Integrity Monitoring | 0/TBD | Not started | - |
-| 6. Shared Reporting & Recruiter Admin Panel | 0/TBD | Not started | - |
+| 1. Content Ingestion & Question Bank | 6/6 | Complete | 2026-07-29 |
+| 2. Candidate Entry & Test Assembly | 3/3 | Complete | 2026-07-29 |
+| 3. Grading & Scoring Engine | 2/2 | Complete | 2026-07-29 |
+| 4. Candidate-Facing Gamified Test UI | 1/1 | Complete | 2026-07-29 |
+| 5. Integrity Monitoring | 1/1 | Complete | 2026-07-29 |
+| 6. Shared Reporting & Recruiter Admin Panel | 1/1 | Complete | 2026-07-29 |
 
 ---
 *Roadmap created: 2026-07-29*

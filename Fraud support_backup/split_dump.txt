@@ -1,0 +1,33 @@
+0: Fraud Support Hiring Assessment – Question Bank
+1: Category-wise Split
+2: Question Bank Summary
+3: Overall Question Bank Coverage
+
+TABLE 0 rows=14 cols=4
+Assessment Section | Question Bank Category | Volume | Competency Assessed
+English Proficiency Question Bank | Grammar | 30 Questions | Grammar, sentence structure, and language accuracy
+ | Sentence Rewriting | 20 Questions | Clarity, sentence construction, and tone
+ | Error Identification & Correction | 10 Questions | Proofreading and grammatical accuracy
+ | Macro Editing | 5 Questions | Editing standardized customer communications for clarity and correctness
+ | Macro Personalization | 5 Questions | Customizing standard responses based on customer scenarios
+ | Reading Comprehension | 3 Passages (5 Questions each) | Reading comprehension, inference, and interpretation
+ | Case Closure Notes | 10 Questions | Documentation, summarization, and written communication
+Attention to Detail Question Bank | Level 1 – Review Authenticity Investigation | 10 Cases (4 Questions per Case) | Review validation, timeline verification, comparison of evidence, and identification of inconsistencies
+ | Level 2 – Property Listing Accuracy Investigation | 10 Cases (4 Questions per Case) | Information verification, searchability, comparison of listing details, and property accuracy
+ | Level 3 – Account & Fraud Pattern Investigation | 10 Cases (4 Questions per Case) | Pattern recognition, account analysis, evidence verification, and identification of suspicious activities
+Critical Thinking Question Bank | Level 1 – Case Decision & Judgment | 10 Cases (4 Questions per Case) | Logical reasoning, evidence evaluation, and decision making
+ | Level 2 – Investigation Strategy & Prioritization | 10 Cases (4 Questions per Case) | Investigation planning, prioritization, and analytical thinking
+ | Level 3 – Risk Assessment & Business Decision | 10 Cases (4 Questions per Case) | Risk assessment, business judgement, and evidence-based decision making
+
+TABLE 1 rows=4 cols=3
+Question Bank | Categories | Volume
+English Proficiency Question Bank | 7 Categories | 95 Questions
+Attention to Detail Question Bank | 3 Investigation Levels | 30 Cases (120 Questions)
+Critical Thinking Question Bank | 3 Decision-Making Levels | 30 Cases (120 Questions)
+
+TABLE 2 rows=5 cols=2
+Assessment Area | Total
+English Proficiency | 95 Questions
+Attention to Detail | **30 Cases
+Critical Thinking | **30 Cases
+Grand Total | 335 Assessment Items (95 standalone questions + 60 case-based scenarios containing 240 embedded questions)

@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+.env
+node_modules/
+dist/
+build/
+*.json
+!package.json
+!tsconfig.json
+!.planning/**/*.json

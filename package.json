@@ -1,0 +1,22 @@
+{
+  "name": "fs-gamified-assessment",
+  "version": "1.0.0",
+  "description": "Fraud Support Gamified Assessment Platform",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:assembly": "vitest run tests/assembly/test_assembly.ts",
+    "test:grading": "vitest run tests/grading/test_grading.ts",
+    "test:watch": "vitest"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}

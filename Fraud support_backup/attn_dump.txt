@@ -1,0 +1,148 @@
+95: Q3. Which conclusion is supported by the evidence?
+96: A. The review is confirmed fraudulent
+B. The customer did not stay at the property
+C. The review contains a discrepancy that requires evaluation ✅
+D. The booking information must be incorrect
+97: Q4. Which additional detail would help explain the discrepancy?
+98: A. Property rating
+B. Whether the guest extended their stay separately ✅
+C. Number of reviews received by the property
+D. Review rating
+99: CASE 4: DUPLICATE REVIEW PATTERN
+100: Candidate Dashboard
+101: Tab 1: Account Activity
+102: User A
+103: Account Created: 10 January 2025
+104: Review Date: 12 January 2025
+105: Device Used: Device X
+106: Review:
+"Amazing hotel, excellent service."
+107: User B
+108: Account Created: 10 January 2025
+109: Review Date: 12 January 2025
+110: Device Used: Device X
+111: Review:
+"Amazing hotel, excellent service."
+112: User C
+113: Account Created: 2022
+114: Review Date: 15 January 2025
+115: Device Used: Device Y
+116: Review:
+"Comfortable stay and helpful staff."
+117: Questions
+118: Q1. Which activity pattern requires attention?
+119: A. User C’s account history
+B. User A and User B showing identical activity patterns ✅
+C. User C’s different review wording
+D. User A having a recent account
+120: Q2. Select ALL details that create a potential concern.
+121: ☑ A. Identical review wording
+☑ B. Same review date
+☑ C. Shared device information
+☐ D. Different review wording from User C
+122: Q3. Which statement is supported by the information provided?
+123: A. User A and User B are confirmed to be the same person
+B. The reviews should automatically be removed
+C. User A and User B show indicators requiring further review ✅
+D. User C is part of the same activity pattern
+124: Q4. Which detail reduces concern for User C?
+125: A. Same review date as User A and User B
+B. Different device and different review content ✅
+C. Same account creation date
+D. Identical wording
+126: CASE 5: THE NEGATIVE BUT VALID REVIEW
+127: Candidate Dashboard
+128: Tab 1: Review Information
+129: Reviewer Name: Emma Johnson
+130: Rating: 1 Star
+Review Date: 20 November 2025
+131: Review Comment:
+132: "The room was smaller than expected, but the staff was friendly and helpful."
+133: Photos Attached: Yes
+134: Tab 2: Booking Details
+135: Booking Status: Verified
+Stay Completed: Yes
+136: Tab 3: Property Report
+137: Report Reason:
+138: "The review is unfair and damages our reputation."
+139: Questions
+140: Q1. Which details support the possibility that the review reflects a genuine experience?
+141: A. The review has a low rating
+B. The property reported the review
+C. Verified stay, specific experience details, and photos ✅
+D. The review affects the property's reputation
+142: Q2. Select ALL details that support review credibility.
+143: ☑ A. Completed stay
+☑ B. Specific description of the experience
+☑ C. Attached photos
+☐ D. Property disagreement with the review
+144: Q3. Which statement is accurate based on the available information?
+145: A. Negative reviews are always suspicious
+B. Property complaints confirm review violations
+C. A negative review can still be genuine if it reflects a real experience ✅
+D. One-star reviews cannot be published
+146: Q4. What information is most relevant when assessing this review?
+147: A. Whether the property likes the rating
+B. Whether the review violates review guidelines ✅
+C. Whether the review affects the property score
+D. Whether the rating is positive or negative
+148: CASE 6: WRONG PROPERTY INFORMATION IN REVIEW
+149: Candidate Dashboard
+150: Tab 1: Review Information
+151: Reviewer Name: David Clark
+152: Rating: 4 Stars
+153: Review Comment:
+154: "The beach access was convenient and the hotel provided airport shuttle service."
+155: Tab 2: Property Listing Information
+156: Property Name: Mountain View Retreat
+157: Available Facilities:
+158: Swimming Pool
+159: Restaurant
+160: Spa
+161: Parking
+162: Not Listed:
+163: Airport Shuttle
+164: Beach Access
+165: Tab 3: Booking Details
+166: Booking Status: Completed
+Stay Duration: 5 Nights
+167: Questions
+168: Q1. Which details in the review require attention?
+169: A. The review rating
+B. The mention of beach access and airport shuttle service ✅
+C. The completed booking status
+D. The stay duration
+
+--- TABLES ---
+
+table 0: rows=4 cols=2
+Room Type | View
+Standard Room | Garden View
+Deluxe Room | Partial Ocean View
+Premium Suite | Full Ocean View + Balcony
+
+table 1: rows=4 cols=2
+Room Type | Details
+Standard Room | Basic room, 20 sq. meters
+Deluxe Room | Larger room, 35 sq. meters
+Luxury Suite | Separate living area, balcony
+
+table 2: rows=3 cols=2
+Room Type | Breakfast
+Standard Room | Not Included
+Premium Room | Included
+
+table 3: rows=6 cols=2
+Account | Created
+A | 2 January 2026
+B | 3 January 2026
+C | 5 January 2026
+D | 6 January 2026
+E | 7 January 2026
+
+table 4: rows=5 cols=2
+Account | Created Date
+Account A | 1 June 2026
+Account B | 2 June 2026
+Account C | 3 June 2026
+Account D | 5 June 2026

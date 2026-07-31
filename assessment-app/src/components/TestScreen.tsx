@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Question, AnswersMap, HybridAnswer } from '../types';
 import CaseDashboard from './CaseDashboard';
+import { CAMERA_PROCTORING_ENABLED } from '../config';
 
 interface TestScreenProps {
   questions: Question[];
@@ -321,6 +322,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
 
   // INTEG-05: Webcam initialization
   useEffect(() => {
+    if (!CAMERA_PROCTORING_ENABLED) return;
     let stream: MediaStream | null = null;
     let cancelled = false;
     const startWebcam = async () => {
@@ -365,6 +367,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
 
   // INTEG-05 & INTEG-06: BlazeFace client-side face recognition
   useEffect(() => {
+    if (!CAMERA_PROCTORING_ENABLED) return;
     let active = true;
     const initModel = async () => {
       try {
@@ -452,7 +455,23 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
     // Restore open_text / hybrid values from saved answers
     if (currentQuestion.response_type === 'open_text') {
       const saved = answers[currentQuestion.id];
-      setOpenTextValue(typeof saved === 'string' ? saved : '');
+      if (typeof saved === 'string') {
+        setOpenTextValue(saved);
+      } else if (currentQuestion.section === 'macro') {
+        // Macro Editing stems embed the original macro as "Existing Macro:\n<text>" —
+        // pre-fill it so the candidate edits in place instead of retyping from scratch.
+        const marker = 'Existing Macro:\n';
+        const idx = currentQuestion.stem.indexOf(marker);
+        const prefill = idx !== -1 ? currentQuestion.stem.slice(idx + marker.length) : '';
+        setOpenTextValue(prefill);
+        if (prefill) {
+          const updatedAnswers = { ...answers, [currentQuestion.id]: prefill };
+          setAnswers(updatedAnswers);
+          localStorage.setItem('fs_answers', JSON.stringify(updatedAnswers));
+        }
+      } else {
+        setOpenTextValue('');
+      }
     } else if (currentQuestion.response_type === 'hybrid') {
       const saved = answers[currentQuestion.id];
       if (saved && typeof saved === 'object' && !Array.isArray(saved) && 'text' in saved) {
@@ -770,17 +789,43 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
             {/* Dashboard (Left Column) */}
             {hasTabs && currentQuestion.tabs && (
               <div className="animate-fade-in w-full">
-                <CaseDashboard
-                  tabs={currentQuestion.tabs}
-                  tables={currentQuestion.tables}
-                  caseTitle={currentQuestion.case_title}
-                  caseId={currentQuestion.case_id}
-                />
+                {(currentQuestion.section === 'reading' || currentQuestion.bank === 'critical') ? (
+                  <div className="bg-[#0b1120]/80 border border-slate-800/80 rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden">
+                    <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-800/80 bg-[#0f172a]/90">
+                      <div className="w-9 h-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                          <path d="M4 4h16v16H4z" opacity="0" /><path d="M22 6l-10 7L2 6" /><path d="M2 6h20v12H2z" />
+                        </svg>
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-accent">
+                          {currentQuestion.tabs[0]?.name || 'Scenario'}
+                        </div>
+                        <div className="text-sm font-bold text-white truncate">{currentQuestion.case_title || 'Case Details'}</div>
+                      </div>
+                    </div>
+                    <div className="p-5 text-sm text-slate-300 leading-relaxed whitespace-pre-wrap max-h-[420px] overflow-y-auto">
+                      {currentQuestion.tabs[0]?.content}
+                    </div>
+                  </div>
+                ) : (
+                  <CaseDashboard
+                    tabs={currentQuestion.tabs}
+                    tables={currentQuestion.tables}
+                    caseTitle={currentQuestion.case_title}
+                    caseId={currentQuestion.case_id}
+                  />
+                )}
               </div>
             )}
 
             {/* Question and options (Right Column) */}
             <div className={`flex flex-col gap-5 w-full ${hasTabs ? 'lg:sticky lg:top-6' : ''}`}>
+              {currentQuestion.bank === 'critical' && !hasTabs && (
+                <div className="bg-amber-500/5 border border-amber-500/20 text-amber-300 text-xs leading-relaxed rounded-lg p-3">
+                  Case file not yet available for this question — noted for follow-up. Answer based on the information provided below.
+                </div>
+              )}
               <h3 className="text-base font-semibold leading-relaxed text-white whitespace-pre-wrap">
                 {currentQuestion.stem}
               </h3>
@@ -876,31 +921,33 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
       </motion.div>
 
       {/* Floating PIP Webcam Proctor Widget */}
-      <div className="fixed bottom-4 right-4 z-50 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl p-2 shadow-2xl flex flex-col gap-2 w-[160px] animate-fade-in transition-all hover:border-accent/40">
-        <div className="relative aspect-video w-full bg-slate-950 rounded-lg overflow-hidden border border-slate-900">
-          <video
-            ref={videoRef}
-            muted
-            playsInline
-            className="w-full h-full object-cover scale-x-[-1]"
-          />
-          <div className="absolute top-1.5 left-1.5 flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-950/80 border border-slate-850 backdrop-blur-xs">
-            <span className={`w-1.5 h-1.5 rounded-full ${
-              faceStatus === 'ok' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' :
-              faceStatus === 'detecting' ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' :
-              'bg-red-500 shadow-[0_0_8px_#ef4444]'
-            }`} />
-            <span className="text-[8px] font-bold text-slate-300 uppercase tracking-wider">
-              {faceStatus === 'ok' ? 'Secure' :
-               faceStatus === 'detecting' ? 'Scan' :
-               faceStatus === 'no_face' ? 'No Face' : 'Multi-Face'}
-            </span>
+      {CAMERA_PROCTORING_ENABLED && (
+        <div className="fixed bottom-4 right-4 z-50 bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl p-2 shadow-2xl flex flex-col gap-2 w-[160px] animate-fade-in transition-all hover:border-accent/40">
+          <div className="relative aspect-video w-full bg-slate-950 rounded-lg overflow-hidden border border-slate-900">
+            <video
+              ref={videoRef}
+              muted
+              playsInline
+              className="w-full h-full object-cover scale-x-[-1]"
+            />
+            <div className="absolute top-1.5 left-1.5 flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-950/80 border border-slate-850 backdrop-blur-xs">
+              <span className={`w-1.5 h-1.5 rounded-full ${
+                faceStatus === 'ok' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' :
+                faceStatus === 'detecting' ? 'bg-amber-500 shadow-[0_0_8px_#f59e0b]' :
+                'bg-red-500 shadow-[0_0_8px_#ef4444]'
+              }`} />
+              <span className="text-[8px] font-bold text-slate-300 uppercase tracking-wider">
+                {faceStatus === 'ok' ? 'Secure' :
+                 faceStatus === 'detecting' ? 'Scan' :
+                 faceStatus === 'no_face' ? 'No Face' : 'Multi-Face'}
+              </span>
+            </div>
+          </div>
+          <div className="text-[9px] text-slate-400 font-bold tracking-wider text-center uppercase">
+            Proctor Active
           </div>
         </div>
-        <div className="text-[9px] text-slate-400 font-bold tracking-wider text-center uppercase">
-          Proctor Active
-        </div>
-      </div>
+      )}
     </>
   );
 }

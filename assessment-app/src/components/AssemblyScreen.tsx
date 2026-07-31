@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Question } from '../types';
+import { CAMERA_PROCTORING_ENABLED } from '../config';
 
 interface AssemblyScreenProps {
   name: string;
@@ -72,7 +73,7 @@ export default function AssemblyScreen({ name, attemptId, questions, onProceed, 
     breakdown[label] = (breakdown[label] || 0) + 1;
   });
 
-  const canProceed = hasCamera && isFullscreen;
+  const canProceed = (CAMERA_PROCTORING_ENABLED ? hasCamera : true) && isFullscreen;
 
   return (
     <div className="w-full max-w-[500px] mx-auto animate-fade-in">
@@ -112,25 +113,27 @@ export default function AssemblyScreen({ name, attemptId, questions, onProceed, 
             Security & Integrity Check:
           </h3>
           <div className="flex flex-col gap-2.5">
-            <div className="flex justify-between items-center bg-slate-950/30 p-2.5 rounded-md border border-slate-850">
-              <span className="text-xs text-slate-300 font-medium">1. Webcam Monitoring</span>
-              {hasCamera ? (
-                <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
-                  Granted ✓
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={requestCamera}
-                  className="text-xs font-semibold px-3 py-1 rounded bg-accent text-[#070a13] cursor-pointer hover:opacity-90 transition-all"
-                >
-                  Grant Access
-                </button>
-              )}
-            </div>
+            {CAMERA_PROCTORING_ENABLED && (
+              <div className="flex justify-between items-center bg-slate-950/30 p-2.5 rounded-md border border-slate-850">
+                <span className="text-xs text-slate-300 font-medium">1. Webcam Monitoring</span>
+                {hasCamera ? (
+                  <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                    Granted ✓
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={requestCamera}
+                    className="text-xs font-semibold px-3 py-1 rounded bg-accent text-[#070a13] cursor-pointer hover:opacity-90 transition-all"
+                  >
+                    Grant Access
+                  </button>
+                )}
+              </div>
+            )}
 
             <div className="flex justify-between items-center bg-slate-950/30 p-2.5 rounded-md border border-slate-850">
-              <span className="text-xs text-slate-300 font-medium">2. Fullscreen Mode</span>
+              <span className="text-xs text-slate-300 font-medium">{CAMERA_PROCTORING_ENABLED ? '2. Fullscreen Mode' : 'Fullscreen Mode'}</span>
               {isFullscreen ? (
                 <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
                   Active ✓

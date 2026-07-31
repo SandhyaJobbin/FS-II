@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   User, Star, Bed, HouseLine, DeviceMobile, WarningCircle, CheckCircle,
-  XCircle, CalendarBlank, ArrowRight, Table as TableIcon,
+  XCircle, CalendarBlank, ArrowRight, Table as TableIcon, CaretDown,
 } from '@phosphor-icons/react';
 import { TableContent } from '../../types';
 import { Entity, SectionData } from './parser';
@@ -34,24 +34,39 @@ function SectionShell({ icon, iconBg, iconColor, title, sourceTabs, empty, empty
   icon: React.ReactNode; iconBg: string; iconColor: string; title: string;
   sourceTabs: string[]; empty: boolean; emptyText: string; children?: React.ReactNode;
 }) {
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <div className={`bg-slate-900/60 border rounded-xl p-5 shadow-lg backdrop-blur-md flex flex-col gap-3 h-full ${empty ? 'border-slate-800/40 border-dashed' : 'border-slate-700/50'}`}>
-      <div className="flex items-start justify-between gap-2">
+      <button
+        type="button"
+        onClick={() => setCollapsed((c) => !c)}
+        disabled={empty}
+        className="flex items-start justify-between gap-2 text-left cursor-pointer disabled:cursor-default"
+      >
         <h4 className="text-[13px] font-bold text-white uppercase tracking-wide flex items-center gap-2">
           <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${iconBg} ${iconColor}`}>{icon}</span>
           {title}
         </h4>
-        {sourceTabs.length > 0 && (
-          <span className="text-[10px] text-slate-600 font-medium text-right shrink-0 max-w-[130px] truncate" title={sourceTabs.join(', ')}>
-            {sourceTabs.join(' + ')}
-          </span>
-        )}
-      </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {sourceTabs.length > 0 && (
+            <span className="text-[10px] text-slate-600 font-medium text-right max-w-[130px] truncate" title={sourceTabs.join(', ')}>
+              {sourceTabs.join(' + ')}
+            </span>
+          )}
+          {!empty && (
+            <CaretDown weight="bold" className={`w-3.5 h-3.5 text-slate-500 transition-transform shrink-0 ${collapsed ? '-rotate-90' : ''}`} />
+          )}
+        </div>
+      </button>
       {empty ? (
         <div className="flex-1 flex items-center justify-center py-6 text-center">
           <p className="text-xs text-slate-600 italic max-w-[220px]">{emptyText}</p>
         </div>
-      ) : children}
+      ) : !collapsed && (
+        <div className="max-h-[360px] overflow-y-auto pr-1">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

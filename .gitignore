@@ -11,3 +11,4 @@ build/
 !package-lock.json
 !tsconfig.json
 !.planning/**/*.json
+.planning/research/.cache/

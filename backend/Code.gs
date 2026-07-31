@@ -14208,7 +14208,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-01",
     "case_title": "High-Risk Coordinated Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Within one hour, six newly created accounts posted five-star reviews for the same property. The reviews contain very similar wording, were posted from the same IP address, and none are linked to verified bookings. One reviewer has uploaded travel photos and completed profile information",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the biggest risk indicator in this case?",
@@ -14250,7 +14256,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-01",
     "case_title": "High-Risk Coordinated Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Within one hour, six newly created accounts posted five-star reviews for the same property. The reviews contain very similar wording, were posted from the same IP address, and none are linked to verified bookings. One reviewer has uploaded travel photos and completed profile information",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the possibility of coordinated activity?",
@@ -14292,7 +14304,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-01",
     "case_title": "High-Risk Coordinated Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Within one hour, six newly created accounts posted five-star reviews for the same property. The reviews contain very similar wording, were posted from the same IP address, and none are linked to verified bookings. One reviewer has uploaded travel photos and completed profile information",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is NOT supported by the available evidence?",
@@ -14334,7 +14352,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-01",
     "case_title": "High-Risk Coordinated Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Within one hour, six newly created accounts posted five-star reviews for the same property. The reviews contain very similar wording, were posted from the same IP address, and none are linked to verified bookings. One reviewer has uploaded travel photos and completed profile information",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which business decision best balances customer trust and fraud prevention?",
@@ -14376,7 +14400,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-02",
     "case_title": "Trusted Reviewer with One Reported Issue",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has an eight-year account history, more than 300 reviews, verified bookings, and no previous violations. A property owner reports one recent review as suspicious. The review includes detailed information about the stay, but two sentences are similar to another review for the same property.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor reduces the overall risk in this case?",
@@ -14418,7 +14448,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-02",
     "case_title": "Trusted Reviewer with One Reported Issue",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has an eight-year account history, more than 300 reviews, verified bookings, and no previous violations. A property owner reports one recent review as suspicious. The review includes detailed information about the stay, but two sentences are similar to another review for the same property.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors should be considered when evaluating this case?",
@@ -14460,7 +14496,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-02",
     "case_title": "Trusted Reviewer with One Reported Issue",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has an eight-year account history, more than 300 reviews, verified bookings, and no previous violations. A property owner reports one recent review as suspicious. The review includes detailed information about the stay, but two sentences are similar to another review for the same property.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most reasonable based on the available evidence?",
@@ -14502,7 +14544,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-02",
     "case_title": "Trusted Reviewer with One Reported Issue",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has an eight-year account history, more than 300 reviews, verified bookings, and no previous violations. A property owner reports one recent review as suspicious. The review includes detailed information about the stay, but two sentences are similar to another review for the same property.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -14544,7 +14592,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-03",
     "case_title": "Mixed Evidence Review",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review is connected to a verified booking. However, the account was created two days ago, the review is very similar to another review for the same property, and the property owner has reported it as suspicious.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most balanced assessment of this case?",
@@ -14586,7 +14640,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-03",
     "case_title": "Mixed Evidence Review",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review is connected to a verified booking. However, the account was created two days ago, the review is very similar to another review for the same property, and the property owner has reported it as suspicious.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the level of concern?",
@@ -14628,7 +14688,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-03",
     "case_title": "Mixed Evidence Review",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review is connected to a verified booking. However, the account was created two days ago, the review is very similar to another review for the same property, and the property owner has reported it as suspicious.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is best supported by the evidence?",
@@ -14670,7 +14736,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-03",
     "case_title": "Mixed Evidence Review",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review is connected to a verified booking. However, the account was created two days ago, the review is very similar to another review for the same property, and the property owner has reported it as suspicious.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision demonstrates good judgment?",
@@ -14712,7 +14784,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-04",
     "case_title": "Repeat Policy Violation Pattern",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "An account has received four confirmed policy violations within the last year. A new report has been submitted, and the reported behavior appears similar to previous confirmed violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What factor contributes most to the risk assessment?",
@@ -14754,7 +14832,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-04",
     "case_title": "Repeat Policy Violation Pattern",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "An account has received four confirmed policy violations within the last year. A new report has been submitted, and the reported behavior appears similar to previous confirmed violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details are important when evaluating the risk?",
@@ -14796,7 +14880,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-04",
     "case_title": "Repeat Policy Violation Pattern",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "An account has received four confirmed policy violations within the last year. A new report has been submitted, and the reported behavior appears similar to previous confirmed violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is most accurate?",
@@ -14838,7 +14928,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-04",
     "case_title": "Repeat Policy Violation Pattern",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "An account has received four confirmed policy violations within the last year. A new report has been submitted, and the reported behavior appears similar to previous confirmed violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the biggest concern if repeated behavior is ignored?",
@@ -14880,7 +14976,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-05",
     "case_title": "Repeated Property Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has received 20 complaints over two months regarding misleading amenities. The complaints come from different travelers, and many describe the same issue. The property owner denies the claims and states that the complaints are incorrect.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What makes this case higher risk?",
@@ -14922,7 +15024,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-05",
     "case_title": "Repeated Property Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has received 20 complaints over two months regarding misleading amenities. The complaints come from different travelers, and many describe the same issue. The property owner denies the claims and states that the complaints are incorrect.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details strengthen the credibility of the complaints?",
@@ -14964,7 +15072,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-05",
     "case_title": "Repeated Property Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has received 20 complaints over two months regarding misleading amenities. The complaints come from different travelers, and many describe the same issue. The property owner denies the claims and states that the complaints are incorrect.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most reasonable?",
@@ -15006,7 +15120,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-05",
     "case_title": "Repeated Property Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has received 20 complaints over two months regarding misleading amenities. The complaints come from different travelers, and many describe the same issue. The property owner denies the claims and states that the complaints are incorrect.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best balances fairness and customer trust?",
@@ -15048,7 +15168,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-06",
     "case_title": "Report Without Supporting Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property owner reports that a review is fake. The review is linked to a completed booking, but neither the property owner nor the reviewer has provided additional supporting evidence. The reviewer has no previous policy violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most reasonable assessment of this case?",
@@ -15090,7 +15216,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-06",
     "case_title": "Report Without Supporting Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property owner reports that a review is fake. The review is linked to a completed booking, but neither the property owner nor the reviewer has provided additional supporting evidence. The reviewer has no previous policy violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors should influence the decision?",
@@ -15132,7 +15264,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-06",
     "case_title": "Report Without Supporting Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property owner reports that a review is fake. The review is linked to a completed booking, but neither the property owner nor the reviewer has provided additional supporting evidence. The reviewer has no previous policy violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is NOT supported by the available information?",
@@ -15174,7 +15312,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-06",
     "case_title": "Report Without Supporting Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property owner reports that a review is fake. The review is linked to a completed booking, but neither the property owner nor the reviewer has provided additional supporting evidence. The reviewer has no previous policy violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which approach demonstrates good judgment?",
@@ -15216,7 +15360,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-07",
     "case_title": "Coordinated Activity Across Multiple Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Four different accounts posted reviews for the same group of properties over several weeks. The reviews were posted within minutes of each other and follow a similar structure. Each account uses a different device and has verified bookings.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor creates the highest concern in this case?",
@@ -15258,7 +15408,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-07",
     "case_title": "Coordinated Activity Across Multiple Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Four different accounts posted reviews for the same group of properties over several weeks. The reviews were posted within minutes of each other and follow a similar structure. Each account uses a different device and has verified bookings.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details may indicate coordinated behavior?",
@@ -15300,7 +15456,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-07",
     "case_title": "Coordinated Activity Across Multiple Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Four different accounts posted reviews for the same group of properties over several weeks. The reviews were posted within minutes of each other and follow a similar structure. Each account uses a different device and has verified bookings.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most appropriate?",
@@ -15342,7 +15504,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-07",
     "case_title": "Coordinated Activity Across Multiple Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Four different accounts posted reviews for the same group of properties over several weeks. The reviews were posted within minutes of each other and follow a similar structure. Each account uses a different device and has verified bookings.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -15384,7 +15552,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-08",
     "case_title": "Unusual Activity From a Trusted User",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a seven-year account history posts eight reviews in one day while travelling across different cities. All reviews are linked to verified bookings. The reviews contain different writing styles and detailed stay experiences.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most balanced assessment of this activity?",
@@ -15426,7 +15600,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-08",
     "case_title": "Unusual Activity From a Trusted User",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a seven-year account history posts eight reviews in one day while travelling across different cities. All reviews are linked to verified bookings. The reviews contain different writing styles and detailed stay experiences.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors reduce the likelihood of suspicious activity?",
@@ -15468,7 +15648,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-08",
     "case_title": "Unusual Activity From a Trusted User",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a seven-year account history posts eight reviews in one day while travelling across different cities. All reviews are linked to verified bookings. The reviews contain different writing styles and detailed stay experiences.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement best reflects critical thinking in this case?",
@@ -15510,7 +15696,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-08",
     "case_title": "Unusual Activity From a Trusted User",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a seven-year account history posts eight reviews in one day while travelling across different cities. All reviews are linked to verified bookings. The reviews contain different writing styles and detailed stay experiences.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor should have the least influence on the final decision?",
@@ -15552,7 +15744,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-09",
     "case_title": "Listing Information Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property advertised free breakfast when they booked their stay. The property owner states that the listing was updated before the traveler's arrival. Records show that the listing was changed after the booking was completed but before check-in.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the key issue in this case?",
@@ -15594,7 +15792,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-09",
     "case_title": "Listing Information Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property advertised free breakfast when they booked their stay. The property owner states that the listing was updated before the traveler's arrival. Records show that the listing was changed after the booking was completed but before check-in.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors are important when assessing this dispute?",
@@ -15636,7 +15840,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-09",
     "case_title": "Listing Information Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property advertised free breakfast when they booked their stay. The property owner states that the listing was updated before the traveler's arrival. Records show that the listing was changed after the booking was completed but before check-in.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is NOT justified based only on the available information?",
@@ -15678,7 +15888,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-09",
     "case_title": "Listing Information Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property advertised free breakfast when they booked their stay. The property owner states that the listing was updated before the traveler's arrival. Records show that the listing was changed after the booking was completed but before check-in.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best demonstrates fair judgment?",
@@ -15720,7 +15936,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-10",
     "case_title": "Complex Risk Assessment",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A new account submits a detailed review linked to a verified booking. The review has similarities with another review, both accounts are connected through the same device, and one account has a previous suspicious activity report. However, both reviews contain unique details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Why is this case challenging?",
@@ -15762,7 +15984,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-10",
     "case_title": "Complex Risk Assessment",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A new account submits a detailed review linked to a verified booking. The review has similarities with another review, both accounts are connected through the same device, and one account has a previous suspicious activity report. However, both reviews contain unique details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the risk level?",
@@ -15804,7 +16032,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-10",
     "case_title": "Complex Risk Assessment",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A new account submits a detailed review linked to a verified booking. The review has similarities with another review, both accounts are connected through the same device, and one account has a previous suspicious activity report. However, both reviews contain unique details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement best represents the available evidence?",
@@ -15846,7 +16080,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-10",
     "case_title": "Complex Risk Assessment",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A new account submits a detailed review linked to a verified booking. The review has similarities with another review, both accounts are connected through the same device, and one account has a previous suspicious activity report. However, both reviews contain unique details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best balances risk management and fairness?",
@@ -15888,7 +16128,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-11",
     "case_title": "Multiple Reports Against One Reviewer",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has submitted 15 reviews in the past six months. Three different property owners have reported separate reviews, claiming they contain false information. All reviews are linked to verified bookings, and no previous policy violations have been confirmed.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most balanced assessment of this case?",
@@ -15930,7 +16176,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-11",
     "case_title": "Multiple Reports Against One Reviewer",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has submitted 15 reviews in the past six months. Three different property owners have reported separate reviews, claiming they contain false information. All reviews are linked to verified bookings, and no previous policy violations have been confirmed.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors are relevant when assessing the concern?",
@@ -15972,7 +16224,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-11",
     "case_title": "Multiple Reports Against One Reviewer",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has submitted 15 reviews in the past six months. Three different property owners have reported separate reviews, claiming they contain false information. All reviews are linked to verified bookings, and no previous policy violations have been confirmed.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is NOT supported by the available information?",
@@ -16014,7 +16272,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-11",
     "case_title": "Multiple Reports Against One Reviewer",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer has submitted 15 reviews in the past six months. Three different property owners have reported separate reviews, claiming they contain false information. All reviews are linked to verified bookings, and no previous policy violations have been confirmed.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which approach demonstrates sound judgment?",
@@ -16056,7 +16320,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-12",
     "case_title": "Shared Payment Method Across Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Three different accounts used the same payment method for bookings. The accounts belong to different names, travelled to different destinations, and have completed stays. No suspicious activity has previously been identified on any account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most reasonable interpretation of this situation?",
@@ -16098,7 +16368,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-12",
     "case_title": "Shared Payment Method Across Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Three different accounts used the same payment method for bookings. The accounts belong to different names, travelled to different destinations, and have completed stays. No suspicious activity has previously been identified on any account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details reduce the level of concern?",
@@ -16140,7 +16416,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-12",
     "case_title": "Shared Payment Method Across Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Three different accounts used the same payment method for bookings. The accounts belong to different names, travelled to different destinations, and have completed stays. No suspicious activity has previously been identified on any account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement best reflects critical thinking?",
@@ -16182,7 +16464,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-12",
     "case_title": "Shared Payment Method Across Accounts",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Three different accounts used the same payment method for bookings. The accounts belong to different names, travelled to different destinations, and have completed stays. No suspicious activity has previously been identified on any account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor would increase the risk level in this case?",
@@ -16224,7 +16512,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-13",
     "case_title": "Conflicting Claims About a Stay",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler claims they never stayed at a property and says the booking was unauthorized. Booking records show a completed stay, and the property owner has provided check-in records matching the booking details. The traveler continues to dispute the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What makes this case challenging?",
@@ -16266,7 +16560,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-13",
     "case_title": "Conflicting Claims About a Stay",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler claims they never stayed at a property and says the booking was unauthorized. Booking records show a completed stay, and the property owner has provided check-in records matching the booking details. The traveler continues to dispute the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors should influence the evaluation of this case?",
@@ -16308,7 +16608,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-13",
     "case_title": "Conflicting Claims About a Stay",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler claims they never stayed at a property and says the booking was unauthorized. Booking records show a completed stay, and the property owner has provided check-in records matching the booking details. The traveler continues to dispute the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most appropriate based on the information provided?",
@@ -16350,7 +16656,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-13",
     "case_title": "Conflicting Claims About a Stay",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler claims they never stayed at a property and says the booking was unauthorized. Booking records show a completed stay, and the property owner has provided check-in records matching the booking details. The traveler continues to dispute the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -16392,7 +16704,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-14",
     "case_title": "Sudden Increase in Positive Reviews",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property usually receives two to three reviews per month. Over one weekend, it receives 25 five-star reviews from accounts created within the same week. Many reviews are short and contain similar wording.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the strongest risk indicator in this case?",
@@ -16434,7 +16752,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-14",
     "case_title": "Sudden Increase in Positive Reviews",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property usually receives two to three reviews per month. Over one weekend, it receives 25 five-star reviews from accounts created within the same week. Many reviews are short and contain similar wording.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details contribute to the risk assessment?",
@@ -16476,7 +16800,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-14",
     "case_title": "Sudden Increase in Positive Reviews",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property usually receives two to three reviews per month. Over one weekend, it receives 25 five-star reviews from accounts created within the same week. Many reviews are short and contain similar wording.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is most accurate?",
@@ -16518,7 +16848,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-14",
     "case_title": "Sudden Increase in Positive Reviews",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property usually receives two to three reviews per month. Over one weekend, it receives 25 five-star reviews from accounts created within the same week. Many reviews are short and contain similar wording.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best balances fairness and risk management?",
@@ -16560,7 +16896,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-15",
     "case_title": "Repeated Verification Inconsistencies",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user has attempted identity verification four times in one week. Each submission contains a different document. Some documents appear valid, but personal information differs across submissions.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the primary concern in this case?",
@@ -16602,7 +16944,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-15",
     "case_title": "Repeated Verification Inconsistencies",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user has attempted identity verification four times in one week. Each submission contains a different document. Some documents appear valid, but personal information differs across submissions.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors increase the level of concern?",
@@ -16644,7 +16992,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-15",
     "case_title": "Repeated Verification Inconsistencies",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user has attempted identity verification four times in one week. Each submission contains a different document. Some documents appear valid, but personal information differs across submissions.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most reasonable?",
@@ -16686,7 +17040,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-15",
     "case_title": "Repeated Verification Inconsistencies",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user has attempted identity verification four times in one week. Each submission contains a different document. Some documents appear valid, but personal information differs across submissions.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which principle should guide the final decision?",
@@ -16728,7 +17088,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-16",
     "case_title": "Sudden Change in Account Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a five-year account history and consistent activity suddenly creates 20 reviews within two days. The reviews are for different properties across multiple locations. All reviews are linked to completed bookings, but the writing style is noticeably different from the user's previous reviews.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most appropriate assessment of this case?",
@@ -16770,7 +17136,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-16",
     "case_title": "Sudden Change in Account Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a five-year account history and consistent activity suddenly creates 20 reviews within two days. The reviews are for different properties across multiple locations. All reviews are linked to completed bookings, but the writing style is noticeably different from the user's previous reviews.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors reduce the risk level?",
@@ -16812,7 +17184,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-16",
     "case_title": "Sudden Change in Account Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a five-year account history and consistent activity suddenly creates 20 reviews within two days. The reviews are for different properties across multiple locations. All reviews are linked to completed bookings, but the writing style is noticeably different from the user's previous reviews.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor creates the most uncertainty in this case?",
@@ -16854,7 +17232,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-16",
     "case_title": "Sudden Change in Account Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user with a five-year account history and consistent activity suddenly creates 20 reviews within two days. The reviews are for different properties across multiple locations. All reviews are linked to completed bookings, but the writing style is noticeably different from the user's previous reviews.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement best reflects sound judgment?",
@@ -16896,7 +17280,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-17",
     "case_title": "Review Content Matches External Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a detailed review describing specific issues during a stay. The property owner claims the review is fake because the reviewer mentioned information that appears similar to details from another online source. The booking is verified, and the reviewer has no previous violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the key consideration in this case?",
@@ -16938,7 +17328,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-17",
     "case_title": "Review Content Matches External Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a detailed review describing specific issues during a stay. The property owner claims the review is fake because the reviewer mentioned information that appears similar to details from another online source. The booking is verified, and the reviewer has no previous violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors support the possibility that the review is genuine?",
@@ -16980,7 +17376,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-17",
     "case_title": "Review Content Matches External Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a detailed review describing specific issues during a stay. The property owner claims the review is fake because the reviewer mentioned information that appears similar to details from another online source. The booking is verified, and the reviewer has no previous violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most appropriate?",
@@ -17022,7 +17424,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-17",
     "case_title": "Review Content Matches External Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a detailed review describing specific issues during a stay. The property owner claims the review is fake because the reviewer mentioned information that appears similar to details from another online source. The booking is verified, and the reviewer has no previous violations.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -17064,7 +17472,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-18",
     "case_title": "Multiple Accounts With Similar Profiles",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Five accounts created within the same month have similar usernames, similar profile descriptions, and have only reviewed properties from the same city. Four accounts have completed bookings, while one account has no booking history.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the strongest risk indicator?",
@@ -17106,7 +17520,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-18",
     "case_title": "Multiple Accounts With Similar Profiles",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Five accounts created within the same month have similar usernames, similar profile descriptions, and have only reviewed properties from the same city. Four accounts have completed bookings, while one account has no booking history.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the concern level?",
@@ -17148,7 +17568,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-18",
     "case_title": "Multiple Accounts With Similar Profiles",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Five accounts created within the same month have similar usernames, similar profile descriptions, and have only reviewed properties from the same city. Four accounts have completed bookings, while one account has no booking history.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is most accurate?",
@@ -17190,7 +17616,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-18",
     "case_title": "Multiple Accounts With Similar Profiles",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "Five accounts created within the same month have similar usernames, similar profile descriptions, and have only reviewed properties from the same city. Four accounts have completed bookings, while one account has no booking history.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the biggest risk if such patterns are ignored?",
@@ -17232,7 +17664,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-19",
     "case_title": "Customer Complaint With Limited Details",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property listing was misleading but provides only a short message stating, \"The information was incorrect.\" No screenshots, booking details, or specific examples are provided. The property listing currently appears accurate.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the biggest challenge in this case?",
@@ -17274,7 +17712,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-19",
     "case_title": "Customer Complaint With Limited Details",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property listing was misleading but provides only a short message stating, \"The information was incorrect.\" No screenshots, booking details, or specific examples are provided. The property listing currently appears accurate.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors make it difficult to reach a conclusion?",
@@ -17316,7 +17760,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-19",
     "case_title": "Customer Complaint With Limited Details",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property listing was misleading but provides only a short message stating, \"The information was incorrect.\" No screenshots, booking details, or specific examples are provided. The property listing currently appears accurate.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is best supported by the evidence?",
@@ -17358,7 +17808,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-19",
     "case_title": "Customer Complaint With Limited Details",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler reports that a property listing was misleading but provides only a short message stating, \"The information was incorrect.\" No screenshots, booking details, or specific examples are provided. The property listing currently appears accurate.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision demonstrates fair judgment?",
@@ -17400,7 +17856,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-20",
     "case_title": "Conflicting Signals in a Fraud Report",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review has several risk indicators:\nThe account was recently created.\nThe review wording is similar to another review.\nThe reviewer has a verified booking.\nThe review includes detailed information about the stay.\nThe property owner disputes the review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Why is this case difficult to assess?",
@@ -17442,7 +17904,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-20",
     "case_title": "Conflicting Signals in a Fraud Report",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review has several risk indicators:\nThe account was recently created.\nThe review wording is similar to another review.\nThe reviewer has a verified booking.\nThe review includes detailed information about the stay.\nThe property owner disputes the review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase suspicion?",
@@ -17484,7 +17952,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-20",
     "case_title": "Conflicting Signals in a Fraud Report",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review has several risk indicators:\nThe account was recently created.\nThe review wording is similar to another review.\nThe reviewer has a verified booking.\nThe review includes detailed information about the stay.\nThe property owner disputes the review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which detail provides a factor supporting legitimacy?",
@@ -17526,7 +18000,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-20",
     "case_title": "Conflicting Signals in a Fraud Report",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review has several risk indicators:\nThe account was recently created.\nThe review wording is similar to another review.\nThe reviewer has a verified booking.\nThe review includes detailed information about the stay.\nThe property owner disputes the review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best reflects critical thinking?",
@@ -17568,7 +18048,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-21",
     "case_title": "Sudden Increase in Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has maintained a high rating for several years. Over the last month, the property received 12 complaints from different travelers stating that the actual experience did not match the listing description. The property owner claims that all complaints are from unhappy customers who misunderstood the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most important factor when assessing this situation?",
@@ -17610,7 +18096,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-21",
     "case_title": "Sudden Increase in Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has maintained a high rating for several years. Over the last month, the property received 12 complaints from different travelers stating that the actual experience did not match the listing description. The property owner claims that all complaints are from unhappy customers who misunderstood the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the concern level?",
@@ -17652,7 +18144,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-21",
     "case_title": "Sudden Increase in Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has maintained a high rating for several years. Over the last month, the property received 12 complaints from different travelers stating that the actual experience did not match the listing description. The property owner claims that all complaints are from unhappy customers who misunderstood the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is best supported by the available evidence?",
@@ -17694,7 +18192,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-21",
     "case_title": "Sudden Increase in Complaints",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property has maintained a high rating for several years. Over the last month, the property received 12 complaints from different travelers stating that the actual experience did not match the listing description. The property owner claims that all complaints are from unhappy customers who misunderstood the information.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -17736,7 +18240,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-22",
     "case_title": "Review Removed but New Complaint Submitted",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review was previously removed after a policy violation was confirmed. The same reviewer creates a new account and posts another review for the same property. The new review is linked to a verified booking, but the wording is similar to the previously removed review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the biggest risk indicator in this case?",
@@ -17778,7 +18288,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-22",
     "case_title": "Review Removed but New Complaint Submitted",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review was previously removed after a policy violation was confirmed. The same reviewer creates a new account and posts another review for the same property. The new review is linked to a verified booking, but the wording is similar to the previously removed review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors should influence the risk assessment?",
@@ -17820,7 +18336,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-22",
     "case_title": "Review Removed but New Complaint Submitted",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review was previously removed after a policy violation was confirmed. The same reviewer creates a new account and posts another review for the same property. The new review is linked to a verified booking, but the wording is similar to the previously removed review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is most accurate?",
@@ -17862,7 +18384,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-22",
     "case_title": "Review Removed but New Complaint Submitted",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A review was previously removed after a policy violation was confirmed. The same reviewer creates a new account and posts another review for the same property. The new review is linked to a verified booking, but the wording is similar to the previously removed review.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best balances fairness and risk management?",
@@ -17904,7 +18432,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-23",
     "case_title": "Legitimate Negative Review With Property Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a one-star review describing poor cleanliness and delayed service. The property owner reports the review, stating that it is unfair and damaging to their reputation. The booking is verified, and the review contains specific details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the main consideration in this case?",
@@ -17946,7 +18480,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-23",
     "case_title": "Legitimate Negative Review With Property Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a one-star review describing poor cleanliness and delayed service. The property owner reports the review, stating that it is unfair and damaging to their reputation. The booking is verified, and the review contains specific details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details support the possibility that the review is genuine?",
@@ -17988,7 +18528,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-23",
     "case_title": "Legitimate Negative Review With Property Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a one-star review describing poor cleanliness and delayed service. The property owner reports the review, stating that it is unfair and damaging to their reputation. The booking is verified, and the review contains specific details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is NOT justified?",
@@ -18030,7 +18576,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-23",
     "case_title": "Legitimate Negative Review With Property Dispute",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a one-star review describing poor cleanliness and delayed service. The property owner reports the review, stating that it is unfair and damaging to their reputation. The booking is verified, and the review contains specific details about the stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision demonstrates balanced judgment?",
@@ -18072,7 +18624,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-24",
     "case_title": "Coordinated Positive Reviews With Mixed Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property receives 15 positive reviews within three days. Most reviews come from newly created accounts, and many use similar phrases. However, five reviewers have verified bookings and provide detailed descriptions of their stays.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Why is this case challenging?",
@@ -18114,7 +18672,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-24",
     "case_title": "Coordinated Positive Reviews With Mixed Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property receives 15 positive reviews within three days. Most reviews come from newly created accounts, and many use similar phrases. However, five reviewers have verified bookings and provide detailed descriptions of their stays.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase suspicion?",
@@ -18156,7 +18720,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-24",
     "case_title": "Coordinated Positive Reviews With Mixed Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property receives 15 positive reviews within three days. Most reviews come from newly created accounts, and many use similar phrases. However, five reviewers have verified bookings and provide detailed descriptions of their stays.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement best reflects critical thinking?",
@@ -18198,7 +18768,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-24",
     "case_title": "Coordinated Positive Reviews With Mixed Evidence",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A property receives 15 positive reviews within three days. Most reviews come from newly created accounts, and many use similar phrases. However, five reviewers have verified bookings and provide detailed descriptions of their stays.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor reduces concern for some reviews?",
@@ -18240,7 +18816,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-25",
     "case_title": "Account Recovery and Suspicious Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user reports that their account was compromised and that several reviews were posted without their permission. Account activity shows a login from a new location before the reviews were submitted. However, the reviews are linked to completed bookings associated with the account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What makes this case complex?",
@@ -18282,7 +18864,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-25",
     "case_title": "Account Recovery and Suspicious Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user reports that their account was compromised and that several reviews were posted without their permission. Account activity shows a login from a new location before the reviews were submitted. However, the reviews are linked to completed bookings associated with the account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details are relevant when assessing this situation?",
@@ -18324,7 +18912,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-25",
     "case_title": "Account Recovery and Suspicious Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user reports that their account was compromised and that several reviews were posted without their permission. Account activity shows a login from a new location before the reviews were submitted. However, the reviews are linked to completed bookings associated with the account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most reasonable?",
@@ -18366,7 +18960,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-25",
     "case_title": "Account Recovery and Suspicious Activity",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A user reports that their account was compromised and that several reviews were posted without their permission. Account activity shows a login from a new location before the reviews were submitted. However, the reviews are linked to completed bookings associated with the account.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which principle should guide the final decision?",
@@ -18408,7 +19008,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-26",
     "case_title": "Multiple Accounts With Similar Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A group of six accounts has posted reviews for the same property over a two-week period. The accounts were created at different times, but they have similar profile details, similar writing styles, and frequently interact with each other’s reviews. Some accounts have verified bookings, while others do not.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the biggest risk indicator in this case?",
@@ -18450,7 +19056,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-26",
     "case_title": "Multiple Accounts With Similar Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A group of six accounts has posted reviews for the same property over a two-week period. The accounts were created at different times, but they have similar profile details, similar writing styles, and frequently interact with each other’s reviews. Some accounts have verified bookings, while others do not.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the concern level?",
@@ -18492,7 +19104,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-26",
     "case_title": "Multiple Accounts With Similar Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A group of six accounts has posted reviews for the same property over a two-week period. The accounts were created at different times, but they have similar profile details, similar writing styles, and frequently interact with each other’s reviews. Some accounts have verified bookings, while others do not.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is most appropriate?",
@@ -18534,7 +19152,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-26",
     "case_title": "Multiple Accounts With Similar Behavior",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A group of six accounts has posted reviews for the same property over a two-week period. The accounts were created at different times, but they have similar profile details, similar writing styles, and frequently interact with each other’s reviews. Some accounts have verified bookings, while others do not.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which principle should guide the decision?",
@@ -18576,7 +19200,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-27",
     "case_title": "Customer Complaint Against a Popular Property",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A highly rated property receives a complaint from a traveler claiming that the listing description was inaccurate. The property has thousands of positive reviews, and the owner states that one complaint should not affect their reputation.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which factor should have the greatest influence on the assessment?",
@@ -18618,7 +19248,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-27",
     "case_title": "Customer Complaint Against a Popular Property",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A highly rated property receives a complaint from a traveler claiming that the listing description was inaccurate. The property has thousands of positive reviews, and the owner states that one complaint should not affect their reputation.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors are relevant when evaluating the complaint?",
@@ -18660,7 +19296,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-27",
     "case_title": "Customer Complaint Against a Popular Property",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A highly rated property receives a complaint from a traveler claiming that the listing description was inaccurate. The property has thousands of positive reviews, and the owner states that one complaint should not affect their reputation.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -18702,7 +19344,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-27",
     "case_title": "Customer Complaint Against a Popular Property",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A highly rated property receives a complaint from a traveler claiming that the listing description was inaccurate. The property has thousands of positive reviews, and the owner states that one complaint should not affect their reputation.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision best demonstrates fair judgment?",
@@ -18744,7 +19392,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-28",
     "case_title": "Review With Contradictory Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a review stating that a property had no parking facilities. The property owner disputes this and provides evidence that parking was available. The listing at the time of booking mentioned parking, but the traveler claims they were unable to use it during their stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What makes this case difficult to assess?",
@@ -18786,7 +19440,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-28",
     "case_title": "Review With Contradictory Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a review stating that a property had no parking facilities. The property owner disputes this and provides evidence that parking was available. The listing at the time of booking mentioned parking, but the traveler claims they were unable to use it during their stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which factors should be considered when evaluating this case?",
@@ -18828,7 +19488,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-28",
     "case_title": "Review With Contradictory Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a review stating that a property had no parking facilities. The property owner disputes this and provides evidence that parking was available. The listing at the time of booking mentioned parking, but the traveler claims they were unable to use it during their stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement is most accurate?",
@@ -18870,7 +19536,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-28",
     "case_title": "Review With Contradictory Information",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A traveler posts a review stating that a property had no parking facilities. The property owner disputes this and provides evidence that parking was available. The listing at the time of booking mentioned parking, but the traveler claims they were unable to use it during their stay.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which decision reflects balanced reasoning?",
@@ -18912,7 +19584,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-29",
     "case_title": "Unusual Review Timing",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a negative review one day after a property owner receives a dispute related to the same booking. The property owner claims the review was posted as retaliation. The reviewer has a verified booking and has written similar reviews for other properties.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the key challenge in this case?",
@@ -18954,7 +19632,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-29",
     "case_title": "Unusual Review Timing",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a negative review one day after a property owner receives a dispute related to the same booking. The property owner claims the review was posted as retaliation. The reviewer has a verified booking and has written similar reviews for other properties.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details support the possibility that the review is genuine?",
@@ -18996,7 +19680,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-29",
     "case_title": "Unusual Review Timing",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a negative review one day after a property owner receives a dispute related to the same booking. The property owner claims the review was posted as retaliation. The reviewer has a verified booking and has written similar reviews for other properties.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which conclusion is best supported by the evidence?",
@@ -19038,7 +19728,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-29",
     "case_title": "Unusual Review Timing",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A reviewer posts a negative review one day after a property owner receives a dispute related to the same booking. The property owner claims the review was posted as retaliation. The reviewer has a verified booking and has written similar reviews for other properties.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which assumption should be avoided?",
@@ -19080,7 +19776,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-30",
     "case_title": "High-Risk Case With Conflicting Indicators",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A newly created account posts several reviews within a short period. The reviews are detailed and linked to verified bookings. However, the account shares a device with other accounts involved in suspicious activity, and the reviews contain similar phrases.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "What is the most accurate risk assessment?",
@@ -19122,7 +19824,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-30",
     "case_title": "High-Risk Case With Conflicting Indicators",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A newly created account posts several reviews within a short period. The reviews are detailed and linked to verified bookings. However, the account shares a device with other accounts involved in suspicious activity, and the reviews contain similar phrases.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_multi",
     "stem": "Which details increase the risk level?",
@@ -19164,7 +19872,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-30",
     "case_title": "High-Risk Case With Conflicting Indicators",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A newly created account posts several reviews within a short period. The reviews are detailed and linked to verified bookings. However, the account shares a device with other accounts involved in suspicious activity, and the reviews contain similar phrases.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which statement best reflects good decision-making?",
@@ -19206,7 +19920,13 @@ const QUESTIONS = [
     "level": null,
     "case_id": "ct-case-30",
     "case_title": "High-Risk Case With Conflicting Indicators",
-    "tabs": null,
+    "tabs": [
+    {
+        "name": "Case File",
+        "content": "A newly created account posts several reviews within a short period. The reviews are detailed and linked to verified bookings. However, the account shares a device with other accounts involved in suspicious activity, and the reviews contain similar phrases.",
+        "position": 1
+    }
+],
     "tables": null,
     "response_type": "mcq_single",
     "stem": "Which business decision best balances trust and risk prevention?",

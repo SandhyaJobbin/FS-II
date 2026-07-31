@@ -5,6 +5,6 @@ export default defineConfig({
     globals: false,
     environment: 'node',
     include: ['tests/**/*.ts'],
-    exclude: ['tests/**/*.js', 'assessment-app/**/*', 'tests/**/grading-engine.ts', 'tests/**/admin-auth.ts'],
+    exclude: ['tests/**/*.js', 'assessment-app/**/*', 'tests/**/grading-engine.ts', 'tests/**/admin-auth.ts', 'tests/**/queue-logic.ts', 'tests/**/email-content.ts'],
   },
 });

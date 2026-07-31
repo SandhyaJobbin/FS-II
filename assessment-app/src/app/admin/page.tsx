@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import ReportScreen from '../../components/ReportScreen';
 import { Report } from '../../types';
 
+const READY_STATUSES = ['submitted', 'graded', 'emailed'];
+
 interface CandidateRow {
   attemptId: string;
   name: string;
@@ -327,7 +329,7 @@ export default function AdminPage() {
               </thead>
               <tbody className="divide-y divide-slate-800/40 text-xs">
                 {filteredCandidates.map((row) => {
-                  const isSubmitted = row.status === 'submitted';
+                  const isSubmitted = READY_STATUSES.includes(row.status);
                   const recTier = row.recommendationTier || row.recommendation || '-';
                   const tierColorMap: Record<string, string> = {
                     'Strong Fit': 'text-emerald-400 bg-emerald-400/5 border border-emerald-400/20',
@@ -352,11 +354,13 @@ export default function AdminPage() {
                       <td className="py-3.5 px-4 text-slate-400">{formattedDate}</td>
                       <td className="py-3.5 px-4">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                          row.status === 'active' 
-                            ? 'text-sky-400 bg-sky-400/5 border-sky-400/20' 
+                          row.status === 'grading_failed'
+                            ? 'text-red-400 bg-red-400/10 border-red-500/30 font-bold animate-pulse'
+                            : row.status === 'active'
+                            ? 'text-sky-400 bg-sky-400/5 border-sky-400/20'
                             : 'text-emerald-400 bg-emerald-400/5 border-emerald-400/20'
                         }`}>
-                          {row.status}
+                          {row.status === 'grading_failed' ? 'Grading Failed' : row.status}
                         </span>
                       </td>
                       <td className="py-3.5 px-4 text-center font-extrabold text-white text-sm">

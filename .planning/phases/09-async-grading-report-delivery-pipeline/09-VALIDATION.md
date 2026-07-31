@@ -1,9 +1,9 @@
 ---
 phase: 09
 slug: async-grading-report-delivery-pipeline
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: final
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-07-31
 ---
 
@@ -38,14 +38,14 @@ created: 2026-07-31
 
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| TBD | TBD | TBD | ASYNC-01 | V4 Access Control | Candidate sees `ThankYouScreen.tsx` immediately on submit; no on-screen score/report rendered | manual | N/A — no frontend test runner configured | ❌ W0 | ⬜ pending |
-| TBD | TBD | TBD | ASYNC-02 | V5 Input Validation | Queue/trigger stage state machine (queued → graded → done/permanently_failed) and batch-selection logic survive tab close, independent of open connection | unit | `npx vitest run tests/async/test_queue.ts` | ❌ W0 | ⬜ pending |
-| TBD | TBD | TBD | ASYNC-03 | V8 Data Protection | `buildCandidateEmail(report)` output includes overall score, 3 trait scores, narrative insight, recommendation tier — and excludes violation data (D-04) | unit | `npx vitest run tests/async/test_email.ts` | ❌ W0 | ⬜ pending |
-| TBD | TBD | TBD | ASYNC-04 | V8 Data Protection | `buildRecruiterEmail(report, integritySummary)` includes violation/integrity summary + tier highlighted; `parseRecruiterEmails` correctly handles comma-separated/empty/whitespace `RECRUITER_EMAILS` (D-06/D-07) | unit | `npx vitest run tests/async/test_email.ts` | ❌ W0 | ⬜ pending |
-| TBD | TBD | TBD | ASYNC-05 | V7 Error Handling / Logging | Retry count increments per failed attempt, caps at 3 → `grading_failed` (D-11); `CandidateEmailStatus`/`RecruiterEmailStatus` track independently so an email-only retry never re-runs LLM grading | unit | `npx vitest run tests/async/test_queue.ts` | ❌ W0 | ⬜ pending |
+| 09-04 Task 1 | 09-04 | 1 | ASYNC-01 | V4 Access Control | Candidate sees `ThankYouScreen.tsx` immediately on submit; no on-screen score/report rendered | manual | N/A — no frontend test runner configured (grep-based `<verify>` on ThankYouScreen.tsx confirms no polling; full behavior confirmed live in 09-06 Task 2) | ✅ (09-04, W1) | ⬜ pending |
+| 09-03 Task 1 | 09-03 | 1 | ASYNC-02 | V5 Input Validation | Queue/trigger stage state machine (queued → graded → done/permanently_failed) and batch-selection logic survive tab close, independent of open connection | unit | `npx vitest run tests/async/test_queue.ts` | ✅ (09-03, W1) | ⬜ pending |
+| 09-03 Task 2 | 09-03 | 1 | ASYNC-03 | V8 Data Protection | `buildCandidateEmailContent(report)` output includes overall score, 3 trait scores, narrative insight, recommendation tier — and excludes violation data (D-04) | unit | `npx vitest run tests/async/test_email.ts` | ✅ (09-03, W1) | ⬜ pending |
+| 09-03 Task 2 | 09-03 | 1 | ASYNC-04 | V8 Data Protection | `buildRecruiterEmailContent(report, integritySummary)` includes violation/integrity summary + tier highlighted; `parseRecruiterEmails` correctly handles comma-separated/empty/whitespace `RECRUITER_EMAILS` (D-06/D-07) | unit | `npx vitest run tests/async/test_email.ts` | ✅ (09-03, W1) | ⬜ pending |
+| 09-03 Task 1 | 09-03 | 1 | ASYNC-05 | V7 Error Handling / Logging | Retry count increments per failed attempt, caps at 3 → `grading_failed` (D-11); `CandidateEmailStatus`/`RecruiterEmailStatus` track independently so an email-only retry never re-runs LLM grading | unit | `npx vitest run tests/async/test_queue.ts` | ✅ (09-03, W1) | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
-*Task ID / Plan / Wave columns are TBD until `gsd-planner` assigns concrete tasks in Step 8 — this table's Requirement→Test contract is what those tasks must satisfy.*
+*Task ID / Plan / Wave finalized: `gsd-planner` assigned concrete tasks across plans 09-01 through 09-06 (Wave 1: 09-01/09-02/09-03/09-04, Wave 2: 09-05, Wave 3: 09-06). Plan 09-03 (Wave 1, no dependencies) fulfills the Wave-0 test-infrastructure role referenced above — it has zero `depends_on` and is created alongside the implementation plans, giving `npm test` coverage for ASYNC-02/03/04/05 from the earliest wave. ASYNC-01 remains manual (no frontend test runner) but is grep-verified for the no-polling constraint in 09-04 and live-verified in 09-06 Task 2.*
 
 ---
 

@@ -430,22 +430,25 @@ MailApp.sendEmail(candidateEmail, "Your Fraud Support Assessment Results", "", {
 
 **If this table is empty:** N/A — see rows above.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the live deployment already have candidate attempts with `Status === "submitted"`?**
    - What we know: The codebase and product have clearly been in use (docx question banks, backup folders, a functioning admin panel) — real usage is plausible.
    - What's unclear: Whether the specific live Google Sheet backing the current deployment has any rows yet, and if so how many.
    - Recommendation: Planner/user should check the live Sheet directly (or the user can confirm from memory) before deciding whether Pattern 4's backward-compatible check is sufficient or whether a one-time backfill script is warranted. Given zero migration risk either way (Pattern 4 handles both cases), this doesn't need to block planning — just needs to be confirmed before the phase is considered "done."
+   - RESOLVED: Plan 09-01 Task 3 implements Pattern 4's backward-compatible `READY_STATUSES = ['submitted', 'graded', 'emailed']` gate on `handleGetAttemptReport`, which keeps any pre-Phase-9 `"submitted"` rows retrievable regardless of the answer to this question — no backfill script is required either way.
 
 2. **What Google account type (consumer vs. Workspace) hosts this Apps Script project?**
    - What we know: `MailApp` quotas differ by roughly 15x between the two tiers (100 vs 1,500 recipients/day).
    - What's unclear: Which tier applies here, and therefore how urgently the `getRemainingDailyQuota()` defer-don't-fail check (Pitfall 2) needs to be treated as a hard requirement vs. a nice-to-have.
    - Recommendation: Ask the user directly; in the meantime, plan for the `getRemainingDailyQuota()` check regardless, since it's cheap to implement and protects against both tiers' quotas equally.
+   - RESOLVED: Plan 09-02 Task 2 implements `sendCandidateEmailIfNeeded`/`sendRecruiterEmailIfNeeded` with a `MailApp.getRemainingDailyQuota() < 1` runtime check that defers (never fails/drops) a send when quota is exhausted, so the pipeline is safe under either account tier without needing to know which one applies.
 
 3. **Should `Attempts.Status = "emailed"` require both candidate AND recruiter email success, or candidate-only?**
    - What we know: D-06 explicitly says a misconfigured/empty `RECRUITER_EMAILS` must never block the candidate's flow. `Attempts.Status` has no per-recipient granularity (that lives on `PendingGrading`'s two separate `email_status` columns).
    - What's unclear: CONTEXT.md leaves the exact `Attempts.Status` wiring to research/planning discretion.
    - Recommendation (see Pattern 3): tie `Attempts.Status = "emailed"` to candidate-email success only, since that's the field the roadmap explicitly ties to candidate-facing outcome; recruiter email success/failure is tracked independently via `PendingGrading.RecruiterEmailStatus` and surfaced in the admin panel per D-12, without gating the attempt's overall terminal status.
+   - RESOLVED: Plan 09-02 Task 2 implements this exactly as recommended — `processQueueItem` calls `setAttemptsStatus(row.attemptId, "emailed")` gated only on `candidateResult === "sent"`; the recruiter send result is never passed to this gate, and is tracked independently via `RecruiterEmailStatus`.
 
 ## Environment Availability
 

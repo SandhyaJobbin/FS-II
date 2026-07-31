@@ -6,14 +6,14 @@ current_phase: 09
 current_phase_name: async-grading-report-delivery-pipeline
 status: executing
 stopped_at: Completed 09-02-PLAN.md
-last_updated: "2026-07-31T09:53:55.964Z"
+last_updated: "2026-07-31T10:10:04.994Z"
 last_activity: 2026-07-31
 last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 12
   completed_phases: 1
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 9
   percent: 8
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-29)
 ## Current Position
 
 Phase: 09 (async-grading-report-delivery-pipeline) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-07-31 — Phase 09 execution started
 
@@ -56,6 +56,7 @@ Last activity: 2026-07-31 — Phase 09 execution started
 | Phase 09 P01 | 15min | 3 tasks | 1 files |
 | Phase 09 P02 | 20min | 2 tasks | 1 files |
 | Phase 09 P04 | 25min | 3 tasks | 3 files |
+| Phase 09 P05 | 8min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 09]: Recovered pre-09-01 scoring/tier/narrative logic verbatim from git history (commit 4e03392) for AsyncGrading.gs since 09-01 had already removed it from Code.gs — Plan read_first pointed at now-stale Code.gs line numbers; context_note flagged this risk explicitly, so git show was used to get the exact removed logic rather than reconstructing it
 - [Phase 09]: READY_STATUSES allowlist kept as an identical plain-array literal on both backend/Code.gs and admin/page.tsx since no shared package exists between the two runtimes
 - [Phase 09]: admin/page.tsx renders a distinct red/pulsing 'Grading Failed' badge for grading_failed rows, reusing the existing violation-count warning badge's visual treatment, per D-12
+- [Phase ?]: Used check() (extract-then-compare) rather than paired has() calls for AsyncGrading retry cap and batch cap divergence checks, matching the existing ADMIN_TOKEN pattern in sync-check.ts
+- [Phase ?]: Deferred the 7 pre-existing Code.gs sync-check failures (caused by Phase 09-01 moving scoring logic to AsyncGrading.gs) to deferred-items.md -- out of scope for plan 09-05's files_modified
 
 ### Pending Todos
 
@@ -91,6 +94,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-31T09:44:09.938Z
+Last session: 2026-07-31T10:07:54.063Z
 Stopped at: Completed 09-02-PLAN.md
 Resume file: None

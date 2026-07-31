@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Async Reporting, Trust Repairs & Evaluation Quality
 current_phase: 09
-current_phase_name: not yet planned
+current_phase_name: async-grading-report-delivery-pipeline
 status: in_progress
-stopped_at: Phase 09 context gathered
-last_updated: "2026-07-31T06:06:58.317Z"
+stopped_at: Phase 09 planned -- 6 plans ready to execute
+last_updated: "2026-07-31T08:10:11.400Z"
 last_activity: 2026-07-31
-last_activity_desc: Phase 08 (all 4 plans) verified, fixed sync-check regex false-positives + gitignored package-lock.json blocker, committed, 90/90 tests passing
+last_activity_desc: Phase 09 planned (6 plans across 3 waves); plan-checker verification passed after 1 revision (0 blockers); requirements coverage 5/5; decision coverage 16/16
 progress:
   total_phases: 12
   completed_phases: 1
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-07-29)
 
 ## Current Position
 
-Phase: 09-async-grading-report-delivery-pipeline (not yet planned)
-Plan: Phase 08 complete (4/4 plans); Phase 9 needs planning
-Status: Phase 08 closed out and committed, ready to plan Phase 9
-Last activity: 2026-07-31 — Phase 08 (all 4 plans) verified, fixed sync-check regex false-positives + gitignored package-lock.json blocker, committed, 90/90 tests passing
+Phase: 09-async-grading-report-delivery-pipeline (planned, ready to execute)
+Plan: 6/6 plans drafted (09-01 through 09-06, waves 1-3); 0/6 executed
+Status: Planning complete -- plan-checker passed, requirements coverage 5/5 (ASYNC-01..05), decision coverage 16/16 (D-01..D-16); ready for /gsd-execute-phase
+Last activity: 2026-07-31 — Phase 09 planned and verified: gsd-plan-checker found 2 warnings on first pass (09-02 email_status enum discretion note, 500-line split gate), gsd-planner revised, recheck passed clean; decision-coverage gate caught missing D-05 citation, fixed directly
 
 ## Performance Metrics
 
@@ -84,6 +84,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-31T06:06:58.294Z
-Stopped at: Phase 09 context gathered
-Resume file: .planning/phases/09-async-grading-report-delivery-pipeline/09-CONTEXT.md
+Last session: 2026-07-31T08:10:11.400Z
+Stopped at: Phase 09 planned -- 6 plans ready to execute
+Resume file: .planning/phases/09-async-grading-report-delivery-pipeline/09-06-PLAN.md (run /gsd-execute-phase 09 next)

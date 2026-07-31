@@ -130,14 +130,21 @@ Plans:
 ### Phase 9: Async Grading & Report Delivery Pipeline
 **Goal**: doPost(submitAnswers) returns fast (~100-300ms) after enqueueing to a new PendingGrading queue sheet; a single recurring time-driven trigger drains the queue under LockService, calls extracted gradeAndFinalizeAttempt, sends candidate-report + recruiter-notification emails via MailApp with distinct email_status tracking; ThankYouScreen.tsx added (email-only delivery, no polling).
 **Depends on**: Phase 8
-**Requirements**: TBD (async report delivery, recruiter notification)
+**Requirements**: ASYNC-01, ASYNC-02, ASYNC-03, ASYNC-04, ASYNC-05
 **Success Criteria** (what must be TRUE):
   1. PendingGrading sheet exists as durable queue, separate from Attempts (no breaking of 6 numeric-indexed call sites)
   2. doPost validates + one appendRow + status write, returns under ~300ms
   3. Exactly one recurring processGradingQueue trigger installed at setup (never per-attempt) under LockService with retry/batch-cap
   4. MailApp candidate-report + recruiter-notification emails sent with distinct email_status (pending/sent/failed/retried); Attempts.Status enum extended pending_grading/graded/emailed/grading_failed
   5. ThankYouScreen.tsx shows confirmation + honest turnaround copy; no default polling (avoids reopening F-01 unauthenticated-report-read class)
-**Plans**: TBD
+**Plans**: 6 plans
+Plans:
+- [ ] 09-01-PLAN.md — Fast-enqueue doPost + PendingGrading schema + backward-compatible report gate (backend/Code.gs)
+- [ ] 09-02-PLAN.md — Extracted grading + email builders + queue-drain trigger worker (backend/AsyncGrading.gs, new)
+- [ ] 09-03-PLAN.md — Pure test mirrors for queue stage/retry logic and email content (tests/async/*)
+- [ ] 09-04-PLAN.md — ThankYouScreen.tsx + page.tsx rewire + admin panel backward-compat status check
+- [ ] 09-05-PLAN.md — sync-check.ts drift detection extension + test:async npm script
+- [ ] 09-06-PLAN.md — Manual deployment checkpoint + live end-to-end verification
 
 ### Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override
 **Goal**: Gemini responseSchema-constrained rubric grading replaces ad hoc evaluateOpenTextBatch; persisted rationale/transcript per open-text answer; recruiter-visible transcript + verdict + logged attributable override UI; distinct "ungraded" state never merged into "correct"; updated candidate-facing copy removing stale "fully automated, no human review" claims — ships together with compliance/trust safeguards.

@@ -196,6 +196,8 @@ function doGet(e) {
       return jsonResponse(handleGetAttemptReport(params.attemptId, params.token));
     } else if (action === "adminListCandidates") {
       return jsonResponse(handleAdminListCandidates(params.token));
+    } else if (action === "getAttemptTranscript") {
+      return jsonResponse(handleGetAttemptTranscript(params.attemptId, params.token));
     }
     
     return jsonResponse({ error: "Invalid action or method" }, 400);
@@ -226,8 +228,10 @@ function doPost(e) {
       return jsonResponse(handleLogIntegrity(data.attemptId, data.logType, data.details));
     } else if (action === "adminResetAttempt") {
       return jsonResponse(handleAdminResetAttempt(data.email, data.token));
+    } else if (action === "overrideVerdict") {
+      return jsonResponse(handleOverrideVerdict(data.attemptId, data.questionId, data.newVerdict, data.token));
     }
-    
+
     return jsonResponse({ error: "Invalid action" }, 400);
   } catch (err) {
     return jsonResponse({ error: err.toString() }, 500);
@@ -512,8 +516,117 @@ function handleGetAttemptReport(attemptId, token) {
       };
     }
   }
-  
+
   return { success: false, error: "Attempt not found" };
+}
+
+/**
+ * Phase 10 (GRADE-08): recruiter-only GET returning per-answer rubric transcript rows
+ * for a single attempt. Token-gated. Deliberately excludes OverrideTokenHash from the
+ * response — the hash is an internal audit field, not something the UI needs to render.
+ */
+function handleGetAttemptTranscript(attemptId, token) {
+  if (!attemptId) return { success: false, error: "Missing attempt ID" };
+  if (!checkAdminAuth(token)) return { success: false, error: "Unauthorized" };
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+  if (!transcriptsSheet) return { success: true, transcript: [] };
+
+  const data = transcriptsSheet.getDataRange().getValues();
+  const transcript = [];
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === attemptId) {
+      transcript.push({
+        questionId: data[i][1],
+        rubricVersion: data[i][2],
+        verdict: data[i][3],
+        criteriaMet: JSON.parse(data[i][4] || "[]"),
+        rationale: data[i][5] || "",
+        overrideVerdict: data[i][6] || null,
+        overrideAt: data[i][7] || null
+      });
+    }
+  }
+  return { success: true, transcript: transcript };
+}
+
+/**
+ * Phase 10 (GRADE-09): recruiter-only POST that flips an LLM verdict for a single answer.
+ *
+ * Order of operations is load-bearing:
+ *   1. Validate inputs before touching sheets
+ *   2. checkAdminAuth OUTSIDE the lock (cheap failure returns fast without holding the lock)
+ *   3. tryLock(10000ms) — longer than processGradingQueue's 5000ms so this yields to an in-flight drain
+ *   4. SHA-256-hash the token (Utilities.computeDigest) — plaintext token is NEVER written to the sheet
+ *   5. Overwrite OverrideVerdict / OverrideAt / OverrideTokenHash on the transcript row
+ *   6. Re-aggregate all score columns via computeAggregatesForAttempt (in AsyncGrading.gs)
+ *   7. Batch-write Attempts H:K + M:N + O — identical shape to gradeAndFinalizeAttempt
+ *   8. releaseLock in finally
+ *
+ * newVerdict enum:  "correct" | "incorrect" | "null" (the "null" sentinel writes an EMPTY
+ * OverrideVerdict, which effectiveVerdict() treats as "no override; fall through to Verdict"
+ * — this is the A4 reversibility mechanism.)
+ *
+ * Deliberately no candidate email on override (A3 - see below): recruiter sees the updated
+ * score in the admin panel via the returned report; candidate is not notified.
+ */
+function handleOverrideVerdict(attemptId, questionId, newVerdict, token) {
+  if (!attemptId || !questionId) return { success: false, error: "Missing attempt or question ID" };
+  if (!checkAdminAuth(token)) return { success: false, error: "Unauthorized" };
+  const allowed = ["correct", "incorrect", "null"];
+  if (!allowed.includes(newVerdict)) return { success: false, error: "Invalid verdict" };
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return { success: false, error: "Grading queue busy; try again in a moment." };
+
+  try {
+    // SHA-256 hex hash of the token (never store plaintext token in a sheet — T-10-03e mitigation)
+    const tokenHashBytes = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, token, Utilities.Charset.UTF_8);
+    const tokenHash = tokenHashBytes.map(function(b) { return ("0" + (b & 0xff).toString(16)).slice(-2); }).join("");
+    const overrideAt = new Date().toISOString();
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+    if (!transcriptsSheet) return { success: false, error: "GradingTranscripts sheet missing" };
+
+    const data = transcriptsSheet.getDataRange().getValues();
+    let rowIdx = -1;
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === attemptId && data[i][1] === questionId) {
+        rowIdx = i + 1;
+        break;
+      }
+    }
+    if (rowIdx === -1) return { success: false, error: "Transcript row not found for this question" };
+
+    // A4 reversibility: newVerdict === "null" writes an empty override string
+    const overrideCell = (newVerdict === "null") ? "" : newVerdict;
+    transcriptsSheet.getRange(rowIdx, 7, 1, 3).setValues([[overrideCell, overrideAt, tokenHash]]);
+
+    // Re-aggregate + batch-write Attempts (H:K + M:N + O) — same shape as plan 10-02 gradeAndFinalizeAttempt
+    const agg = computeAggregatesForAttempt(attemptId, ss);
+    const attemptsSheet = ss.getSheetByName("Attempts");
+    const attemptsData = attemptsSheet.getDataRange().getValues();
+    let attemptRowIdx = -1;
+    for (let i = 1; i < attemptsData.length; i++) {
+      if (attemptsData[i][0] === attemptId) { attemptRowIdx = i + 1; break; }
+    }
+    if (attemptRowIdx === -1) return { success: false, error: "Attempt row not found" };
+
+    attemptsSheet.getRange(attemptRowIdx, 8, 1, 4).setValues([[agg.overallPercentage, agg.englishPct, agg.researchPct, agg.criticalPct]]); // H:K
+    attemptsSheet.getRange(attemptRowIdx, 13, 1, 2).setValues([[agg.recommendationTier, agg.narrativeInsight]]); // M:N
+    attemptsSheet.getRange(attemptRowIdx, 15).setValue(agg.ungradedCount); // O
+
+    // A3: candidate is NOT emailed on override -- override is recruiter-visible only.
+    return {
+      success: true,
+      report: buildReportFromAttemptsRow(attemptId),
+      overrideAt: overrideAt
+    };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function handleAdminListCandidates(token) {

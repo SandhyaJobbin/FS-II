@@ -44,6 +44,135 @@ function effectiveVerdict(transcriptRow, responsesRow) {
   return (raw === 1 || raw === "1") ? "correct" : "incorrect";
 }
 
+/**
+ * Phase 10: Pure function for GRADE-04 recommendation tier (advisory only -- never auto-executes).
+ * Shared by gradeAndFinalizeAttempt (initial grading) and computeAggregatesForAttempt (post-override).
+ */
+function computeRecommendationTier(overallPercentage, criticalPct, researchPct) {
+  if (overallPercentage >= 80 && criticalPct >= 75 && researchPct >= 75) return "Strong Fit";
+  if (overallPercentage >= 60) return "Consider";
+  return "Not Recommended";
+}
+
+/**
+ * Phase 10: Pure function for GRADE-03 narrative insight -- driven exclusively by
+ * difficulty_tier === 'complex' items. Shared by gradeAndFinalizeAttempt and
+ * computeAggregatesForAttempt so post-override recomputation is byte-identical to initial grading.
+ */
+function computeNarrativeInsight(overallPercentage, englishPct, criticalPct, complexCorrect, complexTotal) {
+  const globalComplexTotal = complexTotal.english + complexTotal.attention + complexTotal.critical;
+  const globalComplexCorrect = complexCorrect.english + complexCorrect.attention + complexCorrect.critical;
+  const globalComplexFailed = globalComplexTotal - globalComplexCorrect;
+
+  if (globalComplexTotal === 0) {
+    if (overallPercentage >= 85) return "Outstanding consistency across all question types. Completed every section with high accuracy and methodical reasoning.";
+    if (overallPercentage >= 65) return "The candidate demonstrated solid baseline performance across all competency areas with room to develop in edge-case scenarios.";
+    return "Performance indicates developing competency. Additional coaching on fraud-logic fundamentals and critical reasoning is recommended.";
+  }
+  if (globalComplexFailed === 0) return "Exceptional investigative intuition. Resolved all complex and ambiguous fraud scenarios successfully -- showing the kind of judgment that catches what others miss.";
+  if (globalComplexFailed / globalComplexTotal < 0.25) return "Strong analytical reasoning under ambiguity. Maintained logical consistency when rules aren't explicitly clear -- a reliable signal for fraud-support readiness.";
+  if (globalComplexFailed / globalComplexTotal < 0.6) {
+    if (englishPct > 80 && criticalPct < 55) return "Excellent language precision, but encountered difficulty on ambiguous reasoning tasks. Targeted fraud-logic coaching would likely close the gap quickly.";
+    return "Solid effort on standard questions with some hesitation on complex edge cases. Performance suggests the candidate would benefit from guided exposure to ambiguous fraud scenarios.";
+  }
+  return "Struggled to maintain consistent reasoning under ambiguous conditions. Foundational fraud-logic training is recommended before a live support role.";
+}
+
+/**
+ * Phase 10: Re-aggregate all score/tier/narrative columns for an attempt by reading Responses +
+ * GradingTranscripts + Attempts and applying effectiveVerdict per question. Used by
+ * handleOverrideVerdict (plan 10-03) after a recruiter flips a verdict, so scores stay consistent
+ * with the A2 denominator-excludes-ungraded policy that gradeAndFinalizeAttempt applies at
+ * initial grading time. Returns everything the caller needs to batch-write Attempts H:K + M:N + O.
+ *
+ * @param {string} attemptId
+ * @param {Spreadsheet} ss
+ * @returns {{overallPercentage:number, englishPct:number, researchPct:number, criticalPct:number, recommendationTier:string, narrativeInsight:string, ungradedCount:number}}
+ */
+function computeAggregatesForAttempt(attemptId, ss) {
+  const attemptsSheet = ss.getSheetByName("Attempts");
+  const responsesSheet = ss.getSheetByName("Responses");
+  const transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+
+  // Find the attempt row to extract frozenIds.
+  const attemptsData = attemptsSheet.getDataRange().getValues();
+  let frozenIds = [];
+  for (let i = 1; i < attemptsData.length; i++) {
+    if (attemptsData[i][0] === attemptId) {
+      try { frozenIds = JSON.parse(attemptsData[i][6]); } catch (e) { frozenIds = []; }
+      break;
+    }
+  }
+
+  // Build lookups keyed by questionId for this attemptId.
+  const responsesData = responsesSheet ? responsesSheet.getDataRange().getValues() : [];
+  const responsesByQId = {};
+  for (let i = 1; i < responsesData.length; i++) {
+    if (responsesData[i][0] === attemptId) {
+      responsesByQId[responsesData[i][1]] = { IsCorrect: responsesData[i][3] };
+    }
+  }
+
+  const transcriptData = transcriptsSheet ? transcriptsSheet.getDataRange().getValues() : [];
+  const transcriptsByQId = {};
+  for (let i = 1; i < transcriptData.length; i++) {
+    if (transcriptData[i][0] === attemptId) {
+      transcriptsByQId[transcriptData[i][1]] = {
+        Verdict: transcriptData[i][3],
+        OverrideVerdict: transcriptData[i][6]
+      };
+    }
+  }
+
+  // Aggregate under A2 policy (ungraded excluded from denominator).
+  let correctCount = 0;
+  const bankCorrect = { english: 0, attention: 0, critical: 0 };
+  const bankTotal = { english: 0, attention: 0, critical: 0 };
+  const complexCorrect = { english: 0, attention: 0, critical: 0 };
+  const complexTotal = { english: 0, attention: 0, critical: 0 };
+  let ungradedCount = 0;
+
+  frozenIds.forEach(function(qId) {
+    const q = QUESTIONS.find(function(item) { return item.id === qId; });
+    if (!q) return;
+    let category = "english";
+    if (q.bank === "attention") category = "attention";
+    if (q.bank === "critical") category = "critical";
+
+    const verdict = effectiveVerdict(transcriptsByQId[qId] || null, responsesByQId[qId] || null);
+
+    if (verdict !== "ungraded") {
+      bankTotal[category]++;
+      if (verdict === "correct") {
+        correctCount++;
+        bankCorrect[category]++;
+      }
+      if (q.difficulty_tier === "complex") {
+        complexTotal[category]++;
+        if (verdict === "correct") complexCorrect[category]++;
+      }
+    } else {
+      ungradedCount++;
+    }
+  });
+
+  const totalGraded = bankTotal.english + bankTotal.attention + bankTotal.critical;
+  const overallPercentage = totalGraded ? Math.round((correctCount / totalGraded) * 100) : 0;
+  const englishPct = bankTotal.english ? Math.round((bankCorrect.english / bankTotal.english) * 100) : 0;
+  const researchPct = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
+  const criticalPct = bankTotal.critical ? Math.round((bankCorrect.critical / bankTotal.critical) * 100) : 0;
+
+  return {
+    overallPercentage: overallPercentage,
+    englishPct: englishPct,
+    researchPct: researchPct,
+    criticalPct: criticalPct,
+    recommendationTier: computeRecommendationTier(overallPercentage, criticalPct, researchPct),
+    narrativeInsight: computeNarrativeInsight(overallPercentage, englishPct, criticalPct, complexCorrect, complexTotal),
+    ungradedCount: ungradedCount
+  };
+}
+
 function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const attemptsSheet = ss.getSheetByName("Attempts");
@@ -218,52 +347,19 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   }
 
   // --- GRADE-02: Trait score percentages ---
-  const totalQuestions = frozenIds.length;
-  const overallPercentage = totalQuestions ? Math.round((correctCount / totalQuestions) * 100) : 0;
+  // A2 policy: denominator excludes ungraded — totalGraded is bankTotal sum, not frozenIds.length.
+  // Ungraded answers neither help nor hurt the candidate's percentage.
+  const totalGraded = bankTotal.english + bankTotal.attention + bankTotal.critical;
+  const overallPercentage = totalGraded ? Math.round((correctCount / totalGraded) * 100) : 0;
   const englishPct = bankTotal.english ? Math.round((bankCorrect.english / bankTotal.english) * 100) : 0;
   const researchPct = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
   const criticalPct = bankTotal.critical ? Math.round((bankCorrect.critical / bankTotal.critical) * 100) : 0;
 
-  // --- GRADE-04: Recommendation tier (advisory only -- never auto-executes a hire/reject decision) ---
-  let recommendationTier = "Not Recommended";
-  if (overallPercentage >= 80 && criticalPct >= 75 && researchPct >= 75) {
-    recommendationTier = "Strong Fit";
-  } else if (overallPercentage >= 60) {
-    recommendationTier = "Consider";
-  }
+  // --- GRADE-04: Recommendation tier (advisory only) — shared helper so post-override recomputation is byte-identical
+  const recommendationTier = computeRecommendationTier(overallPercentage, criticalPct, researchPct);
 
-  // --- GRADE-03: Narrative insight -- driven exclusively by difficulty_tier === 'complex' items ---
-  const globalComplexTotal = complexTotal.english + complexTotal.attention + complexTotal.critical;
-  const globalComplexCorrect = complexCorrect.english + complexCorrect.attention + complexCorrect.critical;
-  const globalComplexFailed = globalComplexTotal - globalComplexCorrect;
-
-  let narrativeInsight;
-  if (globalComplexTotal === 0) {
-    // No complex-tagged items in this assembled set -- use overall performance proxy
-    if (overallPercentage >= 85) {
-      narrativeInsight = "Outstanding consistency across all question types. Completed every section with high accuracy and methodical reasoning.";
-    } else if (overallPercentage >= 65) {
-      narrativeInsight = "The candidate demonstrated solid baseline performance across all competency areas with room to develop in edge-case scenarios.";
-    } else {
-      narrativeInsight = "Performance indicates developing competency. Additional coaching on fraud-logic fundamentals and critical reasoning is recommended.";
-    }
-  } else if (globalComplexFailed === 0) {
-    // Perfect on every complex/ambiguous item
-    narrativeInsight = "Exceptional investigative intuition. Resolved all complex and ambiguous fraud scenarios successfully -- showing the kind of judgment that catches what others miss.";
-  } else if (globalComplexFailed / globalComplexTotal < 0.25) {
-    // <25% of complex items failed
-    narrativeInsight = "Strong analytical reasoning under ambiguity. Maintained logical consistency when rules aren't explicitly clear -- a reliable signal for fraud-support readiness.";
-  } else if (globalComplexFailed / globalComplexTotal < 0.6) {
-    // 25-59% failed on complex items
-    if (englishPct > 80 && criticalPct < 55) {
-      narrativeInsight = "Excellent language precision, but encountered difficulty on ambiguous reasoning tasks. Targeted fraud-logic coaching would likely close the gap quickly.";
-    } else {
-      narrativeInsight = "Solid effort on standard questions with some hesitation on complex edge cases. Performance suggests the candidate would benefit from guided exposure to ambiguous fraud scenarios.";
-    }
-  } else {
-    // >=60% of complex items failed
-    narrativeInsight = "Struggled to maintain consistent reasoning under ambiguous conditions. Foundational fraud-logic training is recommended before a live support role.";
-  }
+  // --- GRADE-03: Narrative insight — shared helper so post-override recomputation is byte-identical
+  const narrativeInsight = computeNarrativeInsight(overallPercentage, englishPct, criticalPct, complexCorrect, complexTotal);
 
   // --- Atomic batch-write scored columns ---
   // Sheet columns: H=8(Overall), I=9(Lang), J=10(Research), K=11(Critical), M=13(Tier), N=14(Narrative), O=15(UngradedCount)

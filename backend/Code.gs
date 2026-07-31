@@ -47,6 +47,10 @@ const QUOTAS = {
 // Simple password/token for Recruiter Admin API requests
 const ADMIN_TOKEN = "FS_RECRUITER_SECRET_2026";
 
+function checkAdminAuth(token) {
+  return token === ADMIN_TOKEN;
+}
+
 // --- LLM AUTOGRADING CONFIG ---
 // API keys are read from Script Properties (Project Settings > Script Properties),
 // never hardcoded in source -- set GEMINI_API_KEY / FALLBACK_API_KEY there.
@@ -621,7 +625,7 @@ function handleSubmitAnswers(attemptId, candidateAnswers) {
 
 function handleGetAttemptReport(attemptId, token) {
   if (!attemptId) return { success: false, error: "Missing attempt ID" };
-  if (token !== ADMIN_TOKEN) return { success: false, error: "Unauthorized" };
+  if (!checkAdminAuth(token)) return { success: false, error: "Unauthorized" };
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const attemptsSheet = ss.getSheetByName("Attempts");
@@ -657,7 +661,7 @@ function handleGetAttemptReport(attemptId, token) {
 }
 
 function handleAdminListCandidates(token) {
-  if (token !== ADMIN_TOKEN) return { success: false, error: "Unauthorized" };
+  if (!checkAdminAuth(token)) return { success: false, error: "Unauthorized" };
   
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const attemptsSheet = ss.getSheetByName("Attempts");
@@ -683,7 +687,7 @@ function handleAdminListCandidates(token) {
 }
 
 function handleAdminResetAttempt(email, token) {
-  if (token !== ADMIN_TOKEN) return { success: false, error: "Unauthorized" };
+  if (!checkAdminAuth(token)) return { success: false, error: "Unauthorized" };
   if (!email) return { success: false, error: "Missing email" };
   
   const normEmail = normalizeEmail(email);

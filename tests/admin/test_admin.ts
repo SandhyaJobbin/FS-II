@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { checkAdminAuth, ADMIN_TOKEN } from './admin-auth';
 
 interface CandidateRow {
   attemptId: string;
@@ -9,23 +10,33 @@ interface CandidateRow {
   recommendationTier: string;
 }
 
-const ADMIN_TOKEN = 'FS_RECRUITER_SECRET_2026';
-
-function validatePasscode(input: string): boolean {
-  return input === ADMIN_TOKEN;
-}
-
 function hasViolationWarning(violationCount: number): boolean {
   return violationCount >= 3;
 }
 
-describe('Phase 6 — Recruiter Admin Panel Logic', () => {
-  it('should validate administrative passcode access correctly', () => {
-    expect(validatePasscode('FS_RECRUITER_SECRET_2026')).toBe(true);
-    expect(validatePasscode('WRONG_SECRET')).toBe(false);
-    expect(validatePasscode('')).toBe(false);
+describe('Admin Auth — checkAdminAuth (F-04)', () => {
+  it('valid token returns true', () => {
+    expect(checkAdminAuth(ADMIN_TOKEN)).toBe(true);
   });
 
+  it('wrong token returns false', () => {
+    expect(checkAdminAuth('WRONG_SECRET')).toBe(false);
+  });
+
+  it('empty string returns false', () => {
+    expect(checkAdminAuth('')).toBe(false);
+  });
+
+  it('undefined returns false', () => {
+    expect(checkAdminAuth(undefined as unknown as string)).toBe(false);
+  });
+
+  it('null returns false', () => {
+    expect(checkAdminAuth(null as unknown as string)).toBe(false);
+  });
+});
+
+describe('Phase 6 — Recruiter Admin Panel Logic', () => {
   it('should flag candidates with 3 or more violations with a warning flag', () => {
     expect(hasViolationWarning(0)).toBe(false);
     expect(hasViolationWarning(2)).toBe(false);
@@ -40,8 +51,8 @@ describe('Phase 6 — Recruiter Admin Panel Logic', () => {
     ];
 
     const filterList = (query: string) => {
-      return list.filter(c => 
-        c.name.toLowerCase().includes(query.toLowerCase()) || 
+      return list.filter(c =>
+        c.name.toLowerCase().includes(query.toLowerCase()) ||
         c.email.toLowerCase().includes(query.toLowerCase())
       );
     };

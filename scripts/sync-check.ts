@@ -2,8 +2,11 @@
  * sync-check.ts
  *
  * Detects grading-logic drift between tests/grading/grading-engine.ts and
- * backend/Code.gs. Cannot do exact diff (TS vs GAS), so focuses on semantic
- * equivalence of scoring rules, tier thresholds, bank mappings, and constants.
+ * backend/AsyncGrading.gs (scoring/tier/bank-mapping logic moved here from
+ * Code.gs in plan 09-01), plus tests/async/queue-logic.ts vs the same file's
+ * queue stage/retry/batch-cap logic. Cannot do exact diff (TS vs GAS), so
+ * focuses on semantic equivalence of scoring rules, tier thresholds, bank
+ * mappings, and constants.
  *
  * Exit code 0 = pass, 1 = divergence found.
  */
@@ -47,8 +50,8 @@ has(
   /Math\.round\(\(?correctCount\s*\/\s*total\w*\)?\s*\*\s*100\)/
 );
 has(
-  "Scoring formula uses Math.round (Code.gs)",
-  CODE_GS,
+  "Scoring formula uses Math.round (AsyncGrading.gs)",
+  ASYNC_GS,
   /Math\.round\(\(?correctCount\s*\/\s*total\w*\)?\s*\*\s*100\)/
 );
 
@@ -60,17 +63,17 @@ has("Strong Fit: critical >= 75 (mirror)", MIRROR, /critical\w*\s*>=\s*75/);
 has("Strong Fit: research >= 75 (mirror)", MIRROR, /research\w*\s*>=\s*75/);
 has("Consider: overall >= 60 (mirror)", MIRROR, /overall\w*\s*>=\s*60/);
 
-has("Strong Fit: overall >= 80 (Code.gs)", CODE_GS, /overall\w*\s*>=\s*80/);
-has("Strong Fit: critical >= 75 (Code.gs)", CODE_GS, /critical\w*\s*>=\s*75/);
-has("Strong Fit: research >= 75 (Code.gs)", CODE_GS, /research\w*\s*>=\s*75/);
-has("Consider: overall >= 60 (Code.gs)", CODE_GS, /overall\w*\s*>=\s*60/);
+has("Strong Fit: overall >= 80 (AsyncGrading.gs)", ASYNC_GS, /overall\w*\s*>=\s*80/);
+has("Strong Fit: critical >= 75 (AsyncGrading.gs)", ASYNC_GS, /critical\w*\s*>=\s*75/);
+has("Strong Fit: research >= 75 (AsyncGrading.gs)", ASYNC_GS, /research\w*\s*>=\s*75/);
+has("Consider: overall >= 60 (AsyncGrading.gs)", ASYNC_GS, /overall\w*\s*>=\s*60/);
 
 // ─── 3. Bank mapping ─────────────────────────────────────────────────────────
 // attention → research trait, critical → critical trait, default → english
 has("Bank mapping: attention → research (mirror)", MIRROR, /bank\s*===\s*["']attention["'][\s\S]{0,30}["']attention["']/);
 has("Bank mapping: critical → critical (mirror)", MIRROR, /bank\s*===\s*["']critical["'][\s\S]{0,30}["']critical["']/);
-has("Bank mapping: attention → research (Code.gs)", CODE_GS, /bank\s*===\s*["']attention["'][\s\S]{0,30}["']attention["']/);
-has("Bank mapping: critical → critical (Code.gs)", CODE_GS, /bank\s*===\s*["']critical["'][\s\S]{0,30}["']critical["']/);
+has("Bank mapping: attention → research (AsyncGrading.gs)", ASYNC_GS, /bank\s*===\s*["']attention["'][\s\S]{0,30}["']attention["']/);
+has("Bank mapping: critical → critical (AsyncGrading.gs)", ASYNC_GS, /bank\s*===\s*["']critical["'][\s\S]{0,30}["']critical["']/);
 
 // ─── 4. Response type handling ───────────────────────────────────────────────
 const mirrorTypes = ["mcq_single", "mcq_multi", "open_text", "hybrid"];

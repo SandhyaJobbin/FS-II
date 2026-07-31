@@ -51,6 +51,9 @@ function checkAdminAuth(token) {
   return token === ADMIN_TOKEN;
 }
 
+// Report-readiness allowlist: any Attempts.Status not in this list is treated as "not ready yet"
+const READY_STATUSES = ['submitted', 'graded', 'emailed'];
+
 // --- LLM AUTOGRADING CONFIG ---
 // API keys are read from Script Properties (Project Settings > Script Properties),
 // never hardcoded in source -- set GEMINI_API_KEY / FALLBACK_API_KEY there.
@@ -474,7 +477,7 @@ function handleGetAttemptReport(attemptId, token) {
   
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === attemptId) {
-      if (data[i][5] !== "submitted") {
+      if (!READY_STATUSES.includes(data[i][5])) {
         return { success: false, error: "Report is not available yet" };
       }
       

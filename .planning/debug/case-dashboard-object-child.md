@@ -58,6 +58,7 @@ DATA_END
 - timestamp: 2026-07-29 — `backend/Code.gs` embedded question bank: 160 questions with `"tabs": [` array-form, 0 object-form. Served raw via `tabs: q.tabs` (line 219) — no transform at boundary.
 - timestamp: 2026-07-29 — Crash mechanics: `Object.keys(tabs)` on array → keys `"0","1","2"` → tab buttons mislabeled with indices; `tabs["0"]` → full `{name, content, position}` object → React object-as-child crash in motion.div.
 - timestamp: 2026-07-29 — Three data stores agree on array shape (normalize.py, questions.json, Code.gs); only frontend consumers (assessment-app types + CaseDashboard, legacy frontend/app.js) and tests/assembly fixtures assumed keyed-object. Data model = canonical; consumers wrong.
+- timestamp: 2026-07-31 — Legacy `frontend/` directory deleted (Phase 8 F-06). `frontend/app.js` no longer exists.
 - timestamp: 2026-07-29 — Adjacent drift (same class, latent): `tables` typed `Record<string, string[][]>` in frontend but ingestion emits `List[TableContent]` `{caption, headers, rows, position}`. Not rendered anywhere in app → no crash today; type corrected preventively.
 
 ## Eliminated
@@ -75,5 +76,5 @@ DATA_END
 ## Postmortem (blameless)
 
 - why_not_caught: none — no contract check between ingestion output schema and frontend types; screen unreachable until two prior runtime errors fixed, so crash never executed in dev.
-- guard: frontend types now mirror ingestion pydantic models verbatim (Tab, TableContent); `tsc --noEmit` passes. Open risk: legacy `frontend/app.js` still assumes keyed-object tabs (same bug class, would show `[object Object]`) and `tests/assembly` fixtures use Record shape — flagged for follow-up, out of scope for this flow.
-- followups: legacy frontend/app.js tabs shape; tests/assembly fixture shape vs canonical List[Tab].
+- guard: frontend types now mirror ingestion pydantic models verbatim (Tab, TableContent); `tsc --noEmit` passes. Legacy `frontend/app.js` deleted (Phase 8 F-06). `tests/assembly` fixtures use Record shape — flagged for follow-up, out of scope for this flow.
+- followups: tests/assembly fixture shape vs canonical List[Tab] (legacy frontend/app.js resolved — directory removed).

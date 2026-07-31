@@ -165,12 +165,12 @@ Plans:
   4. MailApp candidate-report + recruiter-notification emails sent with distinct email_status (pending/sent/failed/retried); Attempts.Status enum extended pending_grading/graded/emailed/grading_failed
   5. ThankYouScreen.tsx shows confirmation + honest turnaround copy; no default polling (avoids reopening F-01 unauthenticated-report-read class)
 
-**Plans**: 1/6 plans executed
+**Plans**: 2/6 plans executed
 Plans:
 **Wave 1**
 
 - [x] 09-01-PLAN.md — Fast-enqueue doPost + PendingGrading schema + backward-compatible report gate (backend/Code.gs)
-- [ ] 09-02-PLAN.md — Extracted grading + email builders + queue-drain trigger worker (backend/AsyncGrading.gs, new)
+- [x] 09-02-PLAN.md — Extracted grading + email builders + queue-drain trigger worker (backend/AsyncGrading.gs, new)
 - [ ] 09-03-PLAN.md — Pure test mirrors for queue stage/retry logic and email content (tests/async/*)
 - [ ] 09-04-PLAN.md — ThankYouScreen.tsx + page.tsx rewire + admin panel backward-compat status check
 
@@ -254,7 +254,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 | 6. Shared Reporting & Recruiter Admin Panel | 1/1 | Complete | 2026-07-29 |
 | 7. Live Interview / Final Verification | 0/0 | Pending | — |
 | 8. Cleanup & Test-Safety Net | 4/4 | Complete | 2026-07-31 |
-| 9. Async Grading & Report Delivery Pipeline | 1/6 | In Progress|  |
+| 9. Async Grading & Report Delivery Pipeline | 2/6 | In Progress|  |
 | 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
 | 11. Recruiter Analytics Dashboard | 0/0 | Not started | — |
 | 12. Proctoring Upgrade (MediaPipe + Fullscreen) | 0/0 | Not started | — |

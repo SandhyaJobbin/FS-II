@@ -5,15 +5,15 @@ milestone_name: Async Reporting, Trust Repairs & Evaluation Quality
 current_phase: 09
 current_phase_name: async-grading-report-delivery-pipeline
 status: executing
-stopped_at: Phase 09 planned -- 6 plans ready to execute
-last_updated: "2026-07-31T08:42:09.665Z"
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-07-31T09:00:46.721Z"
 last_activity: 2026-07-31
 last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 12
   completed_phases: 1
   total_plans: 10
-  completed_plans: 5
+  completed_plans: 6
   percent: 8
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-29)
 ## Current Position
 
 Phase: 09 (async-grading-report-delivery-pipeline) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-07-31 — Phase 09 execution started
 
@@ -54,6 +54,7 @@ Last activity: 2026-07-31 — Phase 09 execution started
 
 *Updated after each plan completion*
 | Phase 09 P01 | 15min | 3 tasks | 1 files |
+| Phase 09 P02 | 20min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,7 @@ Recent decisions affecting current work:
 - Roadmap: Server-side/API-first build order (ingestion → entry+assembly → grading → gamified UI → integrity → reporting/admin) so the answer-key trust boundary and quota-math correctness are proven with fixtures before UI investment, per research SUMMARY.md and PITFALLS.md phase mapping.
 - Roadmap: ENTRY-01/02/03 grouped with ASSM-01/02/03 into Phase 2 (not left standalone) because "candidate can start an attempt" and "attempt gets a frozen question set" are one coherent, testable capability; ENTRY-04/ADMIN-04 (attempt-lock override) deferred to Phase 6 since it requires the admin panel to exist.
 - [Phase ?]: READY_STATUSES defined as an explicit allowlist (submitted/graded/emailed) rather than a deny-list, so future terminal-failure statuses are excluded by default
+- [Phase 09]: Recovered pre-09-01 scoring/tier/narrative logic verbatim from git history (commit 4e03392) for AsyncGrading.gs since 09-01 had already removed it from Code.gs — Plan read_first pointed at now-stale Code.gs line numbers; context_note flagged this risk explicitly, so git show was used to get the exact removed logic rather than reconstructing it
 
 ### Pending Todos
 
@@ -86,6 +88,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-31T08:37:09.629Z
-Stopped at: Phase 09 planned -- 6 plans ready to execute
-Resume file: .planning/phases/09-async-grading-report-delivery-pipeline/09-06-PLAN.md (run /gsd-execute-phase 09 next)
+Last session: 2026-07-31T09:00:46.664Z
+Stopped at: Completed 09-02-PLAN.md
+Resume file: None

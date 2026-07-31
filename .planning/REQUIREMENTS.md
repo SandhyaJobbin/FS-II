@@ -70,9 +70,9 @@
 
 - [ ] **ASYNC-01**: Candidate sees a "Thank You" screen immediately on submit — no instant on-screen score/report
 - [x] **ASYNC-02**: Grading/report computation continues server-side even if the candidate closes the tab (Apps Script queue + time-driven trigger, not tied to an open connection)
-- [ ] **ASYNC-03**: Candidate receives an emailed report (overall score, 3 trait scores, narrative insight, recommendation tier) once grading completes
-- [ ] **ASYNC-04**: Recruiter team receives an email per completed attempt summarizing concerns, positives, and results
-- [ ] **ASYNC-05**: Email delivery failures are tracked as a distinct status (not silently dropped) and are retryable
+- [x] **ASYNC-03**: Candidate receives an emailed report (overall score, 3 trait scores, narrative insight, recommendation tier) once grading completes
+- [x] **ASYNC-04**: Recruiter team receives an email per completed attempt summarizing concerns, positives, and results
+- [x] **ASYNC-05**: Email delivery failures are tracked as a distinct status (not silently dropped) and are retryable
 
 ### Grading Trust & Quality
 
@@ -185,9 +185,9 @@ Finalized during roadmap creation. See `.planning/ROADMAP.md` for full phase goa
 | ADMIN-05 | Phase 6: Shared Reporting & Recruiter Admin Panel | Complete |
 | ASYNC-01 | TBD (roadmap pending) | Pending |
 | ASYNC-02 | TBD (roadmap pending) | Complete |
-| ASYNC-03 | TBD (roadmap pending) | Pending |
-| ASYNC-04 | TBD (roadmap pending) | Pending |
-| ASYNC-05 | TBD (roadmap pending) | Pending |
+| ASYNC-03 | TBD (roadmap pending) | Complete |
+| ASYNC-04 | TBD (roadmap pending) | Complete |
+| ASYNC-05 | TBD (roadmap pending) | Complete |
 | GRADE-06 | TBD (roadmap pending) | Pending |
 | GRADE-07 | TBD (roadmap pending) | Pending |
 | GRADE-08 | TBD (roadmap pending) | Pending |

@@ -63,6 +63,8 @@ const FALLBACK_API_URL = "https://opencode.ai/zen/go/v1/chat/completions";
 const FALLBACK_MODEL = "gpt-4o"; // Or whichever model you want to use from OpenCode
 
 /**
+ * @deprecated Phase 10 -- replaced by evaluateWithRubric in backend/AsyncGrading.gs; retained for one release cycle for rollback (per RESEARCH.md § State of the Art). Do not call from new code.
+ *
  * Grades open-text and hybrid text responses in parallel using Gemini API, with fallback to OpenRouter/OpenAI.
  * @param {Array} gradingRequests - Array of objects: { qId, prompt, answer }
  * @returns {Object} Map of qId -> isCorrect (boolean)
@@ -345,10 +347,11 @@ function handleStartAttempt(name, email) {
   ]);
   
   // Retrieve public question structures (no answer keys!)
+  // SECURITY (Phase 10): This is an allowlist projection. Never add 'model_answer' or 'rubric' here — those fields ship grading logic and must remain server-side (see RESEARCH.md § Common Pitfalls — client-visible rubric leaks grading criteria).
   const clientQuestions = assembledIds.map(id => {
     const q = QUESTIONS.find(item => item.id === id);
     if (!q) return null;
-    
+
     // Deep clone and strip is_correct from options
     // difficulty_tier is NOT answer-key material — safe to include; needed by Phase 4 level UI
     return {
@@ -1912,6 +1915,12 @@ const QUESTIONS = [
     "stem": "Customer didn’t sent the screenshot so we can’t verify nothing.",
     "options": [],
     "model_answer": "The customer did not send the screenshot, so we are unable to verify the information.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 31,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -1933,6 +1942,12 @@ const QUESTIONS = [
     "stem": "This case is solve kindly check your account again.",
     "options": [],
     "model_answer": "This case has been resolved. Kindly check your account again.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 32,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -1954,6 +1969,12 @@ const QUESTIONS = [
     "stem": "Agent not able to open the link because it was expired.",
     "options": [],
     "model_answer": "The agent was unable to open the link because it had expired.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 33,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -1975,6 +1996,12 @@ const QUESTIONS = [
     "stem": "We are following up from two days but you not respond yet.",
     "options": [],
     "model_answer": "We have been following up for the past two days, but we have not yet received your response.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 34,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -1996,6 +2023,12 @@ const QUESTIONS = [
     "stem": "Kindly share the details fastly so we done the verification.",
     "options": [],
     "model_answer": "Kindly share the requested details as soon as possible so that we can complete the verification.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 35,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2017,6 +2050,12 @@ const QUESTIONS = [
     "stem": "The property owner say the review is fake.",
     "options": [],
     "model_answer": "The property owner stated that the review is fake.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 36,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2038,6 +2077,12 @@ const QUESTIONS = [
     "stem": "We didn't received enough evidences.",
     "options": [],
     "model_answer": "We did not receive sufficient evidence to proceed with the investigation.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 37,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2059,6 +2104,12 @@ const QUESTIONS = [
     "stem": "Please send us your booking ID for verify your stay.",
     "options": [],
     "model_answer": "Please provide your booking ID so that we can verify your stay.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 38,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2080,6 +2131,12 @@ const QUESTIONS = [
     "stem": "Your request already forwarded to our specialist team.",
     "options": [],
     "model_answer": "Your request has already been forwarded to our specialist team.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 39,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2101,6 +2158,12 @@ const QUESTIONS = [
     "stem": "We appreciate your patient during investigation.",
     "options": [],
     "model_answer": "We appreciate your patience during the investigation.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 40,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2122,6 +2185,12 @@ const QUESTIONS = [
     "stem": "Review has removed because violate our guideline.",
     "options": [],
     "model_answer": "The review has been removed because it violated our guidelines.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 41,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2143,6 +2212,12 @@ const QUESTIONS = [
     "stem": "Customer not provide insufficient evidence to continue investigation.",
     "options": [],
     "model_answer": "The customer has not provided sufficient evidence to continue the investigation.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 42,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2164,6 +2239,12 @@ const QUESTIONS = [
     "stem": "Please upload the document again because image are blurry.",
     "options": [],
     "model_answer": "Please upload the document again because the images are blurry.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 43,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2185,6 +2266,12 @@ const QUESTIONS = [
     "stem": "We can't process this request until documents is received.",
     "options": [],
     "model_answer": "We cannot process this request until the required documents are received.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 44,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2206,6 +2293,12 @@ const QUESTIONS = [
     "stem": "Kindly wait while we investigate your issue and update you soonest.",
     "options": [],
     "model_answer": "Kindly wait while we investigate your issue. We will update you as soon as possible.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 45,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2227,6 +2320,12 @@ const QUESTIONS = [
     "stem": "Your appeal was rejected because there have no enough evidence.",
     "options": [],
     "model_answer": "Your appeal was rejected because there was insufficient evidence to support your request.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 46,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2248,6 +2347,12 @@ const QUESTIONS = [
     "stem": "Please contact us back if you have any doubt.",
     "options": [],
     "model_answer": "Please contact us if you have any further questions.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 47,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2269,6 +2374,12 @@ const QUESTIONS = [
     "stem": "Investigation still in progress kindly don't create multiple tickets.",
     "options": [],
     "model_answer": "The investigation is still in progress. Kindly avoid creating multiple tickets, as this may delay the review process.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 48,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2290,6 +2401,12 @@ const QUESTIONS = [
     "stem": "The customer uploaded wrong attachment two time.",
     "options": [],
     "model_answer": "The customer uploaded the wrong attachment twice.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 49,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2311,6 +2428,12 @@ const QUESTIONS = [
     "stem": "We are unable verify your booking because booking details missing.",
     "options": [],
     "model_answer": "We are unable to verify your booking because the booking details are missing.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 50,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2332,6 +2455,12 @@ const QUESTIONS = [
     "stem": "The customer send the booking confirmation yesterday.",
     "options": [],
     "model_answer": "The customer sent the booking confirmation yesterday.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 51,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2353,6 +2482,12 @@ const QUESTIONS = [
     "stem": "We has reviewed the evidence provided by the traveler.",
     "options": [],
     "model_answer": "We have reviewed the evidence provided by the traveler.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 52,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2374,6 +2509,12 @@ const QUESTIONS = [
     "stem": "The investigation are currently in progress.",
     "options": [],
     "model_answer": "The investigation is currently in progress.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 53,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2395,6 +2536,12 @@ const QUESTIONS = [
     "stem": "The property owner didn't provided enough evidence.",
     "options": [],
     "model_answer": "The property owner did not provide sufficient evidence.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 54,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2416,6 +2563,12 @@ const QUESTIONS = [
     "stem": "Customer have uploaded the wrong attachment.",
     "options": [],
     "model_answer": "The customer has uploaded the wrong attachment.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 55,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2437,6 +2590,12 @@ const QUESTIONS = [
     "stem": "Please ensure all document is attached before submitting your appeal.",
     "options": [],
     "model_answer": "Please ensure all documents are attached before submitting your appeal.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 56,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2458,6 +2617,12 @@ const QUESTIONS = [
     "stem": "The review were removed because it violate our guidelines.",
     "options": [],
     "model_answer": "The review was removed because it violated our guidelines.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 57,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2479,6 +2644,12 @@ const QUESTIONS = [
     "stem": "We appreciate your patient while we investigate the issue.",
     "options": [],
     "model_answer": "We appreciate your patience while we investigate the issue.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 58,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2500,6 +2671,12 @@ const QUESTIONS = [
     "stem": "Kindly provide more informations regarding your booking.",
     "options": [],
     "model_answer": "Kindly provide more information regarding your booking.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 59,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2521,6 +2698,12 @@ const QUESTIONS = [
     "stem": "The agent was unable access the attachment.",
     "options": [],
     "model_answer": "The agent was unable to access the attachment.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
+      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
+      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+    ] },
+
     "position": 60,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2542,6 +2725,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA property owner is upset because a guest who never stayed at the property left a negative review. The review discusses the booking and check-in experience.\n\nExisting Macro:\nHello {{ticket.requester.first_name}},\nThanks for contact us. Your case is handle by our specialist team who checking integrity issue. They will review and make final decision.\nThank you for understand.\n{{ticket.assignee.signature}}\nContent Integrity Team",
     "options": [],
     "model_answer": "Hello {{ticket.requester.first_name}},\nThank you for contacting us.\nWe understand your concern regarding the review. After reviewing the information provided, we found that reviews discussing booking or check-in experiences may be allowed under our guidelines.\nIf you would like to share your perspective, we encourage you to post a management response to the review.\nThank you for your understanding.\n{{ticket.assignee.signature}}\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 61,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2563,6 +2752,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA traveler reports a review they believe is fake. After investigation, no policy violations were identified.\n\nExisting Macro:\nHi,\nWe not receive enough proof for continue investigation. Kindly send documents soon.\nRegards.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe understand your concern regarding the review. After carefully assessing the available information, we did not identify any violations of our review guidelines. As a result, the review will remain published.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 62,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2584,6 +2779,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA property owner reports multiple suspicious reviews. The investigation is still in progress.\n\nExisting Macro:\nHello,\nYour review already removed because violate guideline.\nThanks.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe appreciate you reporting your concerns. Our specialist team is currently investigating the reviews you reported. At this time, the investigation is still in progress, and no final decision has been made.\nWe will update you once the review is complete.\nThank you for your patience.\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 63,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2605,6 +2806,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA traveler submitted blurry ID documents. Additional verification is required.\n\nExisting Macro:\nHello,\nPlease don't send many ticket because delay investigation.\nThanks.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe reviewed the documents you submitted; however, they are not clear enough for verification. Kindly upload clear and readable copies of your ID so we can continue reviewing your case.\nThank you for your cooperation.\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 64,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2626,6 +2833,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA property owner appealed a review removal decision. After re-investigation, the original decision remains unchanged.\n\nExisting Macro:\nHi,\nCase still pending because documents not clear.\nRegards.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe appreciate you submitting an appeal. After carefully reviewing your case again, we have determined that the original decision remains unchanged based on our review guidelines.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 65,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2647,6 +2860,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA traveler has already submitted all the requested documents and is asking for an update on their case.\n\nExisting Macro:\nHello,\nPlease upload your booking confirmation and ID proof so we can start investigation. If not receive in 48 hours case will closed.\nThanks.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe have received the documents you submitted. Your case is currently under review by our specialist team, and we will notify you once the investigation has been completed.\nThank you for your patience.\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 66,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2668,6 +2887,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA customer accidentally uploaded the wrong booking confirmation and wants to know what to do next.\n\nExisting Macro:\nHi,\nYour booking has verified successfully. No further action require.\nRegards.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe noticed that the incorrect booking confirmation was uploaded. Kindly submit the correct booking confirmation so that we can verify your booking and continue reviewing your request.\nThank you for your cooperation.\nRegards,\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 67,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2689,6 +2914,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA property owner submitted an appeal, and the case has been escalated to the specialist team for further review.\n\nExisting Macro:\nHello,\nWe completed investigation and your appeal rejected permanently. This decision cannot change.\nThank you.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nYour appeal has been escalated to our specialist team for further review. They will carefully assess the available information before making a final decision.\nWe will update you once the review has been completed.\nThank you for your patience.\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 68,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2710,6 +2941,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA traveler contacted support because their review was removed for violating the review guidelines.\n\nExisting Macro:\nHi,\nYour review restored successfully. Thank you for waiting.\nRegards.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nAfter reviewing your appeal, we confirmed that your review was removed because it did not comply with our review guidelines. Therefore, the original decision remains unchanged.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 69,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -2731,6 +2968,12 @@ const QUESTIONS = [
     "stem": "Customer Scenario:\nA property owner has not provided sufficient evidence to support their report. The investigation cannot proceed until the required information is received.\n\nExisting Macro:\nHello,\nWe found policy violation and removed review already. Thank you for reporting.\nRegards.",
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nAt this time, we do not have sufficient information to continue our investigation. Kindly provide the requested supporting evidence so that we can review your report further.\nThank you for your cooperation.\nRegards,\nContent Integrity Team",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
+      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+    ] },
+
     "position": 70,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -3948,6 +4191,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the reported listing and confirmed it had already been removed due to policy violations. No further action is required from the user.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 96,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -3985,6 +4234,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the reported review and available evidence. No policy violations were identified, and the review will remain published. Case resolved.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 97,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4022,6 +4277,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Received the report regarding a potentially suspicious review. The case has been logged and is awaiting initial investigation.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 98,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4059,6 +4320,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the submitted documents and confirmed that all required information has been successfully verified. No further action is required.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 99,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4096,6 +4363,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the submitted verification documents and found the images to be unclear. Requested clearer copies to continue the verification process.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 100,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4133,6 +4406,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the reported concern and determined that booking details are required for further investigation. Awaiting the requested information from the customer.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 101,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4170,6 +4449,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the reported concern and determined that additional supporting evidence is required before the investigation can continue. Awaiting further information from the property owner.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 102,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4207,6 +4492,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Received the verification request and supporting documents. The case has been logged and is awaiting initial review.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 103,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4244,6 +4535,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the submitted verification document and confirmed that it has expired. Requested a valid document to continue the verification process.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 104,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",
@@ -4281,6 +4578,12 @@ const QUESTIONS = [
       }
     ],
     "model_answer": "Reviewed the property listing and the available booking information. The listing details were found to be accurate based on the investigation. Case resolved.",
+    rubric: { version: 1, criteria: [
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
+      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+    ] },
+
     "position": 105,
     "source": {
       "file": "FS Question Bank_English Proficiency V2.docx",

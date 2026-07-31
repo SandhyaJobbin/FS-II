@@ -443,192 +443,25 @@ function handleSubmitAnswers(attemptId, candidateAnswers) {
   if (attemptRow[5] !== "active") {
     return { success: false, error: "Attempt is already completed or inactive" };
   }
-  
-  const frozenIds = JSON.parse(attemptRow[6]);
-  const responsesSheet = ss.getSheetByName("Responses");
+
   const timestamp = new Date().toISOString();
-  
-  // --- GRADE-02: Per-bank counters (correct / total / complex-tagged) ---
-  let correctCount = 0;
-  let bankCorrect  = { english: 0, attention: 0, critical: 0 };
-  let bankTotal    = { english: 0, attention: 0, critical: 0 };
 
-  // GRADE-03: Track complex-difficulty items per-bank for narrative
-  let complexCorrect = { english: 0, attention: 0, critical: 0 };
-  let complexTotal   = { english: 0, attention: 0, critical: 0 };
+  // Fast-enqueue: hand off to PendingGrading queue, drained asynchronously by AsyncGrading.gs
+  ss.getSheetByName("PendingGrading").appendRow([
+    attemptId,
+    JSON.stringify(candidateAnswers),
+    timestamp,
+    "queued",
+    0,
+    "",
+    "",
+    "pending",
+    "pending"
+  ]);
 
-  const responseRows = [];
-  
-  // --- LLM PRE-PROCESSING ---
-  const llmRequests = [];
-  frozenIds.forEach(function(qId) {
-    const q = QUESTIONS.find(function(item) { return item.id === qId; });
-    if (!q) return;
-    const candidateAnswer = candidateAnswers[qId];
-    
-    if (q.response_type === "open_text") {
-      llmRequests.push({ qId: qId, prompt: q.stem, answer: candidateAnswer || "" });
-    } else if (q.response_type === "hybrid") {
-      let textPortion = "";
-      if (candidateAnswer && typeof candidateAnswer === "object" && candidateAnswer.text) {
-        textPortion = candidateAnswer.text;
-      }
-      llmRequests.push({ qId: qId, prompt: q.stem, answer: textPortion });
-    }
-  });
-  
-  const llmResults = evaluateOpenTextBatch(llmRequests);
+  attemptsSheet.getRange(attemptRowIdx, 5, 1, 2).setValues([[timestamp, "pending_grading"]]); // E:F
 
-
-  frozenIds.forEach(function(qId) {
-    const q = QUESTIONS.find(function(item) { return item.id === qId; });
-    if (!q) return;
-
-    const candidateAnswer = candidateAnswers[qId];
-    let isCorrect = false;
-
-    // Map bank to major scoring category
-    let category = "english";
-    if (q.bank === "attention") category = "attention";
-    if (q.bank === "critical")  category = "critical";
-
-    bankTotal[category]++;
-
-    // GRADE-01: Deterministic grading — pure function, no random/LLM step
-    if (q.response_type === "mcq_single") {
-      const correctOption = q.options.find(function(o) { return o.is_correct; });
-      const correctLetter = correctOption ? correctOption.letter : "";
-      isCorrect = !!(candidateAnswer && candidateAnswer.toString().toLowerCase() === correctLetter.toLowerCase());
-    } else if (q.response_type === "mcq_multi") {
-      const correctLetters = q.options
-        .filter(function(o) { return o.is_correct; })
-        .map(function(o) { return o.letter.toLowerCase(); })
-        .sort();
-      const submittedLetters = Array.isArray(candidateAnswer)
-        ? candidateAnswer.map(function(a) { return a.toString().toLowerCase(); }).sort()
-        : [];
-      isCorrect = (JSON.stringify(correctLetters) === JSON.stringify(submittedLetters));
-    } else if (q.response_type === "hybrid") {
-      // hybrid: grade MCQ selection + LLM text portion
-      const correctOption = q.options.find(function(o) { return o.is_correct; });
-      const correctLetter = correctOption ? correctOption.letter : "";
-      var selectedLetter = "";
-      if (candidateAnswer && typeof candidateAnswer === "object" && candidateAnswer.selected) {
-        selectedLetter = candidateAnswer.selected.toString().toLowerCase();
-      } else if (candidateAnswer && typeof candidateAnswer === "string") {
-        selectedLetter = candidateAnswer.toLowerCase();
-      }
-      const mcqCorrect = !!(selectedLetter && selectedLetter === correctLetter.toLowerCase());
-      const textCorrect = llmResults[qId] === true;
-      isCorrect = mcqCorrect && textCorrect;
-    } else {
-      // open_text: autograded by LLM
-      isCorrect = llmResults[qId] === true;
-    }
-
-    if (isCorrect) {
-      correctCount++;
-      bankCorrect[category]++;
-    }
-
-    // GRADE-03: Track difficulty_tier === 'complex' items specifically (NOT level/section)
-    if (q.difficulty_tier === "complex") {
-      complexTotal[category]++;
-      if (isCorrect) complexCorrect[category]++;
-    }
-
-    // GRADE-05: Log response — never include is_correct from options or answer_key fields
-    responseRows.push([
-      attemptId,
-      qId,
-      JSON.stringify(candidateAnswer || ""),
-      isCorrect ? 1 : 0,
-      timestamp
-    ]);
-  });
-
-  // Batch-write all responses (faster than individual appendRow calls)
-  if (responseRows.length > 0) {
-    const lastRow = responsesSheet.getLastRow();
-    responsesSheet.getRange(lastRow + 1, 1, responseRows.length, 5).setValues(responseRows);
-  }
-
-  // --- GRADE-02: Trait score percentages ---
-  const totalQuestions = frozenIds.length;
-  const overallPercentage = totalQuestions ? Math.round((correctCount / totalQuestions) * 100) : 0;
-  const englishPct  = bankTotal.english   ? Math.round((bankCorrect.english   / bankTotal.english)   * 100) : 0;
-  const researchPct = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
-  const criticalPct = bankTotal.critical  ? Math.round((bankCorrect.critical  / bankTotal.critical)  * 100) : 0;
-
-  // --- GRADE-04: Recommendation tier (advisory only — never auto-executes a hire/reject decision) ---
-  let recommendationTier = "Not Recommended";
-  if (overallPercentage >= 80 && criticalPct >= 75 && researchPct >= 75) {
-    recommendationTier = "Strong Fit";
-  } else if (overallPercentage >= 60) {
-    recommendationTier = "Consider";
-  }
-
-  // --- GRADE-03: Narrative insight — driven exclusively by difficulty_tier === 'complex' items ---
-  const globalComplexTotal   = complexTotal.english   + complexTotal.attention   + complexTotal.critical;
-  const globalComplexCorrect = complexCorrect.english + complexCorrect.attention + complexCorrect.critical;
-  const globalComplexFailed  = globalComplexTotal - globalComplexCorrect;
-
-  let narrativeInsight;
-  if (globalComplexTotal === 0) {
-    // No complex-tagged items in this assembled set — use overall performance proxy
-    if (overallPercentage >= 85) {
-      narrativeInsight = "Outstanding consistency across all question types. Completed every section with high accuracy and methodical reasoning.";
-    } else if (overallPercentage >= 65) {
-      narrativeInsight = "The candidate demonstrated solid baseline performance across all competency areas with room to develop in edge-case scenarios.";
-    } else {
-      narrativeInsight = "Performance indicates developing competency. Additional coaching on fraud-logic fundamentals and critical reasoning is recommended.";
-    }
-  } else if (globalComplexFailed === 0) {
-    // Perfect on every complex/ambiguous item
-    narrativeInsight = "Exceptional investigative intuition. Resolved all complex and ambiguous fraud scenarios successfully — showing the kind of judgment that catches what others miss.";
-  } else if (globalComplexFailed / globalComplexTotal < 0.25) {
-    // <25% of complex items failed
-    narrativeInsight = "Strong analytical reasoning under ambiguity. Maintained logical consistency when rules aren\u2019t explicitly clear — a reliable signal for fraud-support readiness.";
-  } else if (globalComplexFailed / globalComplexTotal < 0.6) {
-    // 25\u201359% failed on complex items
-    if (englishPct > 80 && criticalPct < 55) {
-      narrativeInsight = "Excellent language precision, but encountered difficulty on ambiguous reasoning tasks. Targeted fraud-logic coaching would likely close the gap quickly.";
-    } else {
-      narrativeInsight = "Solid effort on standard questions with some hesitation on complex edge cases. Performance suggests the candidate would benefit from guided exposure to ambiguous fraud scenarios.";
-    }
-  } else {
-    // ≥60% of complex items failed
-    narrativeInsight = "Struggled to maintain consistent reasoning under ambiguous conditions. Foundational fraud-logic training is recommended before a live support role.";
-  }
-
-  // --- Fix 4: Atomic batch-write all 7 scored columns in one range call ---
-  // Sheet columns: E=5(EndTime), F=6(Status), H=8(Overall), I=9(Lang), J=10(Research),
-  //                K=11(Critical), L=12(Violations — untouched), M=13(Tier), N=14(Narrative)
-  attemptsSheet.getRange(attemptRowIdx, 5, 1, 2).setValues([[timestamp, "submitted"]]); // E:F
-  attemptsSheet.getRange(attemptRowIdx, 8, 1, 4).setValues([[overallPercentage, englishPct, researchPct, criticalPct]]); // H:K
-  attemptsSheet.getRange(attemptRowIdx, 13, 1, 2).setValues([[recommendationTier, narrativeInsight]]); // M:N
-
-  // Get violation count (written separately by logIntegrity calls — read-only here)
-  const violationCount = parseInt(attemptsSheet.getRange(attemptRowIdx, 12).getValue() || 0);
-
-  // GRADE-05: Return scores + narrative only — zero answer-key fields exposed
-  return {
-    success: true,
-    report: {
-      attemptId:         attemptId,
-      name:              attemptRow[1],
-      email:             attemptRow[2],
-      overallScore:      overallPercentage,
-      traitScores: {
-        language: englishPct,
-        research: researchPct,
-        critical: criticalPct
-      },
-      recommendationTier: recommendationTier,
-      narrativeInsight:   narrativeInsight,
-      violationCount:     violationCount
-    }
-  };
+  return { success: true, status: "pending_grading" };
 }
 
 function handleGetAttemptReport(attemptId, token) {

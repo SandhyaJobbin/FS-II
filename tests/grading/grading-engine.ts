@@ -44,7 +44,7 @@ export interface GradeResult {
  * Accepts the frozen question objects (with is_correct) and the candidate
  * answers map, and returns the full graded result without any I/O.
  */
-export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: AnswersMap): GradeResult {
+export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: AnswersMap, llmResults?: Record<string, boolean>): GradeResult {
   let correctCount = 0;
   const bankCorrect  = { english: 0, attention: 0, critical: 0 };
   const bankTotal    = { english: 0, attention: 0, critical: 0 };
@@ -80,10 +80,12 @@ export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: A
       } else if (candidateAnswer && typeof candidateAnswer === 'string') {
         selectedLetter = candidateAnswer.toLowerCase();
       }
-      isCorrect = !!(selectedLetter && selectedLetter === correctLetter.toLowerCase());
+      const mcqCorrect = !!(selectedLetter && selectedLetter === correctLetter.toLowerCase());
+      const textCorrect = llmResults ? llmResults[q.id] === true : true;
+      isCorrect = mcqCorrect && textCorrect;
     } else {
-      // open_text: treated as correct
-      isCorrect = true;
+      // open_text: use LLM result when provided, default true (matches Code.gs no-API-key fallback)
+      isCorrect = llmResults ? llmResults[q.id] === true : true;
     }
 
     if (isCorrect) {

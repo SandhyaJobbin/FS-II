@@ -396,3 +396,110 @@ describe('GRADE-05 — Zero Answer-Key Leakage', () => {
     expect(serverQ.options.some((o) => 'is_correct' in o)).toBe(true);
   });
 });
+
+// ─── DIVERGENCE — LLM-scored paths (F-03) ──────────────────────────────────
+
+function makeOpenTextQ(id: string, bank: GasQuestion['bank'] = 'english', difficulty: GasQuestion['difficulty_tier'] = 'straightforward'): GasQuestion {
+  return {
+    id,
+    bank,
+    section: 'open',
+    response_type: 'open_text',
+    options: [],
+    difficulty_tier: difficulty,
+  };
+}
+
+function makeHybridQ(id: string, bank: GasQuestion['bank'], correctLetter: string, difficulty: GasQuestion['difficulty_tier'] = 'moderate'): GasQuestion {
+  return {
+    id,
+    bank,
+    section: 'hybrid',
+    response_type: 'hybrid',
+    difficulty_tier: difficulty,
+    options: [
+      { letter: 'A', text: 'Option A', is_correct: correctLetter === 'A' },
+      { letter: 'B', text: 'Option B', is_correct: correctLetter === 'B' },
+      { letter: 'C', text: 'Option C', is_correct: correctLetter === 'C' },
+      { letter: 'D', text: 'Option D', is_correct: correctLetter === 'D' },
+    ],
+  };
+}
+
+describe('DIVERGENCE — LLM-scored paths (F-03)', () => {
+  it('open_text with llmResults={ot1: true} → counted correct', () => {
+    const q = makeOpenTextQ('ot1');
+    const r = gradeAttempt([q], { ot1: 'any text' }, { ot1: true });
+    expect(r.perQuestion[0].isCorrect).toBe(true);
+    expect(r.traitScores.language).toBe(100);
+  });
+
+  it('open_text with llmResults={ot1: false} → counted incorrect', () => {
+    const q = makeOpenTextQ('ot1');
+    const r = gradeAttempt([q], { ot1: 'bad text' }, { ot1: false });
+    expect(r.perQuestion[0].isCorrect).toBe(false);
+    expect(r.traitScores.language).toBe(0);
+  });
+
+  it('open_text with no llmResults → defaults to correct (backward compat)', () => {
+    const q = makeOpenTextQ('ot1');
+    const r = gradeAttempt([q], { ot1: 'any text' });
+    expect(r.perQuestion[0].isCorrect).toBe(true);
+    expect(r.traitScores.language).toBe(100);
+  });
+
+  it('hybrid with MCQ correct + llmResults={h1: true} → correct', () => {
+    const q = makeHybridQ('h1', 'english', 'A');
+    const r = gradeAttempt([q], { h1: { selected: 'A', text: 'good' } }, { h1: true });
+    expect(r.perQuestion[0].isCorrect).toBe(true);
+  });
+
+  it('hybrid with MCQ correct + llmResults={h1: false} → incorrect (text fails)', () => {
+    const q = makeHybridQ('h1', 'english', 'A');
+    const r = gradeAttempt([q], { h1: { selected: 'A', text: 'bad' } }, { h1: false });
+    expect(r.perQuestion[0].isCorrect).toBe(false);
+  });
+
+  it('hybrid with MCQ wrong + llmResults={h1: true} → incorrect (MCQ fails)', () => {
+    const q = makeHybridQ('h1', 'english', 'A');
+    const r = gradeAttempt([q], { h1: { selected: 'B', text: 'good' } }, { h1: true });
+    expect(r.perQuestion[0].isCorrect).toBe(false);
+  });
+
+  it('LLM scores integrate into overallScore correctly (weighted by question count)', () => {
+    const q1 = makeOpenTextQ('ot1', 'english');
+    const q2 = makeQ('mcq1', 'english', 'grammar', 'A');
+    // ot1 correct (via LLM), mcq1 correct
+    const r = gradeAttempt([q1, q2], { mcq1: 'A' }, { ot1: true });
+    expect(r.overallScore).toBe(100); // 2/2
+    // ot1 wrong (via LLM), mcq1 correct
+    const r2 = gradeAttempt([q1, q2], { mcq1: 'A' }, { ot1: false });
+    expect(r2.overallScore).toBe(50); // 1/2
+  });
+
+  it('LLM scores affect trait scores for correct bank', () => {
+    const q1 = makeOpenTextQ('ot1', 'english');
+    const q2 = makeOpenTextQ('ot2', 'english');
+    // Both correct via LLM
+    const r = gradeAttempt([q1, q2], {}, { ot1: true, ot2: true });
+    expect(r.traitScores.language).toBe(100);
+    // One correct via LLM
+    const r2 = gradeAttempt([q1, q2], {}, { ot1: true, ot2: false });
+    expect(r2.traitScores.language).toBe(50);
+  });
+
+  it('divergence guard — if Code.gs scoring weight changes, fixture catches it', () => {
+    const questions = [
+      makeQ('e1', 'english', 'grammar', 'A'),
+      makeQ('e2', 'english', 'grammar', 'B'),
+      makeQ('a1', 'attention', 'l1', 'A'),
+      makeQ('c1', 'critical', 'ct', 'A'),
+    ];
+    const answers: AnswersMap = { e1: 'A', e2: 'B', a1: 'A', c1: 'Z' }; // 3/4 = 75%
+    const r = gradeAttempt(questions, answers);
+    expect(r.overallScore).toBe(75);
+    expect(r.traitScores.language).toBe(100);
+    expect(r.traitScores.research).toBe(100);
+    expect(r.traitScores.critical).toBe(0);
+  });
+});

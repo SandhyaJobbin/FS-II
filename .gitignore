@@ -8,5 +8,6 @@ dist/
 build/
 *.json
 !package.json
+!package-lock.json
 !tsconfig.json
 !.planning/**/*.json

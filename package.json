@@ -11,11 +11,13 @@
     "test": "vitest run",
     "test:assembly": "vitest run tests/assembly/test_assembly.ts",
     "test:grading": "vitest run tests/grading/test_grading.ts",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sync-check": "npx tsx scripts/sync-check.ts"
   },
   "keywords": [],
   "devDependencies": {
     "@types/node": "^26.1.2",
+    "tsx": "^4.23.1",
     "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   }

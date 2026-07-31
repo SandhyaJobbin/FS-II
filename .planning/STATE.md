@@ -4,16 +4,16 @@ milestone: v1.1
 milestone_name: Async Reporting, Trust Repairs & Evaluation Quality
 current_phase: 09
 current_phase_name: async-grading-report-delivery-pipeline
-status: in_progress
+status: executing
 stopped_at: Phase 09 planned -- 6 plans ready to execute
-last_updated: "2026-07-31T08:10:11.400Z"
+last_updated: "2026-07-31T08:42:09.665Z"
 last_activity: 2026-07-31
-last_activity_desc: Phase 09 planned (6 plans across 3 waves); plan-checker verification passed after 1 revision (0 blockers); requirements coverage 5/5; decision coverage 16/16
+last_activity_desc: Phase 09 execution started
 progress:
   total_phases: 12
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 10
+  completed_plans: 5
   percent: 8
 ---
 
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-29)
 
 **Core value:** Every candidate gets a fair, consistent, fully automated read on their language ability, attention-to-detail/research skill, and critical thinking under ambiguous fraud scenarios — without requiring a human to grade or score a single answer.
-**Current focus:** Completed End-to-End
+**Current focus:** Phase 09 — async-grading-report-delivery-pipeline
 
 ## Current Position
 
-Phase: 09-async-grading-report-delivery-pipeline (planned, ready to execute)
-Plan: 6/6 plans drafted (09-01 through 09-06, waves 1-3); 0/6 executed
-Status: Planning complete -- plan-checker passed, requirements coverage 5/5 (ASYNC-01..05), decision coverage 16/16 (D-01..D-16); ready for /gsd-execute-phase
-Last activity: 2026-07-31 — Phase 09 planned and verified: gsd-plan-checker found 2 warnings on first pass (09-02 email_status enum discretion note, 500-line split gate), gsd-planner revised, recheck passed clean; decision-coverage gate caught missing D-05 citation, fixed directly
+Phase: 09 (async-grading-report-delivery-pipeline) — EXECUTING
+Plan: 2 of 6
+Status: Ready to execute
+Last activity: 2026-07-31 — Phase 09 execution started
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Last activity: 2026-07-31 — Phase 09 planned and verified: gsd-plan-checker fo
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 09 P01 | 15min | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,7 @@ Recent decisions affecting current work:
 
 - Roadmap: Server-side/API-first build order (ingestion → entry+assembly → grading → gamified UI → integrity → reporting/admin) so the answer-key trust boundary and quota-math correctness are proven with fixtures before UI investment, per research SUMMARY.md and PITFALLS.md phase mapping.
 - Roadmap: ENTRY-01/02/03 grouped with ASSM-01/02/03 into Phase 2 (not left standalone) because "candidate can start an attempt" and "attempt gets a frozen question set" are one coherent, testable capability; ENTRY-04/ADMIN-04 (attempt-lock override) deferred to Phase 6 since it requires the admin panel to exist.
+- [Phase ?]: READY_STATUSES defined as an explicit allowlist (submitted/graded/emailed) rather than a deny-list, so future terminal-failure statuses are excluded by default
 
 ### Pending Todos
 
@@ -84,6 +86,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-31T08:10:11.400Z
+Last session: 2026-07-31T08:37:09.629Z
 Stopped at: Phase 09 planned -- 6 plans ready to execute
 Resume file: .planning/phases/09-async-grading-report-delivery-pipeline/09-06-PLAN.md (run /gsd-execute-phase 09 next)

@@ -24,6 +24,26 @@ function parseRecruiterEmails(raw) {
 
 // --- GRADING (moved verbatim from the old synchronous handleSubmitAnswers) ---
 
+/**
+ * Phase 10: Resolve the effective verdict for a single answer, following the precedence
+ *   OverrideVerdict (recruiter) > Verdict (LLM rubric) > IsCorrect (legacy boolean) > "ungraded"
+ *
+ * Mirrored byte-equivalent semantically in tests/grading/rubric-grader.ts by plan 10-04;
+ * any change to precedence must land in BOTH files in the SAME PR (Pitfall 2 / sync-check gate).
+ *
+ * @param {Object} transcriptRow - Row from GradingTranscripts sheet ({OverrideVerdict, Verdict, ...}) or null.
+ * @param {Object} responsesRow  - Row from Responses sheet ({IsCorrect: 0|1|"ungraded"}) or null.
+ * @returns {"correct"|"incorrect"|"ungraded"}
+ */
+function effectiveVerdict(transcriptRow, responsesRow) {
+  if (transcriptRow && transcriptRow.OverrideVerdict) return transcriptRow.OverrideVerdict;
+  if (transcriptRow && transcriptRow.Verdict) return transcriptRow.Verdict;
+  if (!responsesRow) return "ungraded";
+  const raw = responsesRow.IsCorrect;
+  if (raw === "ungraded") return "ungraded";
+  return (raw === 1 || raw === "1") ? "correct" : "incorrect";
+}
+
 function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const attemptsSheet = ss.getSheetByName("Attempts");
@@ -44,6 +64,7 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
 
   const frozenIds = JSON.parse(attemptRow[6]);
   const candidateAnswers = JSON.parse(submittedAnswersJson);
+  const questionsById = QUESTIONS.reduce(function(acc, q) { acc[q.id] = q; return acc; }, {});
   const name = attemptRow[1];
   const email = attemptRow[2];
 
@@ -59,7 +80,11 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   let complexCorrect = { english: 0, attention: 0, critical: 0 };
   let complexTotal = { english: 0, attention: 0, critical: 0 };
 
+  // Phase 10 (GRADE-07): count ungraded per-attempt for surfacing in report + dashboard
+  let ungradedCount = 0;
+
   const responseRows = [];
+  const transcriptRows = [];
 
   // --- LLM PRE-PROCESSING ---
   const llmRequests = [];
@@ -79,27 +104,27 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
     }
   });
 
-  const llmResults = evaluateOpenTextBatch(llmRequests);
+  // Phase 10 (GRADE-06): rubric-based structured grading with responseSchema, replacing evaluateOpenTextBatch
+  const rubricResults = evaluateWithRubric(llmRequests, questionsById);
 
   frozenIds.forEach(function(qId) {
     const q = QUESTIONS.find(function(item) { return item.id === qId; });
     if (!q) return;
 
     const candidateAnswer = candidateAnswers[qId];
-    let isCorrect = false;
+    let verdict = "incorrect";      // "correct" | "incorrect" | "ungraded"
+    let transcript = null;          // rubric result for open_text/hybrid — feeds GradingTranscripts row
 
     // Map bank to major scoring category
     let category = "english";
     if (q.bank === "attention") category = "attention";
     if (q.bank === "critical") category = "critical";
 
-    bankTotal[category]++;
-
     // GRADE-01: Deterministic grading -- pure function, no random/LLM step
     if (q.response_type === "mcq_single") {
       const correctOption = q.options.find(function(o) { return o.is_correct; });
       const correctLetter = correctOption ? correctOption.letter : "";
-      isCorrect = !!(candidateAnswer && candidateAnswer.toString().toLowerCase() === correctLetter.toLowerCase());
+      verdict = !!(candidateAnswer && candidateAnswer.toString().toLowerCase() === correctLetter.toLowerCase()) ? "correct" : "incorrect";
     } else if (q.response_type === "mcq_multi") {
       const correctLetters = q.options
         .filter(function(o) { return o.is_correct; })
@@ -108,9 +133,9 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
       const submittedLetters = Array.isArray(candidateAnswer)
         ? candidateAnswer.map(function(a) { return a.toString().toLowerCase(); }).sort()
         : [];
-      isCorrect = (JSON.stringify(correctLetters) === JSON.stringify(submittedLetters));
+      verdict = (JSON.stringify(correctLetters) === JSON.stringify(submittedLetters)) ? "correct" : "incorrect";
     } else if (q.response_type === "hybrid") {
-      // hybrid: grade MCQ selection + LLM text portion
+      // hybrid: grade MCQ selection + rubric-graded text portion
       const correctOption = q.options.find(function(o) { return o.is_correct; });
       const correctLetter = correctOption ? correctOption.letter : "";
       var selectedLetter = "";
@@ -120,38 +145,76 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
         selectedLetter = candidateAnswer.toLowerCase();
       }
       const mcqCorrect = !!(selectedLetter && selectedLetter === correctLetter.toLowerCase());
-      const textCorrect = llmResults[qId] === true;
-      isCorrect = mcqCorrect && textCorrect;
+      const rubricResult = rubricResults[qId];
+      transcript = rubricResult || null;
+      if (rubricResult && rubricResult.verdict === "ungraded") {
+        // rubric graded ungraded -> whole hybrid answer is ungraded (A2 denominator policy)
+        verdict = "ungraded";
+      } else {
+        const textCorrect = rubricResult && rubricResult.verdict === "correct";
+        verdict = (mcqCorrect && textCorrect) ? "correct" : "incorrect";
+      }
     } else {
-      // open_text: autograded by LLM
-      isCorrect = llmResults[qId] === true;
+      // open_text: autograded by rubric
+      const rubricResult = rubricResults[qId];
+      transcript = rubricResult || null;
+      verdict = rubricResult ? rubricResult.verdict : "ungraded";
     }
 
-    if (isCorrect) {
-      correctCount++;
-      bankCorrect[category]++;
+    // A2 denominator policy: ungraded is EXCLUDED from bankTotal/bankCorrect/complex tallies
+    if (verdict !== "ungraded") {
+      bankTotal[category]++;
+      if (verdict === "correct") {
+        correctCount++;
+        bankCorrect[category]++;
+      }
+      // GRADE-03: Track difficulty_tier === 'complex' items specifically (NOT level/section)
+      if (q.difficulty_tier === "complex") {
+        complexTotal[category]++;
+        if (verdict === "correct") complexCorrect[category]++;
+      }
+    } else {
+      ungradedCount++;
     }
 
-    // GRADE-03: Track difficulty_tier === 'complex' items specifically (NOT level/section)
-    if (q.difficulty_tier === "complex") {
-      complexTotal[category]++;
-      if (isCorrect) complexCorrect[category]++;
-    }
-
-    // GRADE-05: Log response -- never include is_correct from options or answer_key fields
+    // GRADE-05: Log response -- never include is_correct from options or answer_key fields.
+    // IsCorrect domain extended {0,1} -> {0, 1, "ungraded"} per RESEARCH.md Runtime State Inventory.
     responseRows.push([
       attemptId,
       qId,
       JSON.stringify(candidateAnswer || ""),
-      isCorrect ? 1 : 0,
+      verdict === "ungraded" ? "ungraded" : (verdict === "correct" ? 1 : 0),
       timestamp
     ]);
+
+    // Phase 10 (GRADE-06): persist a transcript row per rubric-graded answer.
+    // OverrideVerdict / OverrideAt / OverrideTokenHash are populated by plan 10-03's handleOverrideVerdict.
+    if (transcript) {
+      transcriptRows.push([
+        attemptId,
+        qId,
+        (q.rubric && q.rubric.version) || 1,
+        verdict,
+        JSON.stringify(transcript.criteriaMet || []),
+        transcript.rationale || "",
+        "",
+        "",
+        ""
+      ]);
+    }
   });
 
   // Batch-write all responses (faster than individual appendRow calls)
   if (responseRows.length > 0) {
     const lastRow = responsesSheet.getLastRow();
     responsesSheet.getRange(lastRow + 1, 1, responseRows.length, 5).setValues(responseRows);
+  }
+
+  // Phase 10: batch-write GradingTranscripts rows (9 columns matches Task 1 header)
+  if (transcriptRows.length > 0) {
+    const transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+    const lastTranscriptRow = transcriptsSheet.getLastRow();
+    transcriptsSheet.getRange(lastTranscriptRow + 1, 1, transcriptRows.length, 9).setValues(transcriptRows);
   }
 
   // --- GRADE-02: Trait score percentages ---
@@ -203,9 +266,10 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   }
 
   // --- Atomic batch-write scored columns ---
-  // Sheet columns: H=8(Overall), I=9(Lang), J=10(Research), K=11(Critical), M=13(Tier), N=14(Narrative)
+  // Sheet columns: H=8(Overall), I=9(Lang), J=10(Research), K=11(Critical), M=13(Tier), N=14(Narrative), O=15(UngradedCount)
   attemptsSheet.getRange(attemptRowIdx, 8, 1, 4).setValues([[overallPercentage, englishPct, researchPct, criticalPct]]); // H:K
   attemptsSheet.getRange(attemptRowIdx, 13, 1, 2).setValues([[recommendationTier, narrativeInsight]]); // M:N
+  attemptsSheet.getRange(attemptRowIdx, 15).setValue(ungradedCount); // O — Phase 10 GRADE-07
 
   // Mark grading stage complete. EndTime (column 5) is untouched -- plan 09-01 already set it at enqueue time.
   attemptsSheet.getRange(attemptRowIdx, 6).setValue("graded");
@@ -226,7 +290,8 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
     },
     recommendationTier: recommendationTier,
     narrativeInsight: narrativeInsight,
-    violationCount: violationCount
+    violationCount: violationCount,
+    ungradedCount: ungradedCount
   };
 }
 
@@ -237,19 +302,21 @@ function buildReportFromAttemptsRow(attemptId) {
 
   for (let i = 1; i < data.length; i++) {
     if (data[i][0] === attemptId) {
+      const row = data[i];
       return {
-        attemptId: data[i][0],
-        name: data[i][1],
-        email: data[i][2],
-        overallScore: data[i][7],
+        attemptId: row[0],
+        name: row[1],
+        email: row[2],
+        overallScore: row[7],
         traitScores: {
-          language: data[i][8],
-          research: data[i][9],
-          critical: data[i][10]
+          language: row[8],
+          research: row[9],
+          critical: row[10]
         },
-        recommendationTier: data[i][12],
-        narrativeInsight: data[i][13],
-        violationCount: data[i][11]
+        recommendationTier: row[12],
+        narrativeInsight: row[13],
+        violationCount: row[11],
+        ungradedCount: Number(row[14]) || 0
       };
     }
   }

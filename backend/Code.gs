@@ -252,8 +252,8 @@ function initSheets() {
   let attemptsSheet = ss.getSheetByName("Attempts");
   if (!attemptsSheet) {
     attemptsSheet = ss.insertSheet("Attempts");
-    attemptsSheet.appendRow(["AttemptID", "Name", "Email", "StartTime", "EndTime", "Status", "FrozenQuestionIDs", "OverallScore", "LanguageScore", "ResearchScore", "CriticalScore", "ViolationCount", "RecommendationTier", "NarrativeInsight"]);
-    attemptsSheet.getRange("A1:N1").setFontWeight("bold").setBackground("#e2e8f0");
+    attemptsSheet.appendRow(["AttemptID", "Name", "Email", "StartTime", "EndTime", "Status", "FrozenQuestionIDs", "OverallScore", "LanguageScore", "ResearchScore", "CriticalScore", "ViolationCount", "RecommendationTier", "NarrativeInsight", "UngradedCount"]);
+    attemptsSheet.getRange("A1:O1").setFontWeight("bold").setBackground("#e2e8f0");
   }
   
   // 2. Responses Sheet
@@ -278,6 +278,14 @@ function initSheets() {
     pendingSheet = ss.insertSheet("PendingGrading");
     pendingSheet.appendRow(["AttemptID", "SubmittedAnswersJSON", "EnqueuedAt", "Stage", "AttemptsCount", "LastError", "LastAttemptAt", "CandidateEmailStatus", "RecruiterEmailStatus"]);
     pendingSheet.getRange("A1:I1").setFontWeight("bold").setBackground("#e2e8f0");
+  }
+
+  // 5. GradingTranscripts Sheet (per-answer rubric transcript log -- Phase 10)
+  let transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+  if (!transcriptsSheet) {
+    transcriptsSheet = ss.insertSheet("GradingTranscripts");
+    transcriptsSheet.appendRow(["AttemptID", "QuestionID", "RubricVersion", "Verdict", "CriteriaMetJSON", "Rationale", "OverrideVerdict", "OverrideAt", "OverrideTokenHash"]);
+    transcriptsSheet.getRange("A1:I1").setFontWeight("bold").setBackground("#e2e8f0");
   }
 }
 
@@ -498,7 +506,8 @@ function handleGetAttemptReport(attemptId, token) {
           },
           recommendationTier: data[i][12],
           narrativeInsight:   data[i][13],
-          violationCount:     data[i][11]
+          violationCount:     data[i][11],
+          ungradedCount:      Number(data[i][14]) || 0
         }
       };
     }

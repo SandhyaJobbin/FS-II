@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **v1.1 Milestone — Async Reporting, Trust Repairs & Evaluation Quality**
 
 - [x] **Phase 8: Cleanup & Test-Safety Net (F-06, F-03, F-04)** - Frontend dead-code removal, grading-mirror divergence fixture set, real-auth admin tests, CI workflow gating PRs
-- [ ] **Phase 9: Async Grading & Report Delivery Pipeline** - Fast doPost enqueue to PendingGrading queue, single recurring trigger under LockService, MailApp candidate+recruiter emails, ThankYouScreen
+- [x] **Phase 9: Async Grading & Report Delivery Pipeline** - Fast doPost enqueue to PendingGrading queue, single recurring trigger under LockService, MailApp candidate+recruiter emails, ThankYouScreen
 - [ ] **Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override** - Gemini responseSchema rubric grading, persisted rationale/transcript, override audit trail, distinct ungraded state, updated candidate copy
 - [ ] **Phase 11: Recruiter Analytics Dashboard** - On-demand uncached aggregation: score trend, question pass-rate, violation-vs-score correlation, bias-direction indicator, low-N fallback
 - [ ] **Phase 12: Proctoring Upgrade (Fullscreen Detect-and-Escalate + MediaPipe Migration)** - Blocking re-entry modal on fullscreen exit, MediaPipe tasks-vision FaceDetector replacing BlazeFace/TF.js CDN
@@ -165,7 +165,7 @@ Plans:
   4. MailApp candidate-report + recruiter-notification emails sent with distinct email_status (pending/sent/failed/retried); Attempts.Status enum extended pending_grading/graded/emailed/grading_failed
   5. ThankYouScreen.tsx shows confirmation + honest turnaround copy; no default polling (avoids reopening F-01 unauthenticated-report-read class)
 
-**Plans**: 5/6 plans executed
+**Plans**: 6/6 plans executed
 Plans:
 **Wave 1**
 
@@ -180,7 +180,7 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 09-06-PLAN.md — Manual deployment checkpoint + live end-to-end verification
+- [x] 09-06-PLAN.md — Manual deployment checkpoint + live end-to-end verification
 
 ### Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override
 
@@ -254,7 +254,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 | 6. Shared Reporting & Recruiter Admin Panel | 1/1 | Complete | 2026-07-29 |
 | 7. Live Interview / Final Verification | 0/0 | Pending | — |
 | 8. Cleanup & Test-Safety Net | 4/4 | Complete | 2026-07-31 |
-| 9. Async Grading & Report Delivery Pipeline | 5/6 | In Progress|  |
+| 9. Async Grading & Report Delivery Pipeline | 6/6 | Complete | 2026-07-31 |
 | 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
 | 11. Recruiter Analytics Dashboard | 0/0 | Not started | — |
 | 12. Proctoring Upgrade (MediaPipe + Fullscreen) | 0/0 | Not started | — |
@@ -283,3 +283,21 @@ Plans:
 - [ ] Critical Thinking: make the case file always available while answering questions (collapsible or expanded, whichever fits the screen) instead of requiring candidates to work from memory
 
 (promote with /gsd-review-backlog when ready)
+
+### Phase 999.2: Richer strength/weakness detail in admin panel + candidate report (BACKLOG)
+
+**Goal:** Captured for future planning. Surfaced during Phase 9 live verification (2026-07-31): the admin panel's report view and the candidate email both show the narrative insight as a thin one-line summary rather than a structured strength/weakness breakdown. Pipeline delivery itself (ASYNC-01..05) is not affected -- content exists and is correctly scoped, just under-detailed. Strong candidate to design together with Phase 10's rubric grading (`criteriaMet` array + `rationale` per criterion naturally produces richer per-question detail than today's single deterministic narrative string in `AsyncGrading.gs`) rather than reworking the narrative twice.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready, likely alongside or after Phase 10)
+
+### Phase 999.3: HTML-designed candidate/recruiter report emails (BACKLOG)
+
+**Goal:** Captured for future planning. Surfaced during Phase 9 live verification (2026-07-31): candidate and recruiter emails currently send as plain text via `MailApp.sendEmail()` in `backend/AsyncGrading.gs`, not a designed HTML template. Reference implementation available: `C:\Users\anoop\OneDrive\Desktop\apple\flagmail1\google-apps-script.js` has a working `buildResultsHtml(payload, ...)` pattern (email-safe table-based layout, 640px max-width, tier badge, per-zone score cards, footer) passed as `htmlBody` to `MailApp.sendEmail()` with the plain-text body preserved as fallback -- see that project's `.planning/quick/260525-sfa-build-html-email-template-in-google-apps/260525-sfa-SUMMARY.md` for the exact approach.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)

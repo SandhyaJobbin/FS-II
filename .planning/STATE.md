@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Async Reporting, Trust Repairs & Evaluation Quality
 current_phase: 09
-current_phase_name: async-grading-report-delivery-pipeline
-status: executing
-stopped_at: Completed 09-02-PLAN.md
-last_updated: "2026-07-31T10:10:04.994Z"
+status: completed
+stopped_at: Completed 09-06-PLAN.md (live verification passed)
+last_updated: "2026-07-31T12:54:00.000Z"
 last_activity: 2026-07-31
-last_activity_desc: Phase 09 execution started
+last_activity_desc: Phase 09 live end-to-end verification passed; phase genuinely closed
 progress:
   total_phases: 12
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 10
-  completed_plans: 9
-  percent: 8
+  completed_plans: 10
+  percent: 17
+current_phase_name: async-grading-report-delivery-pipeline
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-07-29)
 
 ## Current Position
 
-Phase: 09 (async-grading-report-delivery-pipeline) — EXECUTING
-Plan: 5 of 6
-Status: Ready to execute
-Last activity: 2026-07-31 — Phase 09 execution started
+Phase: 09 — COMPLETE (live-verified)
+Plan: 6 of 6
+Status: Phase 09 complete — live end-to-end verification passed (candidate + recruiter emails delivered, PendingGrading reached sent/sent)
+Last activity: 2026-07-31 — Phase 09-06 live verification passed after root-causing first attempt's failure to a stale cached gasUrl (not a code defect)
 
 ## Performance Metrics
 
@@ -73,6 +73,10 @@ Recent decisions affecting current work:
 - [Phase 09]: admin/page.tsx renders a distinct red/pulsing 'Grading Failed' badge for grading_failed rows, reusing the existing violation-count warning badge's visual treatment, per D-12
 - [Phase ?]: Used check() (extract-then-compare) rather than paired has() calls for AsyncGrading retry cap and batch cap divergence checks, matching the existing ADMIN_TOKEN pattern in sync-check.ts
 - [Phase ?]: Deferred the 7 pre-existing Code.gs sync-check failures (caused by Phase 09-01 moving scoring logic to AsyncGrading.gs) to deferred-items.md -- out of scope for plan 09-05's files_modified
+- [Phase 09]: The 7 pre-existing Code.gs sync-check failures above were resolved in commit 76bf31e by retargeting the Phase 08 comparison pair to AsyncGrading.gs — no outstanding drift-check debt remains
+- [Phase 09]: First live verification attempt (empty PendingGrading sheet, "Failed to fetch" console error) root-caused to a stale gasUrl cached in browser localStorage, not a code/deployment defect — confirmed by re-running in incognito with a manually-verified current deployment URL, which succeeded (candidate + recruiter emails delivered, PendingGrading reached sent/sent)
+- [Phase 09 close]: Two content-quality gaps found during verification (admin panel narrative is a one-line summary; emails are plain text not HTML) were kept out of Phase 9's closing gate since ASYNC-01..05 only require correctly-scoped content to exist, not a given level of detail/design — logged as backlog items 999.2 and 999.3 instead of reopening Phase 9
+- [Backlog 999.3]: Reference implementation for HTML report emails identified at C:\Users\anoop\OneDrive\Desktop\apple\flagmail1\google-apps-script.js (buildResultsHtml() pattern, MailApp htmlBody with plain-text fallback) — reuse this approach rather than designing from scratch when promoted
 
 ### Pending Todos
 
@@ -86,14 +90,17 @@ None yet.
 
 ## Deferred Items
 
-Items acknowledged and carried forward from previous milestone close:
+Items acknowledged and carried forward:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| Verification | Phase 09-06 Task 2 step 8 (optional idempotency stress check — resubmit same attemptId) was not performed in the live retest | Deferred, low risk (already unit-verified in 09-01) | 2026-07-31 |
+| Enhancement | Admin panel + candidate email narrative is a thin one-line strength/weakness summary | Backlog 999.2 | 2026-07-31 |
+| Enhancement | Candidate/recruiter report emails are plain text, not HTML | Backlog 999.3 | 2026-07-31 |
+| Enhancement | 7 UI/UX redesign items from manager review (theme, zone guidance, transitions, per-zone layout) | Backlog 999.1 | 2026-07-31 |
 
 ## Session Continuity
 
-Last session: 2026-07-31T10:07:54.063Z
-Stopped at: Completed 09-02-PLAN.md
+Last session: 2026-07-31T12:54:00.000Z
+Stopped at: Completed 09-06-PLAN.md — Phase 09 fully closed, live-verified
 Resume file: None

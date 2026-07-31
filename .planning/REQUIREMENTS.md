@@ -68,7 +68,7 @@
 
 ### Async Reporting
 
-- [ ] **ASYNC-01**: Candidate sees a "Thank You" screen immediately on submit — no instant on-screen score/report
+- [x] **ASYNC-01**: Candidate sees a "Thank You" screen immediately on submit — no instant on-screen score/report
 - [x] **ASYNC-02**: Grading/report computation continues server-side even if the candidate closes the tab (Apps Script queue + time-driven trigger, not tied to an open connection)
 - [x] **ASYNC-03**: Candidate receives an emailed report (overall score, 3 trait scores, narrative insight, recommendation tier) once grading completes
 - [x] **ASYNC-04**: Recruiter team receives an email per completed attempt summarizing concerns, positives, and results
@@ -183,7 +183,7 @@ Finalized during roadmap creation. See `.planning/ROADMAP.md` for full phase goa
 | ADMIN-03 | Phase 6: Shared Reporting & Recruiter Admin Panel | Complete |
 | ADMIN-04 | Phase 6: Shared Reporting & Recruiter Admin Panel | Complete |
 | ADMIN-05 | Phase 6: Shared Reporting & Recruiter Admin Panel | Complete |
-| ASYNC-01 | TBD (roadmap pending) | Pending |
+| ASYNC-01 | TBD (roadmap pending) | Complete |
 | ASYNC-02 | TBD (roadmap pending) | Complete |
 | ASYNC-03 | TBD (roadmap pending) | Complete |
 | ASYNC-04 | TBD (roadmap pending) | Complete |

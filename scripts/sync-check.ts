@@ -14,6 +14,8 @@ import { resolve } from "node:path";
 const ROOT = resolve(import.meta.dirname, "..");
 const MIRROR = readFileSync(resolve(ROOT, "tests/grading/grading-engine.ts"), "utf-8");
 const CODE_GS = readFileSync(resolve(ROOT, "backend/Code.gs"), "utf-8");
+const ASYNC_MIRROR = readFileSync(resolve(ROOT, "tests/async/queue-logic.ts"), "utf-8");
+const ASYNC_GS = readFileSync(resolve(ROOT, "backend/AsyncGrading.gs"), "utf-8");
 
 let failures = 0;
 
@@ -98,6 +100,25 @@ try {
   console.error("FAIL: Could not read tests/admin/admin-auth.ts");
   failures++;
 }
+
+// ─── 6. AsyncGrading.gs / queue-logic.ts drift (T-09-11, D-09/D-10/D-11) ──────
+
+// Retry cap: recordQueueItemFailure's `newCount >= 3` permanent-failure
+// condition (AsyncGrading.gs) vs queue-logic.ts's RETRY_CAP constant, which
+// backs isPermanentlyFailed's threshold.
+const asyncGsRetryCap = ASYNC_GS.match(/newCount\w*\s*>=\s*(\d+)/)?.[1] ?? "";
+const asyncMirrorRetryCap = ASYNC_MIRROR.match(/RETRY_CAP\s*=\s*(\d+)/)?.[1] ?? "";
+check("AsyncGrading retry cap", asyncMirrorRetryCap, asyncGsRetryCap);
+
+// Batch cap: processGradingQueue's `.slice(0, 5)` (AsyncGrading.gs) vs
+// queue-logic.ts's BATCH_CAP constant, which backs selectEligibleRows's cap.
+const asyncGsBatchCap = ASYNC_GS.match(/\.slice\(\s*0\s*,\s*(\d+)\s*\)/)?.[1] ?? "";
+const asyncMirrorBatchCap = ASYNC_MIRROR.match(/BATCH_CAP\s*=\s*(\d+)/)?.[1] ?? "";
+check("AsyncGrading batch cap", asyncMirrorBatchCap, asyncGsBatchCap);
+
+// Trigger cadence: installGradingTrigger's `everyMinutes(5)` call
+// (AsyncGrading.gs is the sole source of truth for trigger installation).
+has("AsyncGrading trigger cadence", ASYNC_GS, /\.everyMinutes\(\s*5\s*\)/);
 
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log("");

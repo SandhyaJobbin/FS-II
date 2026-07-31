@@ -4,18 +4,17 @@ import React, { useState, useEffect } from 'react';
 import WelcomeScreen from '../components/WelcomeScreen';
 import AssemblyScreen from '../components/AssemblyScreen';
 import TestScreen from '../components/TestScreen';
-import ReportScreen from '../components/ReportScreen';
-import { Question, Report, AnswersMap } from '../types';
+import ThankYouScreen from '../components/ThankYouScreen';
+import { Question, AnswersMap } from '../types';
 
 export default function Home() {
-  const [screen, setScreen] = useState<'welcome' | 'assembly' | 'test' | 'report'>('welcome');
+  const [screen, setScreen] = useState<'welcome' | 'assembly' | 'test' | 'thankyou'>('welcome');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [attemptId, setAttemptId] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [reportData, setReportData] = useState<Report | null>(null);
   const [gasUrl, setGasUrl] = useState('');
 
   // Auto-restore state on reload
@@ -137,8 +136,7 @@ export default function Home() {
         return;
       }
 
-      setReportData(result.report);
-      setScreen('report');
+      setScreen('thankyou');
 
       // Clear session keys
       localStorage.removeItem('fs_attempt_id');
@@ -192,8 +190,8 @@ export default function Home() {
         />
       )}
 
-      {screen === 'report' && reportData && (
-        <ReportScreen report={reportData} onExit={handleResetSession} />
+      {screen === 'thankyou' && (
+        <ThankYouScreen candidateName={name} onExit={handleResetSession} />
       )}
     </div>
   );

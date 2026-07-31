@@ -264,3 +264,22 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 *Roadmap created: 2026-07-29*
 *Granularity: standard (6 phases)*
 *Coverage: 34/34 v1 requirements mapped; v1.1 phases derived from research SUMMARY.md (F-03/F-04/F-05/F-06 + async/rubric/analytics/proctoring capabilities)*
+
+## Backlog
+
+### Phase 999.1: Candidate-facing UI/UX redesign (manager review feedback) (BACKLOG)
+
+**Goal:** Captured for future planning. Manager review of the candidate-facing assessment-app frontend surfaced 7 UI/UX issues, unrelated to Phase 9's async grading pipeline. Candidate for folding into Phase 13 (Accessibility & Polish) or promoting to its own phase — decide at promotion time.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] Theme: switch default to light mode; dark mode currently hard to read, text too small in places; expand layout to use full screen instead of a single centered card
+- [ ] Zone start/guideline screens (English Proficiency, Attention to Detail, Critical Thinking): instructions on what to do are unclear — add more detail and an example where helpful, for all zones
+- [ ] Zone transitions: add explicit "this zone is complete" messaging/transition screen before jumping into the next zone's guidelines
+- [ ] English Proficiency Part 4 (Macro Editing): pre-populate the email text into the text field instead of requiring candidates to copy-paste it manually
+- [ ] English Proficiency Part 6 (Reading Comprehension): remove card-based layout; present the customer's email/scenario directly, then show questions, with a button to re-review the scenario at any point
+- [ ] Attention to Detail: fix text overflowing outside cards when content is long; make cards collapsible so candidates can expand/collapse to review
+- [ ] Critical Thinking: make the case file always available while answering questions (collapsible or expanded, whichever fits the screen) instead of requiring candidates to work from memory
+
+(promote with /gsd-review-backlog when ready)

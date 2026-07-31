@@ -10,6 +10,7 @@
   "scripts": {
     "test": "vitest run",
     "test:assembly": "vitest run tests/assembly/test_assembly.ts",
+    "test:async": "vitest run tests/async/test_queue.ts tests/async/test_email.ts",
     "test:grading": "vitest run tests/grading/test_grading.ts",
     "test:watch": "vitest",
     "sync-check": "npx tsx scripts/sync-check.ts"

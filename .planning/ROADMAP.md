@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 7: Live Interview / Final Verification** - Review and wrap up the entire application end-to-end
 
 **v1.1 Milestone — Async Reporting, Trust Repairs & Evaluation Quality**
-- [ ] **Phase 8: Cleanup & Test-Safety Net (F-06, F-03, F-04)** - Frontend dead-code removal, grading-mirror divergence fixture set, real-auth admin tests, CI workflow gating PRs
+- [x] **Phase 8: Cleanup & Test-Safety Net (F-06, F-03, F-04)** - Frontend dead-code removal, grading-mirror divergence fixture set, real-auth admin tests, CI workflow gating PRs
 - [ ] **Phase 9: Async Grading & Report Delivery Pipeline** - Fast doPost enqueue to PendingGrading queue, single recurring trigger under LockService, MailApp candidate+recruiter emails, ThankYouScreen
 - [ ] **Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override** - Gemini responseSchema rubric grading, persisted rationale/transcript, override audit trail, distinct ungraded state, updated candidate copy
 - [ ] **Phase 11: Recruiter Analytics Dashboard** - On-demand uncached aggregation: score trend, question pass-rate, violation-vs-score correlation, bias-direction indicator, low-N fallback
@@ -122,10 +122,10 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Auth extraction: checkAdminAuth in Code.gs + admin-auth.ts mirror + test_admin.ts rewrite
-- [ ] 08-02-PLAN.md — Grading mirror fix: llmResults param for open_text/hybrid + divergence test fixtures
-- [ ] 08-03-PLAN.md — Frontend dead code removal: delete frontend/ + clean stale doc references
-- [ ] 08-04-PLAN.md — CI workflow: test.yml + scripts/sync-check.ts divergence detector
+- [x] 08-01-PLAN.md — Auth extraction: checkAdminAuth in Code.gs + admin-auth.ts mirror + test_admin.ts rewrite
+- [x] 08-02-PLAN.md — Grading mirror fix: llmResults param for open_text/hybrid + divergence test fixtures
+- [x] 08-03-PLAN.md — Frontend dead code removal: delete frontend/ + clean stale doc references
+- [x] 08-04-PLAN.md — CI workflow: test.yml + scripts/sync-check.ts divergence detector
 
 ### Phase 9: Async Grading & Report Delivery Pipeline
 **Goal**: doPost(submitAnswers) returns fast (~100-300ms) after enqueueing to a new PendingGrading queue sheet; a single recurring time-driven trigger drains the queue under LockService, calls extracted gradeAndFinalizeAttempt, sends candidate-report + recruiter-notification emails via MailApp with distinct email_status tracking; ThankYouScreen.tsx added (email-only delivery, no polling).
@@ -198,7 +198,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 | 5. Integrity Monitoring | 1/1 | Complete | 2026-07-29 |
 | 6. Shared Reporting & Recruiter Admin Panel | 1/1 | Complete | 2026-07-29 |
 | 7. Live Interview / Final Verification | 0/0 | Pending | — |
-| 8. Cleanup & Test-Safety Net | 4/4 | Planned | — |
+| 8. Cleanup & Test-Safety Net | 4/4 | Complete | 2026-07-31 |
 | 9. Async Grading & Report Delivery Pipeline | 0/0 | Not started | — |
 | 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
 | 11. Recruiter Analytics Dashboard | 0/0 | Not started | — |

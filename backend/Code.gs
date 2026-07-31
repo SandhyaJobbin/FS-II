@@ -266,6 +266,14 @@ function initSheets() {
     logsSheet.appendRow(["AttemptID", "LogType", "Details", "Timestamp"]);
     logsSheet.getRange("A1:D1").setFontWeight("bold").setBackground("#e2e8f0");
   }
+
+  // 4. PendingGrading Sheet (async grading queue -- drained by AsyncGrading.gs)
+  let pendingSheet = ss.getSheetByName("PendingGrading");
+  if (!pendingSheet) {
+    pendingSheet = ss.insertSheet("PendingGrading");
+    pendingSheet.appendRow(["AttemptID", "SubmittedAnswersJSON", "EnqueuedAt", "Stage", "AttemptsCount", "LastError", "LastAttemptAt", "CandidateEmailStatus", "RecruiterEmailStatus"]);
+    pendingSheet.getRange("A1:I1").setFontWeight("bold").setBackground("#e2e8f0");
+  }
 }
 
 // --- EMAIL NORMALIZATION HELPER ---

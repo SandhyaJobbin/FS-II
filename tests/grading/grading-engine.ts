@@ -34,6 +34,7 @@ export interface GradeResult {
   recommendationTier: 'Strong Fit' | 'Consider' | 'Not Recommended';
   narrativeInsight: string;
   perQuestion: Array<{ id: string; isCorrect: boolean; category: string; difficulty_tier: string | null }>;
+  ungradedCount: number;
 }
 
 // ─── Core Grading Function ───────────────────────────────────────────────────
@@ -44,33 +45,36 @@ export interface GradeResult {
  * Accepts the frozen question objects (with is_correct) and the candidate
  * answers map, and returns the full graded result without any I/O.
  */
-export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: AnswersMap, llmResults?: Record<string, boolean>): GradeResult {
+export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: AnswersMap, llmResults?: Record<string, 'correct' | 'incorrect' | 'ungraded'>): GradeResult {
   let correctCount = 0;
   const bankCorrect  = { english: 0, attention: 0, critical: 0 };
   const bankTotal    = { english: 0, attention: 0, critical: 0 };
   const complexCorrect = { english: 0, attention: 0, critical: 0 };
   const complexTotal   = { english: 0, attention: 0, critical: 0 };
+  let ungradedCount = 0;
 
   const perQuestion: GradeResult['perQuestion'] = [];
 
   for (const q of frozenQuestions) {
     const candidateAnswer = candidateAnswers[q.id];
     let isCorrect = false;
+    let verdict: 'correct' | 'incorrect' | 'ungraded' = 'ungraded';
 
     const category = q.bank === 'attention' ? 'attention' : q.bank === 'critical' ? 'critical' : 'english';
-    bankTotal[category]++;
 
     // GRADE-01: Deterministic grading — pure function, no random/LLM step
     if (q.response_type === 'mcq_single') {
       const correctOption = q.options.find((o) => o.is_correct);
       const correctLetter = correctOption?.letter ?? '';
       isCorrect = !!(candidateAnswer && candidateAnswer.toString().toLowerCase() === correctLetter.toLowerCase());
+      verdict = isCorrect ? 'correct' : 'incorrect';
     } else if (q.response_type === 'mcq_multi') {
       const correctLetters = q.options.filter((o) => o.is_correct).map((o) => o.letter.toLowerCase()).sort();
       const submittedLetters = Array.isArray(candidateAnswer)
         ? candidateAnswer.map((a) => a.toString().toLowerCase()).sort()
         : [];
       isCorrect = JSON.stringify(correctLetters) === JSON.stringify(submittedLetters);
+      verdict = isCorrect ? 'correct' : 'incorrect';
     } else if (q.response_type === 'hybrid') {
       const correctOption = q.options.find((o) => o.is_correct);
       const correctLetter = correctOption?.letter ?? '';
@@ -81,30 +85,41 @@ export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: A
         selectedLetter = candidateAnswer.toLowerCase();
       }
       const mcqCorrect = !!(selectedLetter && selectedLetter === correctLetter.toLowerCase());
-      const textCorrect = llmResults ? llmResults[q.id] === true : true;
-      isCorrect = mcqCorrect && textCorrect;
+      const llmVerdict = llmResults?.[q.id] ?? 'ungraded';
+      if (llmVerdict === 'ungraded') {
+        verdict = 'ungraded';
+      } else {
+        const textCorrect = llmVerdict === 'correct';
+        verdict = (mcqCorrect && textCorrect) ? 'correct' : 'incorrect';
+      }
+      isCorrect = verdict === 'correct';
     } else {
-      // open_text: use LLM result when provided, default true (matches Code.gs no-API-key fallback)
-      isCorrect = llmResults ? llmResults[q.id] === true : true;
+      // open_text: default ungraded matches AsyncGrading.gs evaluateWithRubric on failure
+      verdict = llmResults?.[q.id] ?? 'ungraded';
+      isCorrect = verdict === 'correct';
     }
 
-    if (isCorrect) {
-      correctCount++;
-      bankCorrect[category]++;
-    }
-
-    // GRADE-03: Track difficulty_tier === 'complex' items specifically
-    if (q.difficulty_tier === 'complex') {
-      complexTotal[category]++;
-      if (isCorrect) complexCorrect[category]++;
+    // A2 denominator policy: ungraded excluded from bankTotal/bankCorrect/complex tallies
+    if (verdict !== 'ungraded') {
+      bankTotal[category]++;
+      if (isCorrect) {
+        correctCount++;
+        bankCorrect[category]++;
+      }
+      if (q.difficulty_tier === 'complex') {
+        complexTotal[category]++;
+        if (isCorrect) complexCorrect[category]++;
+      }
+    } else {
+      ungradedCount++;
     }
 
     perQuestion.push({ id: q.id, isCorrect, category, difficulty_tier: q.difficulty_tier ?? null });
   }
 
-  // GRADE-02: Trait score percentages
-  const total = frozenQuestions.length;
-  const overallScore = total ? Math.round((correctCount / total) * 100) : 0;
+  // GRADE-02: Trait score percentages (A2: denominator excludes ungraded)
+  const totalGraded = bankTotal.english + bankTotal.attention + bankTotal.critical;
+  const overallScore = totalGraded ? Math.round((correctCount / totalGraded) * 100) : 0;
   const language = bankTotal.english   ? Math.round((bankCorrect.english   / bankTotal.english)   * 100) : 0;
   const research = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
   const critical = bankTotal.critical  ? Math.round((bankCorrect.critical  / bankTotal.critical)  * 100) : 0;
@@ -151,6 +166,7 @@ export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: A
     recommendationTier,
     narrativeInsight,
     perQuestion,
+    ungradedCount,
   };
 }
 

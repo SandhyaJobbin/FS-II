@@ -43,7 +43,6 @@ function has(label: string, text: string, pattern: RegExp) {
 }
 
 // ─── 1. Scoring formula ─────────────────────────────────────────────────────
-// Both must use Math.round((correctCount / total) * 100)
 has(
   "Scoring formula uses Math.round (mirror)",
   MIRROR,
@@ -56,8 +55,6 @@ has(
 );
 
 // ─── 2. Tier thresholds ─────────────────────────────────────────────────────
-// Strong Fit: overall >= 80, critical >= 75, research >= 75
-// Consider: overall >= 60
 has("Strong Fit: overall >= 80 (mirror)", MIRROR, /overall\w*\s*>=\s*80/);
 has("Strong Fit: critical >= 75 (mirror)", MIRROR, /critical\w*\s*>=\s*75/);
 has("Strong Fit: research >= 75 (mirror)", MIRROR, /research\w*\s*>=\s*75/);
@@ -69,7 +66,6 @@ has("Strong Fit: research >= 75 (AsyncGrading.gs)", ASYNC_GS, /research\w*\s*>=\
 has("Consider: overall >= 60 (AsyncGrading.gs)", ASYNC_GS, /overall\w*\s*>=\s*60/);
 
 // ─── 3. Bank mapping ─────────────────────────────────────────────────────────
-// attention → research trait, critical → critical trait, default → english
 has("Bank mapping: attention → research (mirror)", MIRROR, /bank\s*===\s*["']attention["'][\s\S]{0,30}["']attention["']/);
 has("Bank mapping: critical → critical (mirror)", MIRROR, /bank\s*===\s*["']critical["'][\s\S]{0,30}["']critical["']/);
 has("Bank mapping: attention → research (AsyncGrading.gs)", ASYNC_GS, /bank\s*===\s*["']attention["'][\s\S]{0,30}["']attention["']/);
@@ -105,23 +101,56 @@ try {
 }
 
 // ─── 6. AsyncGrading.gs / queue-logic.ts drift (T-09-11, D-09/D-10/D-11) ──────
-
-// Retry cap: recordQueueItemFailure's `newCount >= 3` permanent-failure
-// condition (AsyncGrading.gs) vs queue-logic.ts's RETRY_CAP constant, which
-// backs isPermanentlyFailed's threshold.
 const asyncGsRetryCap = ASYNC_GS.match(/newCount\w*\s*>=\s*(\d+)/)?.[1] ?? "";
 const asyncMirrorRetryCap = ASYNC_MIRROR.match(/RETRY_CAP\s*=\s*(\d+)/)?.[1] ?? "";
 check("AsyncGrading retry cap", asyncMirrorRetryCap, asyncGsRetryCap);
 
-// Batch cap: processGradingQueue's `.slice(0, 5)` (AsyncGrading.gs) vs
-// queue-logic.ts's BATCH_CAP constant, which backs selectEligibleRows's cap.
 const asyncGsBatchCap = ASYNC_GS.match(/\.slice\(\s*0\s*,\s*(\d+)\s*\)/)?.[1] ?? "";
 const asyncMirrorBatchCap = ASYNC_MIRROR.match(/BATCH_CAP\s*=\s*(\d+)/)?.[1] ?? "";
 check("AsyncGrading batch cap", asyncMirrorBatchCap, asyncGsBatchCap);
 
-// Trigger cadence: installGradingTrigger's `everyMinutes(5)` call
-// (AsyncGrading.gs is the sole source of truth for trigger installation).
 has("AsyncGrading trigger cadence", ASYNC_GS, /\.everyMinutes\(\s*5\s*\)/);
+
+// ─── 7. Rubric verdict enum discipline (Pitfall 1) ──────────────────────────
+has("Rubric verdict enum restricted to correct/incorrect only", ASYNC_GS, /enum:\s*\[\s*["']correct["']\s*,\s*["']incorrect["']\s*\]/);
+
+// ─── 8. evaluateWithRubric uses responseSchema ───────────────────────────────
+has("evaluateWithRubric uses responseSchema", ASYNC_GS, /responseSchema\s*:/);
+
+// ─── 9. GradingTranscripts column count matches mirror ───────────────────────
+try {
+  const rubricMirror = readFileSync(resolve(ROOT, "tests/grading/rubric-grader.ts"), "utf-8");
+  const mirrorCount = rubricMirror.match(/TRANSCRIPT_COLUMN_COUNT\s*=\s*(\d+)/)?.[1] ?? "";
+  const gsHeader = CODE_GS.match(/insertSheet\(["']GradingTranscripts["']\)[\s\S]*?appendRow\(\[([\s\S]*?)\]\)/);
+  const gsCount = gsHeader ? String(gsHeader[1].split(",").filter((s: string) => s.trim().length).length) : "";
+  check("GradingTranscripts column count", mirrorCount, gsCount);
+} catch {
+  console.error("FAIL: could not read tests/grading/rubric-grader.ts");
+  failures++;
+}
+
+// ─── 10. No silent-true LLM fallback in AsyncGrading.gs ────────────────────
+if (/results\[\w+\.qId\]\s*=\s*true/.test(ASYNC_GS) || /results\[req\.qId\]\s*=\s*true/.test(ASYNC_GS)) {
+  console.error("FAIL: silent-true LLM fallback detected in AsyncGrading.gs — Phase 10 forbids this");
+  failures++;
+} else {
+  console.log("PASS: no silent-true LLM fallback");
+}
+
+// ─── 11. Ungraded verdict propagated in AsyncGrading ─────────────────────────
+has("Ungraded verdict propagated in AsyncGrading", ASYNC_GS, /["']ungraded["']/);
+
+// ─── 12. handleOverrideVerdict uses LockService with 10000ms timeout ─────────
+has("handleOverrideVerdict uses LockService with 10000ms timeout", CODE_GS, /handleOverrideVerdict[\s\S]{0,800}tryLock\(\s*10000\s*\)/);
+
+// ─── 13. handleOverrideVerdict hashes token via SHA-256 ──────────────────────
+has("handleOverrideVerdict hashes token via SHA-256", CODE_GS, /handleOverrideVerdict[\s\S]{0,800}SHA_256/);
+
+// ─── 14. Mirror uses verdict-string llmResults (not boolean) ─────────────────
+has("Mirror llmResults typed as verdict-string map", MIRROR, /llmResults\?*:\s*Record<string,\s*["']correct["']\s*\|\s*["']incorrect["']\s*\|\s*["']ungraded["']/);
+
+// ─── 15. Mirror has ungradedCount in GradeResult ─────────────────────────────
+has("Mirror GradeResult includes ungradedCount", MIRROR, /ungradedCount/);
 
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log("");

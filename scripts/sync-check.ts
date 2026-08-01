@@ -114,8 +114,13 @@ has("AsyncGrading trigger cadence", ASYNC_GS, /\.everyMinutes\(\s*5\s*\)/);
 // ─── 7. Rubric verdict enum discipline (Pitfall 1) ──────────────────────────
 has("Rubric verdict enum restricted to correct/incorrect only", ASYNC_GS, /enum:\s*\[\s*["']correct["']\s*,\s*["']incorrect["']\s*\]/);
 
-// ─── 8. evaluateWithRubric uses responseSchema ───────────────────────────────
-has("evaluateWithRubric uses responseSchema", ASYNC_GS, /responseSchema\s*:/);
+// ─── 8. evaluateWithRubric declares a rubric schema + locks LLM output shape ─
+// The schema is declared as documentation of the expected shape. Runtime
+// enforcement is via OpenRouter's response_format (json_object / json_schema)
+// or Gemini's responseSchema — accept either since Phase 10 shipped on
+// OpenRouter after Gemini free tier stopped working (see 10-07-SUMMARY).
+has("evaluateWithRubric declares responseSchema variable", ASYNC_GS, /const\s+responseSchema\s*=/);
+has("evaluateWithRubric locks LLM output shape", ASYNC_GS, /response_format|responseSchema\s*:/);
 
 // ─── 9. GradingTranscripts column count matches mirror ───────────────────────
 try {

@@ -188,11 +188,11 @@ Finalized during roadmap creation. See `.planning/ROADMAP.md` for full phase goa
 | ASYNC-03 | TBD (roadmap pending) | Complete |
 | ASYNC-04 | TBD (roadmap pending) | Complete |
 | ASYNC-05 | TBD (roadmap pending) | Complete |
-| GRADE-06 | TBD (roadmap pending) | Pending |
-| GRADE-07 | TBD (roadmap pending) | Pending |
-| GRADE-08 | TBD (roadmap pending) | Pending |
-| GRADE-09 | TBD (roadmap pending) | Pending |
-| GRADE-10 | TBD (roadmap pending) | Pending |
+| GRADE-06 | Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override | Pending |
+| GRADE-07 | Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override | Pending |
+| GRADE-08 | Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override | Pending |
+| GRADE-09 | Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override | Pending |
+| GRADE-10 | Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override | Pending |
 | GRADE-11 | TBD (roadmap pending) | Pending |
 | GRADE-12 | TBD (roadmap pending) | Pending |
 | ADMIN-06 | TBD (roadmap pending) | Pending |

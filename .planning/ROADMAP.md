@@ -186,7 +186,7 @@ Plans:
 
 **Goal**: Gemini responseSchema-constrained rubric grading replaces ad hoc evaluateOpenTextBatch; persisted rationale/transcript per open-text answer; recruiter-visible transcript + verdict + logged attributable override UI; distinct "ungraded" state never merged into "correct"; updated candidate-facing copy removing stale "fully automated, no human review" claims — ships together with compliance/trust safeguards.
 **Depends on**: Phase 9
-**Requirements**: TBD (rubric grading, transcript+verdict+override, bias-direction indicator)
+**Requirements**: GRADE-06, GRADE-07, GRADE-08, GRADE-09, GRADE-10
 **Success Criteria** (what must be TRUE):
 
   1. Gemini grading via responseSchema yields structured {verdict, criteriaMet[], rationale}; no more try/catch → "FAILED" sentinel fragility
@@ -195,7 +195,29 @@ Plans:
   4. API failure produces distinct "ungraded" state, never merged into "correct"; ungraded counts surfaced in report + dashboard
   5. Candidate-facing copy updated to remove now-false "zero human grading" claims
 
-**Plans**: TBD
+**Plans**: 7 plans
+Plans:
+**Wave 1**
+
+- [ ] 10-01-PLAN.md — Rubric block on 50 QUESTIONS + evaluateWithRubric (responseSchema, delimiter-framed, local ungraded fallback) + client-projection SECURITY guard
+
+**Wave 2** *(blocked on Wave 1; 10-02 and 10-06 run in parallel — disjoint files)*
+
+- [ ] 10-02-PLAN.md — GradingTranscripts sheet + UngradedCount column + effectiveVerdict resolver + gradeAndFinalizeAttempt rewired + ungradedCount in report payload
+- [ ] 10-06-PLAN.md — Human-authored production rubric criteria for all 50 rubric-graded questions (replaces plan 10-01 skeletons)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 10-03-PLAN.md — handleGetAttemptTranscript (GET) + handleOverrideVerdict (POST, LockService 10000ms, SHA-256 audit, re-aggregation)
+
+**Wave 4** *(blocked on Wave 3; 10-04 and 10-05 run in parallel — disjoint files)*
+
+- [ ] 10-04-PLAN.md — Test mirror widening (grading-engine.ts) + rubric-grader.ts mirror + test_rubric_grader.ts + test_override.ts + sync-check.ts drift assertions + vitest.config.ts exclude
+- [ ] 10-05-PLAN.md — Frontend: Transcript panel + Override controls in admin modal, amber ungraded notice on ReportScreen, ThankYouScreen copy disclosure
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 10-07-PLAN.md — Manual Apps Script + Next.js deployment + live end-to-end verification (rubric grading, ungraded state, transcript, override, copy)
 
 ### Phase 11: Recruiter Analytics Dashboard
 

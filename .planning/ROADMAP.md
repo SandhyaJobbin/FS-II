@@ -223,7 +223,7 @@ Plans:
 
 **Goal**: handleAdminAnalytics on-demand (uncached) aggregation over Attempts/Responses/IntegrityLogs: score trend, question-level difficulty/pass-rate, violation-vs-score correlation, bias-direction indicator; explicit "not enough data yet" low-N fallback; ungraded-question counts surfaced, not hidden.
 **Depends on**: Phase 9, Phase 10
-**Requirements**: TBD (core analytics dashboard, bias-direction indicator)
+**Requirements**: ADMIN-06, ADMIN-07, ADMIN-08, ADMIN-09, ADMIN-11 (ADMIN-10 LLM narrative digest deferred to Backlog 999.4 per 11-RESEARCH.md Assumption A7; "Distribution Monitor" label used in UI instead of "bias-direction indicator" per Pitfall 3)
 **Success Criteria** (what must be TRUE):
 
   1. Dashboard renders score trend, question-level pass-rate, violation-vs-score correlation, bias-direction indicator
@@ -231,7 +231,25 @@ Plans:
   3. Low-N fallback state shown when "not enough data yet"
   4. Ungraded-question counts surfaced as data-quality caveat, not hidden
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 0**
+
+- [ ] 11-01-PLAN.md — Test infra + parity guard: analytics-reducers.ts mirror + vitest spec + sync-check drift assertions
+
+**Wave 1** *(blocked on Wave 0)*
+
+- [ ] 11-02-PLAN.md — Backend: new backend/Analytics.gs with 5 reducers + handleAdminAnalytics + doGet router branch
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 11-03-PLAN.md — Frontend: recharts@3.10.1 + AnalyticsPayload types + 4 charts + 2 caveats + /admin/analytics route + admin nav entry
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 11-04-PLAN.md — Deploy (Apps Script paste + Next.js redeploy) + live verify + REQUIREMENTS/ROADMAP finalization + ADMIN-10 backlog note
+
 **UI hint**: yes
 
 ### Phase 12: Proctoring Upgrade (Fullscreen Detect-and-Escalate + MediaPipe Migration)
@@ -278,7 +296,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 | 8. Cleanup & Test-Safety Net | 4/4 | Complete | 2026-07-31 |
 | 9. Async Grading & Report Delivery Pipeline | 6/6 | Complete | 2026-07-31 |
 | 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
-| 11. Recruiter Analytics Dashboard | 0/0 | Not started | — |
+| 11. Recruiter Analytics Dashboard | 0/4 | Not started | — |
 | 12. Proctoring Upgrade (MediaPipe + Fullscreen) | 0/0 | Not started | — |
 | 13. Accessibility (F-05) & Polish | 0/0 | Not started | — |
 

@@ -56,11 +56,12 @@ const READY_STATUSES = ['submitted', 'graded', 'emailed'];
 
 // --- LLM AUTOGRADING CONFIG ---
 // API keys are read from Script Properties (Project Settings > Script Properties),
-// never hardcoded in source -- set GEMINI_API_KEY / FALLBACK_API_KEY there.
-const GEMINI_API_KEY = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY") || "";
-const FALLBACK_API_KEY = PropertiesService.getScriptProperties().getProperty("FALLBACK_API_KEY") || "";
-const FALLBACK_API_URL = "https://opencode.ai/zen/go/v1/chat/completions";
-const FALLBACK_MODEL = "gpt-4o"; // Or whichever model you want to use from OpenCode
+// never hardcoded in source -- set OPENROUTER_API_KEY there.
+// OPENROUTER_API_KEY is the single key used for all LLM calls via OpenRouter.
+const OPENROUTER_API_KEY = PropertiesService.getScriptProperties().getProperty("OPENROUTER_API_KEY")
+  || PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY") || "";
+const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
+const OPENROUTER_MODEL = "google/gemini-2.5-flash";
 
 /**
  * @deprecated Phase 10 -- replaced by evaluateWithRubric in backend/AsyncGrading.gs; retained for one release cycle for rollback (per RESEARCH.md § State of the Art). Do not call from new code.
@@ -75,109 +76,54 @@ function evaluateOpenTextBatch(gradingRequests) {
   
   const systemInstruction = "You are an expert English grader. Evaluate the candidate's response based on the question prompt. Score 1 if grammar is perfect, tone is professional, and all instructions are followed. Score 0 if there are any significant errors or missed instructions. Output strictly valid JSON like {\"score\": 1} or {\"score\": 0}.";
   
-  if (!GEMINI_API_KEY && !FALLBACK_API_KEY) {
-    // If no keys are set, fallback to treating everything as correct to avoid breaking
+  if (!OPENROUTER_API_KEY) {
     gradingRequests.forEach(req => { results[req.qId] = true; });
     return results;
   }
 
-  // 1. Try Gemini First
-  if (GEMINI_API_KEY) {
-    const geminiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY;
-    const fetchRequests = gradingRequests.map(req => {
-      const payload = {
-        "contents": [{
-          "parts": [
-            {"text": systemInstruction},
-            {"text": "Question/Context:\\n" + req.prompt},
-            {"text": "Candidate Answer:\\n" + req.answer}
-          ]
-        }],
-        "generationConfig": { "temperature": 0.1, "responseMimeType": "application/json" }
-      };
-      return {
-        "url": geminiUrl,
-        "method": "post",
-        "contentType": "application/json",
-        "payload": JSON.stringify(payload),
-        "muteHttpExceptions": true
-      };
-    });
+  // All grading goes through OpenRouter (OpenAI-compatible endpoint)
+  const fetchRequests = gradingRequests.map(req => {
+    const payload = {
+      "model": OPENROUTER_MODEL,
+      "messages": [
+        {"role": "system", "content": systemInstruction},
+        {"role": "user", "content": "Question/Context:\\n" + req.prompt + "\\n\\nCandidate Answer:\\n" + req.answer}
+      ],
+      "temperature": 0.1,
+      "response_format": { "type": "json_object" }
+    };
+    return {
+      "url": OPENROUTER_URL,
+      "method": "post",
+      "headers": {
+        "Authorization": "Bearer " + OPENROUTER_API_KEY,
+        "HTTP-Referer": "https://github.com/anomalyco/FS-gamified-assessment",
+        "X-Title": "FS Gamified Assessment"
+      },
+      "contentType": "application/json",
+      "payload": JSON.stringify(payload),
+      "muteHttpExceptions": true
+    };
+  });
 
-    try {
-      const responses = UrlFetchApp.fetchAll(fetchRequests);
-      responses.forEach((res, index) => {
-        const qId = gradingRequests[index].qId;
-        if (res.getResponseCode() === 200) {
-          try {
-            const json = JSON.parse(res.getContentText());
-            const textResponse = json.candidates[0].content.parts[0].text;
-            const parsedScore = JSON.parse(textResponse);
-            results[qId] = parsedScore.score === 1;
-          } catch (e) { results[qId] = "FAILED"; }
-        } else {
-          results[qId] = "FAILED";
-        }
-      });
-    } catch (err) {
-      gradingRequests.forEach(req => { results[req.qId] = "FAILED"; });
-    }
-  } else {
-    // If Gemini key is missing but fallback is present, mark all as FAILED for Gemini pass
-    gradingRequests.forEach(req => { results[req.qId] = "FAILED"; });
-  }
-
-  // 2. Fallback for failed requests
-  const failedRequests = gradingRequests.filter(req => results[req.qId] === "FAILED");
-  if (failedRequests.length > 0) {
-    if (FALLBACK_API_KEY) {
-      const fallbackFetchRequests = failedRequests.map(req => {
-        const payload = {
-          "model": FALLBACK_MODEL,
-          "messages": [
-            {"role": "system", "content": systemInstruction},
-            {"role": "user", "content": "Question/Context:\\n" + req.prompt + "\\n\\nCandidate Answer:\\n" + req.answer}
-          ],
-          "temperature": 0.1,
-          "response_format": { "type": "json_object" }
-        };
-        return {
-          "url": FALLBACK_API_URL,
-          "method": "post",
-          "headers": {
-            "Authorization": "Bearer " + FALLBACK_API_KEY,
-            "HTTP-Referer": "https://example.com", 
-            "X-Title": "Gamified Assessment"
-          },
-          "contentType": "application/json",
-          "payload": JSON.stringify(payload),
-          "muteHttpExceptions": true
-        };
-      });
-
-      try {
-        const responses = UrlFetchApp.fetchAll(fallbackFetchRequests);
-        responses.forEach((res, index) => {
-          const qId = failedRequests[index].qId;
-          if (res.getResponseCode() === 200) {
-            try {
-              const json = JSON.parse(res.getContentText());
-              const textResponse = json.choices[0].message.content;
-              const parsedScore = JSON.parse(textResponse);
-              results[qId] = parsedScore.score === 1;
-            } catch (e) { results[qId] = true; } // Final safe fallback
-          } else {
-            console.error("Fallback LLM Error:", res.getContentText());
-            results[qId] = true; // Final safe fallback
-          }
-        });
-      } catch (err) {
-        failedRequests.forEach(req => { results[req.qId] = true; }); // Final safe fallback
+  try {
+    const responses = UrlFetchApp.fetchAll(fetchRequests);
+    responses.forEach((res, index) => {
+      const qId = gradingRequests[index].qId;
+      if (res.getResponseCode() === 200) {
+        try {
+          const json = JSON.parse(res.getContentText());
+          const textResponse = json.choices[0].message.content;
+          const parsedScore = JSON.parse(textResponse);
+          results[qId] = parsedScore.score === 1;
+        } catch (e) { results[qId] = true; }
+      } else {
+        console.error("OpenRouter grading error for " + qId + ":", res.getResponseCode(), res.getContentText());
+        results[qId] = true;
       }
-    } else {
-      // If no fallback key, just mark as true to not penalize
-      failedRequests.forEach(req => { results[req.qId] = true; });
-    }
+    });
+  } catch (err) {
+    gradingRequests.forEach(req => { results[req.qId] = true; });
   }
 
   return results;
@@ -230,6 +176,8 @@ function doPost(e) {
       return jsonResponse(handleAdminResetAttempt(data.email, data.token));
     } else if (action === "overrideVerdict") {
       return jsonResponse(handleOverrideVerdict(data.attemptId, data.questionId, data.newVerdict, data.token));
+    } else if (action === "regradeAttempt") {
+      return jsonResponse(handleRegradeAttempt(data.attemptId, data.token));
     }
 
     return jsonResponse({ error: "Invalid action" }, 400);
@@ -623,6 +571,141 @@ function handleOverrideVerdict(attemptId, questionId, newVerdict, token) {
       success: true,
       report: buildReportFromAttemptsRow(attemptId),
       overrideAt: overrideAt
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/**
+ * Phase 10 (GRADE-10): recruiter-only POST that re-queues all ungraded answers for a
+ * single attempt through evaluateWithRubric(). Reads original answers from Responses sheet,
+ * re-grades via OpenRouter, updates GradingTranscripts, and re-aggregates Attempt scores.
+ */
+function handleRegradeAttempt(attemptId, token) {
+  if (!attemptId) return { success: false, error: "Missing attempt ID" };
+  if (!checkAdminAuth(token)) return { success: false, error: "Unauthorized" };
+
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(15000)) return { success: false, error: "Grading queue busy; try again in a moment." };
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+    // 1. Read attempt's frozen question IDs
+    const attemptsSheet = ss.getSheetByName("Attempts");
+    if (!attemptsSheet) return { success: false, error: "Attempts sheet missing" };
+    const attemptsData = attemptsSheet.getDataRange().getValues();
+    let attemptRowIdx = -1;
+    let frozenIds = [];
+    for (let i = 1; i < attemptsData.length; i++) {
+      if (attemptsData[i][0] === attemptId) {
+        attemptRowIdx = i + 1;
+        frozenIds = (attemptsData[i][6] || "").split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+        break;
+      }
+    }
+    if (attemptRowIdx === -1) return { success: false, error: "Attempt not found" };
+    if (frozenIds.length === 0) return { success: false, error: "No frozen questions found for this attempt" };
+
+    // 2. Read GradingTranscripts to find ungraded question IDs
+    const transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+    if (!transcriptsSheet) return { success: false, error: "GradingTranscripts sheet missing" };
+    const transcriptData = transcriptsSheet.getDataRange().getValues();
+    const ungradedQIds = [];
+    const transcriptRowMap = {}; // qId -> row index (1-based)
+    for (let i = 1; i < transcriptData.length; i++) {
+      if (transcriptData[i][0] === attemptId) {
+        const qId = transcriptData[i][1];
+        transcriptRowMap[qId] = i + 1;
+        const verdict = transcriptData[i][3];
+        const overrideVerdict = transcriptData[i][6];
+        // Only re-grade if no override AND verdict is ungraded
+        const effective = (overrideVerdict && overrideVerdict.length > 0) ? overrideVerdict : verdict;
+        if (effective === "ungraded" || effective === "") {
+          ungradedQIds.push(qId);
+        }
+      }
+    }
+
+    if (ungradedQIds.length === 0) {
+      return { success: true, message: "No ungraded answers found — nothing to regrade.", regraded: 0 };
+    }
+
+    // 3. Read Responses sheet to get original answers
+    const responsesSheet = ss.getSheetByName("Responses");
+    if (!responsesSheet) return { success: false, error: "Responses sheet missing" };
+    const responsesData = responsesSheet.getDataRange().getValues();
+    const answerMap = {}; // qId -> submitted answer JSON
+    for (let i = 1; i < responsesData.length; i++) {
+      if (responsesData[i][0] === attemptId) {
+        answerMap[responsesData[i][1]] = responsesData[i][2];
+      }
+    }
+
+    // 4. Build grading requests for ungraded questions
+    const gradingRequests = [];
+    const questionsById = {};
+    for (let q = 0; q < QUESTIONS.length; q++) {
+      questionsById[QUESTIONS[q].id] = QUESTIONS[q];
+    }
+    for (let u = 0; u < ungradedQIds.length; u++) {
+      const qId = ungradedQIds[u];
+      const q = questionsById[qId];
+      if (!q) continue;
+      const answerRaw = answerMap[qId];
+      if (answerRaw === undefined || answerRaw === null) continue;
+
+      let answerText = "";
+      try {
+        const parsed = JSON.parse(answerRaw);
+        if (typeof parsed === "object" && parsed !== null && "text" in parsed) {
+          answerText = parsed.text || "";
+        } else {
+          answerText = String(parsed);
+        }
+      } catch (e) {
+        answerText = String(answerRaw);
+      }
+
+      const prompt = "Question:\n" + (q.stem || "");
+      gradingRequests.push({ qId: qId, prompt: prompt, answer: answerText });
+    }
+
+    if (gradingRequests.length === 0) {
+      return { success: true, message: "No regradable answers found (missing question data or responses).", regraded: 0 };
+    }
+
+    // 5. Call evaluateWithRubric
+    const results = evaluateWithRubric(gradingRequests, questionsById);
+
+    // 6. Update GradingTranscripts rows
+    const now = new Date().toISOString();
+    let updatedCount = 0;
+    for (const qId in results) {
+      if (!transcriptRowMap[qId]) continue;
+      const rowIdx = transcriptRowMap[qId];
+      const r = results[qId];
+      // Update verdict (col 4), criteriaMet (col 5), rationale (col 6)
+      transcriptsSheet.getRange(rowIdx, 4, 1, 3).setValues([[
+        r.verdict,
+        JSON.stringify(r.criteriaMet || []),
+        r.rationale || ""
+      ]]);
+      updatedCount++;
+    }
+
+    // 7. Re-aggregate scores
+    const agg = computeAggregatesForAttempt(attemptId, ss);
+    attemptsSheet.getRange(attemptRowIdx, 8, 1, 4).setValues([[agg.overallPercentage, agg.englishPct, agg.researchPct, agg.criticalPct]]);
+    attemptsSheet.getRange(attemptRowIdx, 13, 1, 2).setValues([[agg.recommendationTier, agg.narrativeInsight]]);
+    attemptsSheet.getRange(attemptRowIdx, 15).setValue(agg.ungradedCount);
+
+    return {
+      success: true,
+      message: "Regrade complete. " + updatedCount + " answer(s) re-graded via LLM.",
+      regraded: updatedCount,
+      report: buildReportFromAttemptsRow(attemptId)
     };
   } finally {
     lock.releaseLock();
@@ -2038,9 +2121,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer did not send the screenshot, so we are unable to verify the information.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn't sent' to 'didn't send' (base form after did); resolves double negative 'can't verify nothing' to 'can't verify anything' or 'can verify nothing'; proper punctuation and spelling" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains original meaning: customer failed to send screenshot, verification is impossible" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal register for case note; contractions replaced with full forms; professional phrasing" }
     ] },
 
     "position": 31,
@@ -2065,9 +2148,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "This case has been resolved. Kindly check your account again.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'is solve' to 'has been resolved' or 'is solved'; fixes missing subject-verb agreement; proper punctuation" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains original meaning: case is resolved, customer should check their account" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional register; 'kindly' acceptable in customer-facing context; formal phrasing" }
     ] },
 
     "position": 32,
@@ -2092,9 +2175,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The agent was unable to open the link because it had expired.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn\'t sent' to 'didn\'t send' (base form after did); resolves double negative 'can\'t verify nothing' to 'can\'t verify anything' or 'can verify nothing'; proper punctuation and spelling" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains original meaning: customer failed to send screenshot, verification is impossible" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal register for case note; contractions replaced with full forms; professional phrasing" }
     ] },
 
     "position": 33,
@@ -2119,9 +2202,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We have been following up for the past two days, but we have not yet received your response.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'is solve' to 'has been resolved' or 'is solved' (past participle required after auxiliary); adds punctuation between clauses" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case is resolved, customer should check account" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite professional customer service tone; 'kindly' acceptable in context" }
     ] },
 
     "position": 34,
@@ -2146,9 +2229,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Kindly share the requested details as soon as possible so that we can complete the verification.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing auxiliary 'was' before 'not able'; corrects 'was expired' to 'had expired' (intransitive verb not used in passive); adds article 'The' before 'Agent'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: agent could not access link due to expiration" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal register; avoids contractions; professional tone" }
     ] },
 
     "position": 35,
@@ -2173,9 +2256,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The property owner stated that the review is fake.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Changes to present perfect continuous 'have been following up for two days'; corrects 'you not respond' to 'you have not responded'; fixes preposition 'from' to 'for'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: repeated follow-ups over two days without response" },
+      { name: "Professional Tone", weight: 0.2, description: "Professional tone; avoids blaming language; formal register" }
     ] },
 
     "position": 36,
@@ -2200,9 +2283,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We did not receive sufficient evidence to proceed with the investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Replaces nonstandard 'fastly' with 'as soon as possible' or 'promptly'; corrects 'we done' to 'we can complete' (wrong verb form and missing modal)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for details to complete verification" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; professional customer service register" }
     ] },
 
     "position": 37,
@@ -2227,9 +2310,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please provide your booking ID so that we can verify your stay.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects subject-verb agreement 'owner say' to 'owner states' or 'stated'; adds appropriate tense marking for reported speech" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: owner claims review is fake" },
+      { name: "Professional Tone", weight: 0.2, description: "Uses past tense for reported speech; formal register" }
     ] },
 
     "position": 38,
@@ -2254,9 +2337,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Your request has already been forwarded to our specialist team.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn\'t received' to 'did not receive' (base form after did); changes uncountable 'evidences' to 'evidence'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: insufficient evidence received" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal register; avoids contractions" }
     ] },
 
     "position": 39,
@@ -2281,9 +2364,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We appreciate your patience during the investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'for verify' to 'so that we can verify' or 'to verify' (infinitive of purpose or subordinate clause required)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for booking ID to verify stay" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; appropriate customer service tone" }
     ] },
 
     "position": 40,
@@ -2308,9 +2391,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The review has been removed because it violated our guidelines.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing passive auxiliary 'has been' ('Your request has already been forwarded'); ensures correct present perfect passive construction" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request has been passed to specialists" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, reassuring tone" }
     ] },
 
     "position": 41,
@@ -2335,9 +2418,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer has not provided sufficient evidence to continue the investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'patient' (adjective) to 'patience' (noun); adds article 'the' before 'investigation'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: gratitude for customer's patience during process" },
+      { name: "Professional Tone", weight: 0.2, description: "Warm, professional tone expressing appreciation" }
     ] },
 
     "position": 42,
@@ -2362,9 +2445,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please upload the document again because the images are blurry.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Review'; corrects 'has removed' to 'has been removed' (passive voice needed); corrects 'violate' to 'violated' (past tense) with subject 'it'; pluralizes 'guideline' to 'guidelines'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: review removed for policy violation" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone; avoids emotional language" }
     ] },
 
     "position": 43,
@@ -2389,9 +2472,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We cannot process this request until the required documents are received.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Customer'; corrects 'not provide' to 'has not provided'; resolves double negative 'not provide insufficient' to 'has not provided sufficient'; adds article 'the' before 'investigation'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer has not supplied enough evidence" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone" }
     ] },
 
     "position": 44,
@@ -2416,9 +2499,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Kindly wait while we investigate your issue. We will update you as soon as possible.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'image' to 'images' (plural to match 'are'); adds article 'the' before 'images'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: images unclear, re-upload needed" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; clear instruction" }
     ] },
 
     "position": 45,
@@ -2443,9 +2526,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Your appeal was rejected because there was insufficient evidence to support your request.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'documents is' to 'documents are' (subject-verb agreement); adds article 'the required' before 'documents'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request blocked pending document receipt" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, clear tone" }
     ] },
 
     "position": 46,
@@ -2470,9 +2553,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please contact us if you have any further questions.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Replaces nonstandard 'soonest' with 'as soon as possible'; adds sentence boundary or conjunction for clarity between clauses" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: investigation in progress, update forthcoming" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, reassuring tone" }
     ] },
 
     "position": 47,
@@ -2497,9 +2580,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The investigation is still in progress. Kindly avoid creating multiple tickets, as this may delay the review process.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'there have no enough' to 'there was insufficient' or 'there was not enough' (wrong existential construction and adjective form)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: appeal rejected due to insufficient evidence" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, empathetic tone" }
     ] },
 
     "position": 48,
@@ -2524,9 +2607,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer uploaded the wrong attachment twice.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Removes redundant 'back' from 'contact us back'; replaces 'doubt' with 'further questions' or 'concerns' for clarity" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: invitation to follow up if needed" },
+      { name: "Professional Tone", weight: 0.2, description: "Friendly, open tone; customer-service appropriate" }
     ] },
 
     "position": 49,
@@ -2551,9 +2634,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We are unable to verify your booking because the booking details are missing.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Investigation'; adds missing verb 'is'; adds punctuation between clauses; replaces 'don\'t create' with 'kindly avoid creating'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case being worked, avoid duplicate tickets" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite instruction; professional tone" }
     ] },
 
     "position": 50,
@@ -2578,9 +2661,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer sent the booking confirmation yesterday.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'the' before 'wrong attachment'; corrects 'two time' to 'twice' or 'two times'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer submitted incorrect file multiple times" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual, neutral tone" }
     ] },
 
     "position": 51,
@@ -2605,9 +2688,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We have reviewed the evidence provided by the traveler.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds 'to' after 'unable' ('unable to verify'); adds article 'the' before 'booking details'; adds missing verb 'are' ('details are missing')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: verification blocked due to missing details" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, clear tone" }
     ] },
 
     "position": 52,
@@ -2632,9 +2715,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The investigation is currently in progress.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'send' to 'sent' (past tense required by 'yesterday')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer submitted confirmation on a previous day" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
     ] },
 
     "position": 53,
@@ -2659,9 +2742,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The property owner did not provide sufficient evidence.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'has' to 'have' (subject-verb agreement with 'We')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: evidence has been reviewed" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
     ] },
 
     "position": 54,
@@ -2686,9 +2769,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer has uploaded the wrong attachment.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'are' to 'is' (subject-verb agreement with singular 'investigation')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case is ongoing" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal status update tone" }
     ] },
 
     "position": 55,
@@ -2713,9 +2796,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please ensure all documents are attached before submitting your appeal.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn\'t provided' to 'did not provide' (base form required after 'did')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: owner's evidence was insufficient" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone" }
     ] },
 
     "position": 56,
@@ -2740,9 +2823,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The review was removed because it violated our guidelines.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'have' to 'has' (subject-verb agreement with singular 'Customer'); adds article 'The' before 'Customer'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: incorrect file was submitted" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
     ] },
 
     "position": 57,
@@ -2767,9 +2850,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We appreciate your patience while we investigate the issue.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'all document' to 'all documents' (plural required); corrects 'is' to 'are' (subject-verb agreement with plural)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: all files must be attached prior to submission" },
+      { name: "Professional Tone", weight: 0.2, description: "Clear instruction; professional tone" }
     ] },
 
     "position": 58,
@@ -2794,9 +2877,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Kindly provide more information regarding your booking.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'were' to 'was' (subject-verb agreement with singular 'review'); corrects 'violate' to 'violated' (past tense)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: review removed for guideline violation" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
     ] },
 
     "position": 59,
@@ -2821,9 +2904,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The agent was unable to access the attachment.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Subject-verb agreement, tense, articles, punctuation, spelling. Common errors like double-negatives and dropped auxiliaries are resolved." },
-      { name: "Meaning Preservation", weight: 0.3, description: "Rewrite retains the original intent of the sentence and does not invent or omit facts." },
-      { name: "Professional Tone", weight: 0.2, description: "Register is suitable for a written case note or customer-facing message; no slang or informal contractions." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'patient' (adjective) to 'patience' (noun needed as object of 'appreciate')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: gratitude for patience during investigation" },
+      { name: "Professional Tone", weight: 0.2, description: "Warm, appreciative tone" }
     ] },
 
     "position": 60,
@@ -2848,9 +2931,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello {{ticket.requester.first_name}},\nThank you for contacting us.\nWe understand your concern regarding the review. After reviewing the information provided, we found that reviews discussing booking or check-in experiences may be allowed under our guidelines.\nIf you would like to share your perspective, we encourage you to post a management response to the review.\nThank you for your understanding.\n{{ticket.assignee.signature}}\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds 'to' after 'unable' ('unable to access' — infinitive required after adjective 'unable')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: agent could not open the file" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
     ] },
 
     "position": 61,
@@ -2875,9 +2958,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe understand your concern regarding the review. After carefully assessing the available information, we did not identify any violations of our review guidelines. As a result, the review will remain published.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "All sentences grammatically correct with proper punctuation; no contractions in formal correspondence; correct articles and prepositions throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Polite, empathetic, non-defensive; acknowledges the owner's concern about the fake review; personalized rather than generic template language" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Notes that reviews discussing booking or check-in experiences may be allowed under guidelines; suggests posting a management response; does not promise removal of the review" }
     ] },
 
     "position": 62,
@@ -2902,9 +2985,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe appreciate you reporting your concerns. Our specialist team is currently investigating the reviews you reported. At this time, the investigation is still in progress, and no final decision has been made.\nWe will update you once the review is complete.\nThank you for your patience.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and spelling; appropriate register for customer-facing email" },
+      { name: "Professional Tone", weight: 0.3, description: "Empathetic but firm; explains outcome without being dismissive; maintains professional distance from the traveler's frustration" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Clearly states no policy violations were identified after investigation; confirms the review will remain published; explains the investigation outcome" }
     ] },
 
     "position": 63,
@@ -2929,9 +3012,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe reviewed the documents you submitted; however, they are not clear enough for verification. Kindly upload clear and readable copies of your ID so we can continue reviewing your case.\nThank you for your cooperation.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and sentence structure throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Reassuring tone; acknowledges the owner's report of multiple suspicious reviews; sets appropriate timeline expectations" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms investigation is currently in progress; does not claim the review was already removed (correcting the broken macro); promises to update once review is complete" }
     ] },
 
     "position": 64,
@@ -2956,9 +3039,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe appreciate you submitting an appeal. After carefully reviewing your case again, we have determined that the original decision remains unchanged based on our review guidelines.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; clear sentence structure; appropriate register for customer email" },
+      { name: "Professional Tone", weight: 0.3, description: "Polite and helpful; explains the document issue without blaming the traveler; provides a clear call to action" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Explains that submitted ID documents were unclear; requests clear and readable copies; specifies what is needed to continue verification" }
     ] },
 
     "position": 65,
@@ -2983,9 +3066,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe have received the documents you submitted. Your case is currently under review by our specialist team, and we will notify you once the investigation has been completed.\nThank you for your patience.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and spelling throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Respectful of the appeal process; firm but empathetic in communicating the unchanged decision; acknowledges the owner's effort" },
+      { name: "Instruction Adherence", weight: 0.4, description: "States the appeal was carefully reviewed; confirms the original decision remains unchanged; references review guidelines; does not promise future reversal" }
     ] },
 
     "position": 66,
@@ -3010,9 +3093,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe noticed that the incorrect booking confirmation was uploaded. Kindly submit the correct booking confirmation so that we can verify your booking and continue reviewing your request.\nThank you for your cooperation.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; appropriate sentence structure and punctuation" },
+      { name: "Professional Tone", weight: 0.3, description: "Responsive and reassuring; acknowledges receipt of the traveler's submitted documents" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms documents have been received; states the case is currently under review; does not incorrectly request documents again; promises notification once complete" }
     ] },
 
     "position": 67,
@@ -3037,9 +3120,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nYour appeal has been escalated to our specialist team for further review. They will carefully assess the available information before making a final decision.\nWe will update you once the review has been completed.\nThank you for your patience.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Helpful and clear; identifies the wrong-document issue without assigning blame to the customer" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Notes that an incorrect document was uploaded; requests the correct booking confirmation; explains what is needed to proceed with verification" }
     ] },
 
     "position": 68,
@@ -3064,9 +3147,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nAfter reviewing your appeal, we confirmed that your review was removed because it did not comply with our review guidelines. Therefore, the original decision remains unchanged.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; professional sentence structure and punctuation" },
+      { name: "Professional Tone", weight: 0.3, description: "Reassuring tone; acknowledges the escalation to specialist team; sets appropriate expectations for timeline" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms the appeal has been escalated to the specialist team; does not incorrectly claim rejection (correcting the broken macro); promises update once the review is complete" }
     ] },
 
     "position": 69,
@@ -3091,9 +3174,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nAt this time, we do not have sufficient information to continue our investigation. Kindly provide the requested supporting evidence so that we can review your report further.\nThank you for your cooperation.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Sentences are grammatically correct with appropriate punctuation and spelling; contractions and register are appropriate for a customer email." },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, objective, helpful, non-defensive; personalizes to the customer's situation rather than defaulting to a generic template." },
-      { name: "Instruction Adherence", weight: 0.4, description: "Checks if the candidate addressed all constraints mentioned in the email prompt." }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and register throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Empathetic but firm; does not celebrate or cheerfully announce the review removal; maintains professionalism" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms the review was removed because it did not comply with guidelines; does not incorrectly claim restoration (correcting the broken macro); explains the decision stands after appeal review" }
     ] },
 
     "position": 70,
@@ -4314,9 +4397,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the reported listing and confirmed it had already been removed due to policy violations. No further action is required from the user.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Correct tense and agreement; clean punctuation and spelling; no fragments or run-ons in closure note" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Confirms listing was removed due to policy violations; states no further action required from user" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution" }
     ] },
 
     "position": 96,
@@ -4357,9 +4440,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the reported review and available evidence. No policy violations were identified, and the review will remain published. Case resolved.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct closure note; proper punctuation; register appropriate for an internal case note" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Accurately reflects that the reported listing was already removed due to policy violations; does not claim the investigation is ongoing or that further user action is needed" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual and concise; confirms resolution without unnecessary elaboration" }
     ] },
 
     "position": 97,
@@ -4400,9 +4483,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Received the report regarding a potentially suspicious review. The case has been logged and is awaiting initial investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; professional punctuation and spelling throughout" },
+      { name: "Meaning Preservation", weight: 0.4, description: "States that no policy violations were identified after investigation; confirms the review will remain published; accurately reflects case closure" },
+      { name: "Professional Tone", weight: 0.2, description: "Objective, factual tone; neutral regarding the investigation outcome" }
     ] },
 
     "position": 98,
@@ -4443,9 +4526,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the submitted documents and confirmed that all required information has been successfully verified. No further action is required.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; appropriate register for a case note" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Reflects that the report was just received and investigation has not started; does not imply any findings or resolution prematurely" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral status update; sets expectation that investigation is pending" }
     ] },
 
     "position": 99,
@@ -4486,9 +4569,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the submitted verification documents and found the images to be unclear. Requested clearer copies to continue the verification process.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; clean punctuation throughout" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Confirms all required documents were successfully verified; no further action is needed; accurately reflects completion of the case" },
+      { name: "Professional Tone", weight: 0.2, description: "Clear, affirmative tone; confirms resolution" }
     ] },
 
     "position": 100,
@@ -4529,9 +4612,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the reported concern and determined that booking details are required for further investigation. Awaiting the requested information from the customer.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; professional register maintained throughout" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Notes that submitted images were unclear; requests clearer copies; accurately reflects that verification is blocked pending re-upload" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; non-blaming language toward the traveler" }
     ] },
 
     "position": 101,
@@ -4572,9 +4655,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the reported concern and determined that additional supporting evidence is required before the investigation can continue. Awaiting further information from the property owner.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; appropriate sentence structure and punctuation" },
+      { name: "Meaning Preservation", weight: 0.4, description: "States that booking details are required for the investigation to proceed; reflects the waiting state pending customer response" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone; clearly communicates what information is needed" }
     ] },
 
     "position": 102,
@@ -4615,9 +4698,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Received the verification request and supporting documents. The case has been logged and is awaiting initial review.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; professional punctuation throughout" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Explains that additional supporting evidence is required before the investigation can continue; reflects the dependency on the property owner providing more information" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, clear request; professional register" }
     ] },
 
     "position": 103,
@@ -4658,9 +4741,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the submitted verification document and confirmed that it has expired. Requested a valid document to continue the verification process.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; appropriate register for a case note" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Confirms the verification request was received and logged; investigation is pending initial review; does not imply any findings" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral status update; sets expectation for the initial review process" }
     ] },
 
     "position": 104,
@@ -4701,9 +4784,9 @@ const QUESTIONS = [
     ],
     "model_answer": "Reviewed the property listing and the available booking information. The listing details were found to be accurate based on the investigation. Case resolved.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.4, description: "Sentences are grammatically correct; punctuation and spelling are clean; register is appropriate for a customer closure message." },
-      { name: "Meaning Preservation", weight: 0.4, description: "Rewrite retains the original intent (customer failed to send screenshot; verification impossible)." },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, professional, empathetic; acknowledges the customer's concern before affirming the resolution." }
+      { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; professional register maintained" },
+      { name: "Meaning Preservation", weight: 0.4, description: "States that the submitted document has expired; requests a valid replacement; accurately reflects that verification is blocked pending a current document" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, clear instruction; non-blaming tone" }
     ] },
 
     "position": 105,

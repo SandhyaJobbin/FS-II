@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --background: #070a13;
-  --foreground: #f8fafc;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   
-  --bg-primary: #070a13;
-  --card-bg: rgba(13, 21, 39, 0.65);
-  --card-border: rgba(255, 255, 255, 0.06);
-  --accent: #00f2fe;
-  --accent-glow: rgba(0, 242, 254, 0.25);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #475569;
-  --success: #10b981;
-  --error: #ef4444;
-  --error-bg: rgba(239, 68, 68, 0.08);
+  --bg-primary: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(15, 23, 42, 0.08);
+  --accent: #0891b2;
+  --accent-glow: rgba(8, 145, 178, 0.15);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --success: #059669;
+  --error: #dc2626;
+  --error-bg: rgba(220, 38, 38, 0.06);
   --border-radius: 16px;
   --transition-speed: 0.3s;
 }
@@ -45,7 +45,7 @@ body {
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, var(--accent-glow) 0%, rgba(7, 10, 19, 0) 70%);
+  background: radial-gradient(circle, var(--accent-glow) 0%, rgba(248, 250, 252, 0) 70%);
   z-index: -1;
   pointer-events: none;
 }
@@ -57,12 +57,12 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.03);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 3px;
 }
 
@@ -78,4 +78,17 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Reduced motion media query */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

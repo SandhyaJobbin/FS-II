@@ -28,15 +28,15 @@ export default function ThankYouScreen({ candidateName, onExit }: ThankYouScreen
           variants={fadeUp}
           initial="hidden"
           animate="visible"
-          className="px-8 pt-8 pb-5 text-center border-b border-slate-800/60"
+          className="px-8 pt-8 pb-5 text-center border-b border-slate-200"
         >
           <div
-            className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-800"
+            className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-200"
             style={{ backgroundColor: '#10b98118', color: '#10b981' }}
           >
             <CheckCircle className="w-7 h-7" weight="fill" />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight mb-1">Assessment Submitted!</h2>
+          <h2 className="text-2xl font-bold tracking-tight mb-1 text-slate-900">Assessment Submitted!</h2>
           <p className="text-sm text-[var(--text-secondary)]">
             {candidateName ? `Nice work, ${candidateName} — ` : ''}
             Thank you for completing the Fraud Support hiring assessment.
@@ -50,12 +50,12 @@ export default function ThankYouScreen({ candidateName, onExit }: ThankYouScreen
             variants={fadeUp}
             initial="hidden"
             animate="visible"
-            className="bg-slate-950/40 border border-[var(--card-border)] rounded-lg p-4 flex flex-col gap-2 text-sm"
+            className="bg-slate-50 border border-[var(--card-border)] rounded-lg p-4 flex flex-col gap-2 text-sm"
           >
             <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-secondary)]">
               What Happens Next
             </span>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-slate-700 leading-relaxed">
               Automated scoring runs first; open-text answers may be reviewed and adjusted by a
               recruiter. You&apos;ll receive your full results and recommendation by email within
               a few minutes.
@@ -69,7 +69,7 @@ export default function ThankYouScreen({ candidateName, onExit }: ThankYouScreen
             initial="hidden"
             animate="visible"
             onClick={onExit}
-            className="w-full font-semibold text-[14px] p-3.5 rounded-lg bg-slate-900/60 border border-[var(--card-border)] text-white hover:bg-slate-800/80 cursor-pointer transition-all"
+            className="w-full font-semibold text-[14px] p-3.5 rounded-lg bg-slate-100 border border-[var(--card-border)] text-slate-800 hover:bg-slate-200/80 cursor-pointer transition-all"
           >
             Return to Start
           </motion.button>

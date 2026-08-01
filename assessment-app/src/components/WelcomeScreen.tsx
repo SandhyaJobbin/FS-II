@@ -36,7 +36,7 @@ export default function WelcomeScreen({ onStart, loading, error }: WelcomeScreen
           <div className="inline-block text-[11px] font-bold uppercase tracking-wider text-accent bg-accent/10 border border-accent/20 px-3 py-1.5 rounded-full mb-4">
             Fraud Support Role
           </div>
-          <h1 className="text-3xl font-bold tracking-tight mb-2 bg-linear-to-br from-white to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold tracking-tight mb-2 text-slate-900">
             Investigation Assessment
           </h1>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
@@ -56,7 +56,7 @@ export default function WelcomeScreen({ onStart, loading, error }: WelcomeScreen
               onChange={(e) => setName(e.target.value)}
               required
               disabled={loading}
-              className="bg-slate-900/60 border border-[var(--card-border)] rounded-lg p-3 text-[15px] text-white placeholder-slate-600 outline-hidden focus:border-accent focus:shadow-[0_0_0_3px_rgba(0,242,254,0.15)] transition-all"
+              className="bg-slate-50 border border-[var(--card-border)] rounded-lg p-3 text-[15px] text-slate-900 placeholder-slate-400 outline-hidden focus:border-accent focus:shadow-[0_0_0_3px_rgba(0,242,254,0.15)] transition-all shadow-inner"
             />
           </div>
 
@@ -71,30 +71,32 @@ export default function WelcomeScreen({ onStart, loading, error }: WelcomeScreen
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={loading}
-              className="bg-slate-900/60 border border-[var(--card-border)] rounded-lg p-3 text-[15px] text-white placeholder-slate-600 outline-hidden focus:border-accent focus:shadow-[0_0_0_3px_rgba(0,242,254,0.15)] transition-all"
+              className="bg-slate-50 border border-[var(--card-border)] rounded-lg p-3 text-[15px] text-slate-900 placeholder-slate-400 outline-hidden focus:border-accent focus:shadow-[0_0_0_3px_rgba(0,242,254,0.15)] transition-all shadow-inner"
             />
             <span className="text-[10px] text-slate-500">
               One official attempt per email. Repeat attempts are blocked.
             </span>
           </div>
 
-          <div className="border-t border-slate-800/60 pt-5 mt-2 flex flex-col gap-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
-              Apps Script Web App URL
-            </label>
-            <input
-              type="url"
-              placeholder="https://script.google.com/macros/s/.../exec"
-              value={gasUrl}
-              onChange={(e) => setGasUrl(e.target.value)}
-              required
-              disabled={loading}
-              className="bg-slate-900/60 border border-[var(--card-border)] rounded-lg p-3 text-[15px] text-white placeholder-slate-600 outline-hidden focus:border-accent focus:shadow-[0_0_0_3px_rgba(0,242,254,0.15)] transition-all"
-            />
-            <span className="text-[10px] text-slate-500">
-              Enter your deployed Google Apps Script Web App URL to link this frontend.
-            </span>
-          </div>
+          {!process.env.NEXT_PUBLIC_GAS_URL && (
+            <div className="border-t border-slate-200 pt-5 mt-2 flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
+                Apps Script Web App URL
+              </label>
+              <input
+                type="url"
+                placeholder="https://script.google.com/macros/s/.../exec"
+                value={gasUrl}
+                onChange={(e) => setGasUrl(e.target.value)}
+                required
+                disabled={loading}
+                className="bg-slate-50 border border-[var(--card-border)] rounded-lg p-3 text-[15px] text-slate-900 placeholder-slate-400 outline-hidden focus:border-accent focus:shadow-[0_0_0_3px_rgba(0,242,254,0.15)] transition-all shadow-inner"
+              />
+              <span className="text-[10px] text-slate-500">
+                Enter your deployed Google Apps Script Web App URL to link this frontend.
+              </span>
+            </div>
+          )}
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-lg text-xs leading-relaxed">

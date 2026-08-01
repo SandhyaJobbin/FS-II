@@ -279,18 +279,18 @@ Plans:
   4. Candidate ReportScreen shows per-question criteriaMet breakdown (rationale withheld — recruiter-only per Phase 10 A6, enforced by server strip + client type + CI grep gate)
   5. Candidate + recruiter emails use a 640px table-based HTML template with tier badge, per-trait cards, XSS-escaped user strings, and non-empty plain-text fallback
 
-**Plans**: 9 plans
+**Plans**: 2/9 plans executed
 
 Plans:
 **Wave 0** *(foundation — parallel)*
 
-- [ ] 13-01-PLAN.md — Extract-first refactor of TestScreen.tsx (zero behavior change; drops file under 500-line cap)
+- [x] 13-01-PLAN.md — Extract-first refactor of TestScreen.tsx (zero behavior change; drops file under 500-line cap)
 - [ ] 13-02-PLAN.md — axe-core dev tooling + baseline axe report for ReportScreen
 
 **Wave 1** *(blocked on Wave 0; three plans run in parallel — disjoint files)*
 
 - [ ] 13-03-PLAN.md — ARIA landmarks + roles + progressbar semantics on ReportScreen (BUG-04 / A11Y-01)
-- [ ] 13-04-PLAN.md — Light theme migration + layout widening across candidate-facing surfaces (UX-01, UX-02)
+- [x] 13-04-PLAN.md — Light theme migration + layout widening across candidate-facing surfaces (UX-01, UX-02)
 - [ ] 13-05-PLAN.md — EP Part 6 email-block + CT case-always + zone numbering + mcq_multi cue (UX-03..UX-06)
 
 **Wave 2** *(blocked on 13-03 + 13-04; two plans run in parallel)*
@@ -323,7 +323,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 | 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
 | 11. Recruiter Analytics Dashboard | 0/4 | Not started | — |
 | 12. Proctoring Upgrade (MediaPipe + Fullscreen) | 0/0 | Not started | — |
-| 13. Accessibility (F-05) & Polish | 0/0 | Not started | — |
+| 13. Accessibility (F-05) & Polish | 2/9 | In Progress|  |
 
 ---
 *Roadmap created: 2026-07-29*
@@ -339,6 +339,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 **Plans:** 0 plans
 
 Plans:
+
 - [ ] Theme: switch default to light mode; dark mode currently hard to read, text too small in places; expand layout to use full screen instead of a single centered card
 - [ ] Zone start/guideline screens (English Proficiency, Attention to Detail, Critical Thinking): instructions on what to do are unclear — add more detail and an example where helpful, for all zones
 - [ ] Zone transitions: add explicit "this zone is complete" messaging/transition screen before jumping into the next zone's guidelines
@@ -356,6 +357,7 @@ Plans:
 **Plans:** 0 plans
 
 Plans:
+
 - [ ] TBD (promote with /gsd-review-backlog when ready, likely alongside or after Phase 10)
 
 ### Phase 999.3: HTML-designed candidate/recruiter report emails (BACKLOG)
@@ -365,4 +367,5 @@ Plans:
 **Plans:** 0 plans
 
 Plans:
+
 - [ ] TBD (promote with /gsd-review-backlog when ready)

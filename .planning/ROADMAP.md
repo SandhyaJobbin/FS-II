@@ -268,15 +268,40 @@ Plans:
 
 ### Phase 13: Accessibility (F-05) & Remaining Polish
 
-**Goal**: ARIA landmarks/roles added to ReportScreen.tsx; small independent a11y remediation, no ordering constraint on rest of milestone.
-**Depends on**: Nothing
-**Requirements**: TBD (F-05)
+**Goal**: Ship the F-05 ARIA remediation on ReportScreen (BUG-04) plus the four bundled workstreams: light-theme migration + layout widening (999.1), richer per-question strength/weakness breakdown on the candidate report (999.2), and 640px HTML email templates for candidate + recruiter (999.3).
+**Depends on**: Nothing (parallelizable with Phases 10-12)
+**Requirements**: BUG-04, A11Y-01, UX-01, UX-02, UX-03, UX-04, UX-05, UX-06, REPORT-03, EMAIL-01
 **Success Criteria** (what must be TRUE):
 
-  1. ReportScreen.tsx has ARIA landmarks + roles; passes axe-core baseline
-  2. Touches only in-browser report render, separate from Phase 9 email template
+  1. ReportScreen.tsx has ARIA landmarks + roles + progressbar semantics; passes axe-core baseline (zero critical + zero serious violations)
+  2. Candidate-facing surfaces render on a single light theme; layout widened; prefers-reduced-motion honored
+  3. Reading items show an email-letterhead scenario with a re-review button; CT items always show a case-file panel; question counter is zone-relative; mcq_multi carries a visible cue
+  4. Candidate ReportScreen shows per-question criteriaMet breakdown (rationale withheld — recruiter-only per Phase 10 A6, enforced by server strip + client type + CI grep gate)
+  5. Candidate + recruiter emails use a 640px table-based HTML template with tier badge, per-trait cards, XSS-escaped user strings, and non-empty plain-text fallback
 
-**Plans**: TBD
+**Plans**: 9 plans
+
+Plans:
+**Wave 0** *(foundation — parallel)*
+
+- [ ] 13-01-PLAN.md — Extract-first refactor of TestScreen.tsx (zero behavior change; drops file under 500-line cap)
+- [ ] 13-02-PLAN.md — axe-core dev tooling + baseline axe report for ReportScreen
+
+**Wave 1** *(blocked on Wave 0; three plans run in parallel — disjoint files)*
+
+- [ ] 13-03-PLAN.md — ARIA landmarks + roles + progressbar semantics on ReportScreen (BUG-04 / A11Y-01)
+- [ ] 13-04-PLAN.md — Light theme migration + layout widening across candidate-facing surfaces (UX-01, UX-02)
+- [ ] 13-05-PLAN.md — EP Part 6 email-block + CT case-always + zone numbering + mcq_multi cue (UX-03..UX-06)
+
+**Wave 2** *(blocked on 13-03 + 13-04; two plans run in parallel)*
+
+- [ ] 13-06-PLAN.md — Backend transcripts read + strip + defensive fallback (REPORT-03 backend)
+- [ ] 13-07-PLAN.md — ReportScreen Answer Detail section + client-strip sync-check gate (REPORT-03 frontend)
+
+**Wave 3** *(blocked on Wave 2 + 13-06)*
+
+- [ ] 13-08-PLAN.md — Extract Emails.gs + rewrite buildReportHtml as 640px template + plain-text fallback + escape helper (EMAIL-01)
+- [ ] 13-09-PLAN.md — Deploy + live end-to-end verify + REQUIREMENTS/ROADMAP finalization + backlog 999.1/999.2/999.3 closure
 
 ## Progress
 

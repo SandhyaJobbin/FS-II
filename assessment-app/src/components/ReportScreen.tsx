@@ -178,9 +178,34 @@ export default function ReportScreen({ report, onExit }: ReportScreenProps) {
             </p>
           </motion.div>
 
+          {/* ─── Ungraded Notice (Phase 10 GRADE-10) ─────────────────────── */}
+          {report.ungradedCount > 0 && (
+            <motion.div
+              custom={5}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-4 flex items-start gap-3"
+            >
+              <svg className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-amber-400">
+                  Pending Review
+                </span>
+                <p className="text-slate-300 text-xs leading-relaxed">
+                  {report.ungradedCount} open-text {report.ungradedCount === 1 ? 'answer is' : 'answers are'} pending review. Your score may be updated once a recruiter completes review.
+                </p>
+              </div>
+            </motion.div>
+          )}
+
           {/* ─── Integrity Index ──────────────────────────────────────────── */}
           <motion.div
-            custom={5}
+            custom={6}
             variants={fadeUp}
             initial="hidden"
             animate="visible"
@@ -199,7 +224,7 @@ export default function ReportScreen({ report, onExit }: ReportScreenProps) {
 
           {/* ─── Exit button ──────────────────────────────────────────────── */}
           <motion.button
-            custom={6}
+            custom={7}
             variants={fadeUp}
             initial="hidden"
             animate="visible"

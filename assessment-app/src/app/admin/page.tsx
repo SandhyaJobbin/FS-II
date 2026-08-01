@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import ReportScreen from '../../components/ReportScreen';
-import { Report } from '../../types';
+import { Report, TranscriptEntry } from '../../types';
 
 const READY_STATUSES = ['submitted', 'graded', 'emailed'];
 
@@ -17,6 +17,7 @@ interface CandidateRow {
   violationCount: number;
   recommendation?: string;
   recommendationTier?: string;
+  ungradedCount?: number;
 }
 
 export default function AdminPage() {
@@ -31,7 +32,16 @@ export default function AdminPage() {
   const [gasUrl, setGasUrl] = useState('');
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
-  // Load configuration/URL on mount
+  // Transcript panel state
+  const [transcriptAttemptId, setTranscriptAttemptId] = useState<string | null>(null);
+  const [transcriptEntries, setTranscriptEntries] = useState<TranscriptEntry[]>([]);
+  const [loadingTranscript, setLoadingTranscript] = useState(false);
+  const [overrideTarget, setOverrideTarget] = useState<{ qId: string; currentVerdict: string } | null>(null);
+  const [overriding, setOverriding] = useState(false);
+
+  // Regrade state
+  const [regradingAttemptId, setRegradingAttemptId] = useState<string | null>(null);
+
   useEffect(() => {
     const savedUrl = localStorage.getItem('fs_gas_url') || process.env.NEXT_PUBLIC_GAS_URL || '';
     setGasUrl(savedUrl);
@@ -44,7 +54,6 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Fetch candidates from backend
   const fetchCandidates = async (urlToUse = gasUrl) => {
     if (!urlToUse) {
       setError('Please configure the Apps Script Web App URL first.');
@@ -137,7 +146,6 @@ export default function AdminPage() {
 
       if (data.success) {
         setActionMessage(data.message || 'Attempt reset successfully.');
-        // Refresh list
         await fetchCandidates();
       } else {
         setError(data.error || 'Failed to reset attempt.');
@@ -169,6 +177,104 @@ export default function AdminPage() {
       setError('Error connecting to fetch attempt report.');
     } finally {
       setLoadingReport(false);
+    }
+  };
+
+  const handleViewTranscript = async (attemptId: string) => {
+    setTranscriptAttemptId(attemptId);
+    setTranscriptEntries([]);
+    setLoadingTranscript(true);
+    setError(null);
+    try {
+      const token = sessionStorage.getItem('fs_admin_token') || passcode;
+      const fetchUrl = `${gasUrl}${gasUrl.includes('?') ? '&' : '?'}action=getAttemptTranscript&attemptId=${attemptId}&token=${encodeURIComponent(token)}`;
+      const res = await fetch(fetchUrl);
+      const data = await res.json();
+
+      if (data.success) {
+        setTranscriptEntries(data.transcript || []);
+      } else {
+        setError(data.error || 'Failed to fetch transcript.');
+        setTranscriptAttemptId(null);
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Error connecting to fetch transcript.');
+      setTranscriptAttemptId(null);
+    } finally {
+      setLoadingTranscript(false);
+    }
+  };
+
+  const handleOverride = async (questionId: string, newVerdict: string) => {
+    if (!transcriptAttemptId) return;
+    setOverriding(true);
+    setError(null);
+    setActionMessage(null);
+    try {
+      const res = await fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        redirect: 'follow',
+        body: JSON.stringify({
+          action: 'overrideVerdict',
+          attemptId: transcriptAttemptId,
+          questionId,
+          newVerdict,
+          token: sessionStorage.getItem('fs_admin_token') || passcode,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setActionMessage(`Override saved for ${questionId}. Scores re-aggregated.`);
+        setOverrideTarget(null);
+        // Refresh transcript
+        await handleViewTranscript(transcriptAttemptId);
+        // Refresh candidate list to reflect updated scores
+        await fetchCandidates();
+      } else {
+        setError(data.error || 'Override failed.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Failed to communicate override request to server.');
+    } finally {
+      setOverriding(false);
+    }
+  };
+
+  const handleRegrade = async (attemptId: string) => {
+    if (!window.confirm(`Re-grade all ungraded answers for this attempt? This will re-run LLM grading for ungraded questions.`)) {
+      return;
+    }
+    setRegradingAttemptId(attemptId);
+    setError(null);
+    setActionMessage(null);
+    try {
+      const res = await fetch(gasUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        redirect: 'follow',
+        body: JSON.stringify({
+          action: 'regradeAttempt',
+          attemptId,
+          token: sessionStorage.getItem('fs_admin_token') || passcode,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setActionMessage(data.message || `Regrade complete. ${data.regraded || 0} answers re-graded.`);
+        await fetchCandidates();
+      } else {
+        setError(data.error || 'Regrade failed.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Failed to communicate regrade request to server.');
+    } finally {
+      setRegradingAttemptId(null);
     }
   };
 
@@ -385,21 +491,40 @@ export default function AdminPage() {
                           {row.violationCount}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-right flex justify-end gap-2">
-                        {isSubmitted && (
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex justify-end gap-1.5 flex-wrap">
+                          {isSubmitted && (
+                            <>
+                              <button
+                                onClick={() => handleViewReport(row.attemptId)}
+                                className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-slate-800 hover:bg-slate-700 text-white rounded transition-colors cursor-pointer"
+                              >
+                                Report
+                              </button>
+                              <button
+                                onClick={() => handleViewTranscript(row.attemptId)}
+                                className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded transition-colors cursor-pointer"
+                              >
+                                Transcript
+                              </button>
+                              {(row.ungradedCount ?? 0) > 0 && (
+                                <button
+                                  onClick={() => handleRegrade(row.attemptId)}
+                                  disabled={regradingAttemptId === row.attemptId}
+                                  className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded transition-colors cursor-pointer disabled:opacity-50"
+                                >
+                                  {regradingAttemptId === row.attemptId ? 'Regrading...' : 'Regrade'}
+                                </button>
+                              )}
+                            </>
+                          )}
                           <button
-                            onClick={() => handleViewReport(row.attemptId)}
-                            className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-slate-800 hover:bg-slate-700 text-white rounded transition-colors cursor-pointer"
+                            onClick={() => handleResetAttempt(row.email)}
+                            className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors cursor-pointer"
                           >
-                            View Report
+                            Reset
                           </button>
-                        )}
-                        <button
-                          onClick={() => handleResetAttempt(row.email)}
-                          className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors cursor-pointer"
-                        >
-                          Reset Attempt
-                        </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -425,6 +550,134 @@ export default function AdminPage() {
             <div className="max-h-[85vh] overflow-y-auto px-4 py-6">
               <ReportScreen report={selectedReport} onExit={() => setSelectedReport(null)} />
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Transcript Panel Modal */}
+      {transcriptAttemptId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
+          <div className="relative w-full max-w-[900px] bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-6 my-8">
+            <button
+              onClick={() => { setTranscriptAttemptId(null); setTranscriptEntries([]); setOverrideTarget(null); }}
+              className="absolute top-4 right-4 z-10 p-2 bg-slate-900/80 border border-slate-800 rounded-full text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-white">Grading Transcript</h2>
+              <p className="text-xs text-slate-500 font-mono mt-1">{transcriptAttemptId}</p>
+            </div>
+
+            {loadingTranscript ? (
+              <div className="py-12 flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-3 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                <span className="text-xs text-slate-400">Loading transcript...</span>
+              </div>
+            ) : transcriptEntries.length === 0 ? (
+              <div className="py-12 text-center text-slate-500 text-sm">
+                No transcript entries found for this attempt.
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-[70vh] overflow-y-auto pr-1">
+                {transcriptEntries.map((entry, idx) => {
+                  const verdictColor = entry.verdict === 'correct' ? 'text-emerald-400' :
+                    entry.verdict === 'incorrect' ? 'text-red-400' : 'text-amber-400';
+                  const verdictBg = entry.verdict === 'correct' ? 'bg-emerald-400/10 border-emerald-400/20' :
+                    entry.verdict === 'incorrect' ? 'bg-red-400/10 border-red-400/20' : 'bg-amber-400/10 border-amber-400/20';
+                  const hasOverride = entry.overrideVerdict && entry.overrideVerdict.length > 0;
+                  const overrideColor = entry.overrideVerdict === 'correct' ? 'text-emerald-400' :
+                    entry.overrideVerdict === 'incorrect' ? 'text-red-400' : 'text-slate-400';
+
+                  return (
+                    <div
+                      key={`${entry.qId}-${idx}`}
+                      className={`bg-slate-900/50 border rounded-lg p-3 text-xs ${hasOverride ? 'border-indigo-500/30' : 'border-slate-800/60'}`}
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-mono text-[10px] text-slate-500 shrink-0">{entry.qId}</span>
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${verdictBg} ${verdictColor}`}>
+                            {entry.verdict}
+                          </span>
+                          {hasOverride && (
+                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/10 border border-indigo-500/20 ${overrideColor}`}>
+                              override: {entry.overrideVerdict}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <button
+                            onClick={() => setOverrideTarget({ qId: entry.qId, currentVerdict: entry.verdict })}
+                            className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded transition-colors cursor-pointer"
+                          >
+                            Override
+                          </button>
+                          {hasOverride && (
+                            <button
+                              onClick={() => handleOverride(entry.qId, 'null')}
+                              disabled={overriding}
+                              className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-800 hover:bg-slate-700 text-slate-400 border border-slate-700 rounded transition-colors cursor-pointer disabled:opacity-50"
+                            >
+                              Clear
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {entry.rationale && (
+                        <p className="text-slate-400 text-[10px] leading-relaxed mt-1 italic">
+                          {entry.rationale}
+                        </p>
+                      )}
+                      {hasOverride && entry.overrideAt && (
+                        <p className="text-slate-600 text-[9px] mt-1">
+                          Overridden at: {new Date(entry.overrideAt).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Override Dialog */}
+            {overrideTarget && (
+              <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/60">
+                <div className="bg-slate-900 border border-slate-700 rounded-xl p-5 w-full max-w-[360px] shadow-2xl">
+                  <h3 className="text-sm font-bold text-white mb-1">Override Verdict</h3>
+                  <p className="text-[10px] text-slate-500 mb-4">
+                    Question: <span className="font-mono text-slate-400">{overrideTarget.qId}</span>
+                    <br />
+                    Current verdict: <span className="font-semibold text-slate-300">{overrideTarget.currentVerdict}</span>
+                  </p>
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      onClick={() => handleOverride(overrideTarget.qId, 'correct')}
+                      disabled={overriding}
+                      className="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {overriding ? 'Saving...' : 'Mark Correct'}
+                    </button>
+                    <button
+                      onClick={() => handleOverride(overrideTarget.qId, 'incorrect')}
+                      disabled={overriding}
+                      className="flex-1 px-3 py-2 text-xs font-bold rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-colors cursor-pointer disabled:opacity-50"
+                    >
+                      {overriding ? 'Saving...' : 'Mark Incorrect'}
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => setOverrideTarget(null)}
+                    className="w-full px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

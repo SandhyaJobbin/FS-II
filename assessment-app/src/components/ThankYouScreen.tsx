@@ -56,8 +56,9 @@ export default function ThankYouScreen({ candidateName, onExit }: ThankYouScreen
               What Happens Next
             </span>
             <p className="text-slate-300 leading-relaxed">
-              Your responses have been securely recorded and are being reviewed. You&apos;ll receive
-              your full results and recommendation by email within a few minutes.
+              Automated scoring runs first; open-text answers may be reviewed and adjusted by a
+              recruiter. You&apos;ll receive your full results and recommendation by email within
+              a few minutes.
             </p>
           </motion.div>
 

@@ -42,6 +42,18 @@ export interface TraitScores {
   critical: number;
 }
 
+export interface TranscriptEntry {
+  qId: string;
+  questionStem: string;
+  response: string;
+  response_type: string;
+  verdict: 'correct' | 'incorrect' | 'ungraded';
+  criteriaMet: string;
+  rationale: string;
+  overrideVerdict: string | null;
+  overrideAt: string | null;
+}
+
 /** Phase 3 Report — matches backend handleSubmitAnswers and handleGetAttemptReport return shape exactly. */
 export interface Report {
   attemptId: string;
@@ -57,6 +69,8 @@ export interface Report {
   /** Generated from difficulty_tier === 'complex' item performance */
   narrativeInsight: string;
   violationCount: number;
+  /** Phase 10 GRADE-07: count of answers with effectiveVerdict === 'ungraded' */
+  ungradedCount: number;
 }
 
 export interface HybridAnswer {

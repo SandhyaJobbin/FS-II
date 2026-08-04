@@ -71,7 +71,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
   const { faceStatus } = useWebcamProctoring(videoRef, silentLog);
 
   // Hook for candidate integrity tracking
-  useIntegrityMonitoring(attemptId, silentLog);
+  useIntegrityMonitoring(attemptId, questions[currentIdx]?.id, silentLog);
 
   // Restore state from LocalStorage on mount
   useEffect(() => {

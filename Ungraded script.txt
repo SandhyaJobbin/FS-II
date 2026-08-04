@@ -1,0 +1,50 @@
+function regradeAllUngradedInSheet() {
+  var token = "FS_RECRUITER_SECRET_2026"; // Default admin secret defined in Code.gs
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var transcriptsSheet = ss.getSheetByName("GradingTranscripts");
+  
+  if (!transcriptsSheet) {
+    Logger.log("Error: 'GradingTranscripts' sheet not found.");
+    return;
+  }
+  
+  var data = transcriptsSheet.getDataRange().getValues();
+  var attemptsToRegrade = [];
+  
+  // Scan GradingTranscripts starting from row 2 (index 1)
+  for (var i = 1; i < data.length; i++) {
+    var attemptId = data[i][0];
+    var verdict = data[i][3];
+    var overrideVerdict = data[i][6];
+    
+    // Check if the answer is ungraded and has no recruiter override
+    var effective = (overrideVerdict && overrideVerdict.length > 0) ? overrideVerdict : verdict;
+    if (effective === "ungraded" || effective === "") {
+      if (attemptsToRegrade.indexOf(attemptId) === -1) {
+        attemptsToRegrade.push(attemptId);
+      }
+    }
+  }
+  
+  Logger.log("Found " + attemptsToRegrade.length + " attempts with ungraded responses: " + JSON.stringify(attemptsToRegrade));
+  
+  if (attemptsToRegrade.length === 0) {
+    Logger.log("No ungraded responses found in the sheet. Everything is fully graded!");
+    return;
+  }
+  
+  // Regrade each identified attempt
+  attemptsToRegrade.forEach(function(attemptId) {
+    Logger.log("----------------------------------------");
+    Logger.log("Regrading attempt: " + attemptId);
+    try {
+      var result = handleRegradeAttempt(attemptId, token);
+      Logger.log("Result: " + result.message);
+    } catch (e) {
+      Logger.log("Error regrading " + attemptId + ": " + e.toString());
+    }
+  });
+  
+  Logger.log("----------------------------------------");
+  Logger.log("All scans and regrading tasks complete!");
+}

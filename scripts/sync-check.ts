@@ -19,6 +19,12 @@ const MIRROR = readFileSync(resolve(ROOT, "tests/grading/grading-engine.ts"), "u
 const CODE_GS = readFileSync(resolve(ROOT, "backend/Code.gs"), "utf-8");
 const ASYNC_MIRROR = readFileSync(resolve(ROOT, "tests/async/queue-logic.ts"), "utf-8");
 const ASYNC_GS = readFileSync(resolve(ROOT, "backend/AsyncGrading.gs"), "utf-8");
+let ANALYTICS_GS = "";
+try {
+  ANALYTICS_GS = readFileSync(resolve(ROOT, "backend/Analytics.gs"), "utf-8");
+} catch {
+  // Absence does not throw immediately; sections 18-19 will FAIL
+}
 
 let failures = 0;
 
@@ -46,12 +52,12 @@ function has(label: string, text: string, pattern: RegExp) {
 has(
   "Scoring formula uses Math.round (mirror)",
   MIRROR,
-  /Math\.round\(\(?correctCount\s*\/\s*total\w*\)?\s*\*\s*100\)/
+  /Math\.round\(\(?(?:correctCount|bankCorrect\.\w+)\s*\/\s*(?:total\w+|bankTotal\.\w+)\)?\s*\*\s*100\)/
 );
 has(
   "Scoring formula uses Math.round (AsyncGrading.gs)",
   ASYNC_GS,
-  /Math\.round\(\(?correctCount\s*\/\s*total\w*\)?\s*\*\s*100\)/
+  /Math\.round\(\(?(?:correctCount|bankCorrect\.\w+)\s*\/\s*(?:total\w+|bankTotal\.\w+)\)?\s*\*\s*100\)/
 );
 
 // ─── 2. Tier thresholds ─────────────────────────────────────────────────────
@@ -156,6 +162,25 @@ has("Mirror llmResults typed as verdict-string map", MIRROR, /llmResults\?*:\s*R
 
 // ─── 15. Mirror has ungradedCount in GradeResult ─────────────────────────────
 has("Mirror GradeResult includes ungradedCount", MIRROR, /ungradedCount/);
+
+// ─── 16. adminAnalytics action registered in doGet ───────────────────────────
+has("action === 'adminAnalytics' registered in doGet (Code.gs)", CODE_GS, /action\s*===\s*["']adminAnalytics["']/);
+
+// ─── 17. handleAdminAnalytics auth validation first ──────────────────────────
+const handleAdminMatch = CODE_GS.match(/function\s+handleAdminAnalytics\s*\(\s*token\s*\)\s*\{([\s\S]*?)\}/) ||
+                          ANALYTICS_GS.match(/function\s+handleAdminAnalytics\s*\(\s*token\s*\)\s*\{([\s\S]*?)\}/);
+const bodyStart = handleAdminMatch ? handleAdminMatch[1].slice(0, 300) : "";
+has(
+  "handleAdminAnalytics checks admin auth first",
+  bodyStart,
+  /checkAdminAuth\s*\(\s*token\s*\)/
+);
+
+// ─── 18. Analytics reducers reuse effectiveVerdict ───────────────────────────
+has("Analytics reducers reuse effectiveVerdict (Analytics.gs)", ANALYTICS_GS, /effectiveVerdict\s*\(/);
+
+// ─── 19. meta.aggregationMs is instrumented ─────────────────────────────────
+has("meta.aggregationMs is instrumented (Analytics.gs)", ANALYTICS_GS, /aggregationMs/);
 
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log("");

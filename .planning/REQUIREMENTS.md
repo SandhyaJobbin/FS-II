@@ -195,12 +195,12 @@ Finalized during roadmap creation. See `.planning/ROADMAP.md` for full phase goa
 | GRADE-10 | Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override | Pending |
 | GRADE-11 | TBD (roadmap pending) | Pending |
 | GRADE-12 | TBD (roadmap pending) | Pending |
-| ADMIN-06 | TBD (roadmap pending) | Pending |
-| ADMIN-07 | TBD (roadmap pending) | Pending |
-| ADMIN-08 | TBD (roadmap pending) | Pending |
-| ADMIN-09 | TBD (roadmap pending) | Pending |
-| ADMIN-10 | TBD (roadmap pending) | Pending |
-| ADMIN-11 | TBD (roadmap pending) | Pending |
+| ADMIN-06 | Phase 11: Recruiter Analytics Dashboard | Complete |
+| ADMIN-07 | Phase 11: Recruiter Analytics Dashboard | Complete |
+| ADMIN-08 | Phase 11: Recruiter Analytics Dashboard | Complete |
+| ADMIN-09 | Phase 11: Recruiter Analytics Dashboard | Complete |
+| ADMIN-10 | Backlog 999.4 (deferred out of Phase 11 v1 per RESEARCH.md Assumption A7) | Deferred |
+| ADMIN-11 | Phase 11: Recruiter Analytics Dashboard | Complete |
 | PROCTOR-01 | TBD (roadmap pending) | Pending |
 | PROCTOR-02 | TBD (roadmap pending) | Pending |
 | PROCTOR-03 | TBD (roadmap pending) | Pending |

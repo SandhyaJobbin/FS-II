@@ -61,7 +61,7 @@ const READY_STATUSES = ['submitted', 'graded', 'emailed'];
 const OPENROUTER_API_KEY = PropertiesService.getScriptProperties().getProperty("OPENROUTER_API_KEY")
   || PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY") || "";
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_MODEL = "google/gemini-2.5-flash";
+const OPENROUTER_MODEL = "meta-llama/llama-3.1-8b-instruct";
 
 /**
  * @deprecated Phase 10 -- replaced by evaluateWithRubric in backend/AsyncGrading.gs; retained for one release cycle for rollback (per RESEARCH.md § State of the Art). Do not call from new code.
@@ -144,6 +144,8 @@ function doGet(e) {
       return jsonResponse(handleAdminListCandidates(params.token));
     } else if (action === "getAttemptTranscript") {
       return jsonResponse(handleGetAttemptTranscript(params.attemptId, params.token));
+    } else if (action === "adminAnalytics") {
+      return jsonResponse(handleAdminAnalytics(params.token));
     }
     
     return jsonResponse({ error: "Invalid action or method" }, 400);

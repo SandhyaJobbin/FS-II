@@ -2,40 +2,47 @@ import { useEffect, useRef } from 'react';
 
 export function useIntegrityMonitoring(
   attemptId: string,
+  currentQuestionId: string | undefined,
   silentLog: (logType: string, details: Record<string, any>) => void
 ) {
   const blurTimeRef = useRef<number | null>(null);
+  const qIdRef = useRef(currentQuestionId);
 
-  // INTEG-01: Tab switch with blur duration calculation
   useEffect(() => {
-    const handleBlur = () => {
-      blurTimeRef.current = Date.now();
-    };
+    qIdRef.current = currentQuestionId;
+  }, [currentQuestionId]);
 
-    const handleFocus = () => {
-      if (blurTimeRef.current !== null) {
-        const durationMs = Date.now() - blurTimeRef.current;
-        blurTimeRef.current = null;
-        silentLog('tab_switch', {
-          durationMs,
-          description: `Candidate switched tab / window blurred for ${Math.round(durationMs / 1000)} seconds`
-        });
+  // INTEG-01: Tab switch with visibility duration calculation
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        blurTimeRef.current = Date.now();
+      } else if (document.visibilityState === 'visible') {
+        if (blurTimeRef.current !== null) {
+          const durationMs = Date.now() - blurTimeRef.current;
+          blurTimeRef.current = null;
+          silentLog('tab_switch', {
+            questionId: qIdRef.current,
+            durationMs,
+            description: `Candidate switched tab / window hidden for ${Math.round(durationMs / 1000)} seconds`
+          });
+        }
       }
     };
 
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [silentLog]);
 
-  // INTEG-02: Copy-paste attempts logged silently
+  // INTEG-02: Copy-paste attempts logged silently and actively blocked
   useEffect(() => {
     const handleCopyPaste = (e: Event) => {
+      e.preventDefault(); // This actively blocks the copy/cut/paste action
       silentLog('copy_paste', {
         eventType: e.type,
+        questionId: qIdRef.current,
         description: `Candidate attempted to ${e.type} content`
       });
     };

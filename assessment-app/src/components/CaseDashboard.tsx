@@ -17,7 +17,7 @@ interface CaseDashboardProps {
 }
 
 export default function CaseDashboard({ tabs, tables, caseTitle, caseId }: CaseDashboardProps) {
-  const sections = useMemo(() => mergeSections(tabs), [tabs]);
+  const sections = useMemo(() => mergeSections(tabs, caseTitle, caseId), [tabs, caseTitle, caseId]);
 
   if (!tabs || tabs.length === 0) return null;
 

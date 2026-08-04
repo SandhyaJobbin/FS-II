@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import ReportScreen from '../../components/ReportScreen';
 import { Report, TranscriptEntry } from '../../types';
 
@@ -291,7 +292,7 @@ export default function AdminPage() {
         <div className="glass-glow-bg" />
         <div className="w-full max-w-[450px] mx-auto bg-card backdrop-blur-md border border-[var(--card-border)] rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:height-[3px] before:bg-linear-to-r before:from-[#ff4b2b] before:to-[#ff416c]">
           <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold tracking-tight mb-2 bg-linear-to-br from-white to-slate-400 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold tracking-tight mb-2 text-black">
               Recruiter Admin Login
             </h1>
             <p className="text-xs text-[var(--text-secondary)]">
@@ -310,7 +311,7 @@ export default function AdminPage() {
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 required
-                className="bg-slate-900/60 border border-[var(--card-border)] rounded-lg p-3 text-sm text-white outline-hidden focus:border-[#ff416c] focus:shadow-[0_0_0_3px_rgba(255,65,108,0.15)] transition-all"
+                className="bg-white border border-[var(--card-border)] rounded-lg p-3 text-sm text-black outline-hidden focus:border-[#ff416c] focus:shadow-[0_0_0_3px_rgba(255,65,108,0.15)] transition-all"
               />
             </div>
 
@@ -327,7 +328,7 @@ export default function AdminPage() {
                   localStorage.setItem('fs_gas_url', e.target.value.trim());
                 }}
                 required
-                className="bg-slate-900/60 border border-[var(--card-border)] rounded-lg p-3 text-xs text-white outline-hidden focus:border-[#ff416c] transition-all"
+                className="bg-white border border-[var(--card-border)] rounded-lg p-3 text-xs text-black outline-hidden focus:border-[#ff416c] transition-all"
               />
             </div>
 
@@ -342,7 +343,7 @@ export default function AdminPage() {
           </form>
           
           <div className="text-center mt-6">
-            <a href="/" className="text-xs text-slate-500 hover:text-white transition-colors">
+            <a href="/" className="text-xs text-slate-500 hover:text-black transition-colors">
               &larr; Back to Candidate Portal
             </a>
           </div>
@@ -361,13 +362,19 @@ export default function AdminPage() {
           <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2.5 py-1 rounded-full">
             Recruiter Workspace
           </span>
-          <h1 className="text-2xl font-extrabold text-white mt-2">Fraud Support Assessment Panel</h1>
+          <h1 className="text-2xl font-extrabold text-black mt-2">Fraud Support Assessment Panel</h1>
         </div>
         <div className="flex gap-3">
+          <Link
+            href="/admin/analytics"
+            className="px-4 py-2 text-xs font-semibold rounded bg-sky-600/10 border border-sky-500/20 text-sky-400 hover:bg-sky-500/20 transition-colors cursor-pointer flex items-center"
+          >
+            Analytics
+          </Link>
           <button
             onClick={() => fetchCandidates()}
             disabled={loading}
-            className="px-4 py-2 text-xs font-semibold rounded bg-slate-900 border border-[var(--card-border)] text-slate-300 hover:bg-slate-800 transition-colors disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold rounded bg-white border border-slate-300 text-black hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer"
           >
             {loading ? 'Refreshing...' : 'Refresh List'}
           </button>
@@ -390,7 +397,7 @@ export default function AdminPage() {
               placeholder="Search by candidate name, email, or attempt ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-950/60 border border-[var(--card-border)] rounded-lg py-2 px-3 pl-9 text-xs text-white placeholder-slate-500 outline-hidden focus:border-accent transition-all"
+              className="w-full bg-white border border-[var(--card-border)] rounded-lg py-2 px-3 pl-9 text-xs text-black placeholder-slate-500 outline-hidden focus:border-accent transition-all"
             />
             <span className="absolute left-3 top-2.5 text-slate-500">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -399,7 +406,7 @@ export default function AdminPage() {
               </svg>
             </span>
           </div>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-black">
             Showing {filteredCandidates.length} of {candidates.length} attempts
           </span>
         </div>
@@ -413,7 +420,7 @@ export default function AdminPage() {
           {loading && candidates.length === 0 ? (
             <div className="py-20 flex flex-col items-center gap-3">
               <div className="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin" />
-              <span className="text-xs text-slate-400 font-semibold tracking-wider uppercase">Loading candidate directory...</span>
+              <span className="text-xs text-black font-semibold tracking-wider uppercase">Loading candidate directory...</span>
             </div>
           ) : filteredCandidates.length === 0 ? (
             <div className="py-20 text-center text-slate-500 text-sm">
@@ -422,7 +429,7 @@ export default function AdminPage() {
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-[10px] uppercase font-bold tracking-widest text-slate-500 bg-slate-950/20">
+                <tr className="border-b border-slate-200 text-[10px] uppercase font-bold tracking-widest text-black bg-slate-100">
                   <th className="py-3 px-4">Candidate / Email</th>
                   <th className="py-3 px-4">Attempt ID</th>
                   <th className="py-3 px-4">Date / Time</th>
@@ -433,7 +440,7 @@ export default function AdminPage() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40 text-xs">
+              <tbody className="divide-y divide-slate-200 text-xs text-black">
                 {filteredCandidates.map((row) => {
                   const isSubmitted = READY_STATUSES.includes(row.status);
                   const recTier = row.recommendationTier || row.recommendation || '-';
@@ -453,11 +460,11 @@ export default function AdminPage() {
                   return (
                     <tr key={row.attemptId} className="hover:bg-slate-900/10 transition-colors">
                       <td className="py-3.5 px-4">
-                        <div className="font-bold text-slate-200">{row.name}</div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">{row.email}</div>
+                        <div className="font-bold text-black">{row.name}</div>
+                        <div className="text-[10px] text-slate-700 mt-0.5">{row.email}</div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-[10px] text-slate-400">{row.attemptId}</td>
-                      <td className="py-3.5 px-4 text-slate-400">{formattedDate}</td>
+                      <td className="py-3.5 px-4 font-mono text-[10px] text-black">{row.attemptId}</td>
+                      <td className="py-3.5 px-4 text-black">{formattedDate}</td>
                       <td className="py-3.5 px-4">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
                           row.status === 'grading_failed'
@@ -469,7 +476,7 @@ export default function AdminPage() {
                           {row.status === 'grading_failed' ? 'Grading Failed' : row.status}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-center font-extrabold text-white text-sm">
+                      <td className="py-3.5 px-4 text-center font-extrabold text-black text-sm">
                         {isSubmitted ? `${row.overallScore}%` : '-'}
                       </td>
                       <td className="py-3.5 px-4 text-center">
@@ -497,7 +504,7 @@ export default function AdminPage() {
                             <>
                               <button
                                 onClick={() => handleViewReport(row.attemptId)}
-                                className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-slate-800 hover:bg-slate-700 text-white rounded transition-colors cursor-pointer"
+                                className="px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider bg-white border border-slate-300 hover:bg-slate-50 text-black rounded transition-colors cursor-pointer"
                               >
                                 Report
                               </button>
@@ -538,10 +545,10 @@ export default function AdminPage() {
       {/* Overlay Modal for Detailed Report */}
       {selectedReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="relative w-full max-w-[620px] bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-2 my-8">
+          <div className="relative w-full max-w-[620px] bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 my-8">
             <button
               onClick={() => setSelectedReport(null)}
-              className="absolute top-4 right-4 z-10 p-2 bg-slate-900/80 border border-slate-800 rounded-full text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 z-10 p-2 bg-white/80 border border-slate-300 rounded-full text-black hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -557,10 +564,10 @@ export default function AdminPage() {
       {/* Transcript Panel Modal */}
       {transcriptAttemptId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="relative w-full max-w-[900px] bg-slate-950 border border-slate-800 rounded-2xl shadow-2xl p-6 my-8">
+          <div className="relative w-full max-w-[900px] bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 my-8">
             <button
               onClick={() => { setTranscriptAttemptId(null); setTranscriptEntries([]); setOverrideTarget(null); }}
-              className="absolute top-4 right-4 z-10 p-2 bg-slate-900/80 border border-slate-800 rounded-full text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-4 right-4 z-10 p-2 bg-white/80 border border-slate-300 rounded-full text-black hover:bg-slate-100 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -568,8 +575,8 @@ export default function AdminPage() {
             </button>
 
             <div className="mb-4">
-              <h2 className="text-lg font-bold text-white">Grading Transcript</h2>
-              <p className="text-xs text-slate-500 font-mono mt-1">{transcriptAttemptId}</p>
+              <h2 className="text-lg font-bold text-black">Grading Transcript</h2>
+              <p className="text-xs text-black font-mono mt-1">{transcriptAttemptId}</p>
             </div>
 
             {loadingTranscript ? (
@@ -595,7 +602,7 @@ export default function AdminPage() {
                   return (
                     <div
                       key={`${entry.qId}-${idx}`}
-                      className={`bg-slate-900/50 border rounded-lg p-3 text-xs ${hasOverride ? 'border-indigo-500/30' : 'border-slate-800/60'}`}
+                      className={`bg-slate-50 border rounded-lg p-3 text-xs ${hasOverride ? 'border-indigo-500/30' : 'border-slate-200'}`}
                     >
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="flex items-center gap-2 min-w-0">
@@ -646,12 +653,12 @@ export default function AdminPage() {
             {/* Override Dialog */}
             {overrideTarget && (
               <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/60">
-                <div className="bg-slate-900 border border-slate-700 rounded-xl p-5 w-full max-w-[360px] shadow-2xl">
-                  <h3 className="text-sm font-bold text-white mb-1">Override Verdict</h3>
-                  <p className="text-[10px] text-slate-500 mb-4">
-                    Question: <span className="font-mono text-slate-400">{overrideTarget.qId}</span>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 w-full max-w-[360px] shadow-2xl">
+                  <h3 className="text-sm font-bold text-black mb-1">Override Verdict</h3>
+                  <p className="text-[10px] text-black mb-4">
+                    Question: <span className="font-mono text-black">{overrideTarget.qId}</span>
                     <br />
-                    Current verdict: <span className="font-semibold text-slate-300">{overrideTarget.currentVerdict}</span>
+                    Current verdict: <span className="font-semibold text-black">{overrideTarget.currentVerdict}</span>
                   </p>
                   <div className="flex gap-2 mb-4">
                     <button
@@ -671,7 +678,7 @@ export default function AdminPage() {
                   </div>
                   <button
                     onClick={() => setOverrideTarget(null)}
-                    className="w-full px-3 py-2 text-xs font-semibold rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 transition-colors cursor-pointer"
+                    className="w-full px-3 py-2 text-xs font-semibold rounded-lg bg-slate-100 border border-slate-300 text-black hover:bg-slate-200 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -685,12 +692,12 @@ export default function AdminPage() {
       {loadingReport && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-xs">
           <div className="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs text-white font-bold tracking-widest uppercase mt-4">Loading Report Detail...</span>
+          <span className="text-xs text-black font-bold tracking-widest uppercase mt-4">Loading Report Detail...</span>
         </div>
       )}
       
       <div className="text-center mt-4">
-        <a href="/" className="text-xs text-slate-500 hover:text-white transition-colors">
+        <a href="/" className="text-xs text-slate-500 hover:text-black transition-colors">
           &larr; Back to Candidate Portal
         </a>
       </div>

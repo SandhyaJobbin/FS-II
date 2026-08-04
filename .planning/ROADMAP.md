@@ -236,19 +236,19 @@ Plans:
 Plans:
 **Wave 0**
 
-- [ ] 11-01-PLAN.md — Test infra + parity guard: analytics-reducers.ts mirror + vitest spec + sync-check drift assertions
+- [x] 11-01-PLAN.md — Test infra + parity guard: analytics-reducers.ts mirror + vitest spec + sync-check drift assertions
 
 **Wave 1** *(blocked on Wave 0)*
 
-- [ ] 11-02-PLAN.md — Backend: new backend/Analytics.gs with 5 reducers + handleAdminAnalytics + doGet router branch
+- [x] 11-02-PLAN.md — Backend: new backend/Analytics.gs with 5 reducers + handleAdminAnalytics + doGet router branch
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 11-03-PLAN.md — Frontend: recharts@3.10.1 + AnalyticsPayload types + 4 charts + 2 caveats + /admin/analytics route + admin nav entry
+- [x] 11-03-PLAN.md — Frontend: recharts@3.10.1 + AnalyticsPayload types + 4 charts + 2 caveats + /admin/analytics route + admin nav entry
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 11-04-PLAN.md — Deploy (Apps Script paste + Next.js redeploy) + live verify + REQUIREMENTS/ROADMAP finalization + ADMIN-10 backlog note
+- [x] 11-04-PLAN.md — Deploy (Apps Script paste + Next.js redeploy) + live verify + REQUIREMENTS/ROADMAP finalization + ADMIN-10 backlog note
 
 **UI hint**: yes
 
@@ -321,7 +321,7 @@ v1.1 phases execute: 8 → 9 → 10 → 11, with 12 and 13 parallelizable alongs
 | 8. Cleanup & Test-Safety Net | 4/4 | Complete | 2026-07-31 |
 | 9. Async Grading & Report Delivery Pipeline | 6/6 | Complete | 2026-07-31 |
 | 10. Rubric-Based LLM Grading + Override | 0/0 | Not started | — |
-| 11. Recruiter Analytics Dashboard | 0/4 | Not started | — |
+| 11. Recruiter Analytics Dashboard | 4/4 | Complete | 2026-08-04 |
 | 12. Proctoring Upgrade (MediaPipe + Fullscreen) | 0/0 | Not started | — |
 | 13. Accessibility (F-05) & Polish | 2/9 | In Progress|  |
 
@@ -368,4 +368,13 @@ Plans:
 
 Plans:
 
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
+### Phase 999.4: LLM-generated analytics narrative digest — ADMIN-10 (BACKLOG)
+
+**Goal:** Captured for future planning. RESEARCH.md § Open Questions Q4 and § Assumption A7 recommended deferring ADMIN-10 (LLM-generated narrative digest summarizing the dashboard) out of Phase 11 v1 for two reasons: (1) each additional signal shipped tightens the 6-min Apps Script cap risk (Pitfall 1) — an LLM call inside handleAdminAnalytics compounds it; (2) an LLM digest introduces a new failure mode ("digest failed to generate") that needs its own fallback UI. Ship the deterministic 4-card dashboard first (Phase 11), promote this backlog item once live aggregationMs is stable and recruiter feedback confirms the digest is desired.
+**Requirements:** ADMIN-10
+**Plans:** 0 plans
+
+Plans:
 - [ ] TBD (promote with /gsd-review-backlog when ready)

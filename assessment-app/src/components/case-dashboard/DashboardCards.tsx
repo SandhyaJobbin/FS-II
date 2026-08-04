@@ -72,12 +72,12 @@ function SectionShell({ icon, iconBg, iconColor, title, sourceTabs, empty, empty
   );
 }
 
-function FieldRow({ label, value, matched }: { label: string; value?: string; matched?: boolean }) {
+function FieldRow({ label, value, matched, compact }: { label: string; value?: string; matched?: boolean; compact?: boolean }) {
   const has = !!value && value.trim().length > 0;
   return (
-    <div className={`flex flex-col xl:flex-row xl:items-baseline justify-between gap-1 xl:gap-3 py-1.5 border-b border-slate-200/50 last:border-b-0 ${matched ? 'bg-amber-500/10 -mx-2 px-2 rounded' : ''}`}>
+    <div className={`flex ${compact ? 'flex-col gap-0.5' : 'flex-col xl:flex-row xl:items-baseline justify-between gap-1 xl:gap-3'} py-1.5 border-b border-slate-200/50 last:border-b-0 ${matched ? 'bg-amber-500/10 -mx-2 px-2 rounded' : ''}`}>
       <span className="text-xs uppercase tracking-wide text-slate-500 font-semibold shrink-0">{label}</span>
-      <span className={`xl:text-right font-medium break-words min-w-0 ${has ? 'text-base text-slate-800' : 'text-sm text-slate-400 italic'}`}>
+      <span className={`${compact ? '' : 'xl:text-right'} font-medium break-words min-w-0 ${has ? 'text-base text-slate-800' : 'text-sm text-slate-400 italic'}`}>
         {has ? value : 'Not available'}
       </span>
     </div>
@@ -159,10 +159,10 @@ function IdentityEntityBlock({ entity, index, matches, compact }: { entity: Enti
       </div>
       <div className="flex flex-col">
         {IDENTITY_KEYS.map((k) => (
-          <FieldRow key={k} label={IDENTITY_LABELS[k]} value={entity.fields[k]} matched={matches.has(`${index}:${k}`)} />
+          <FieldRow key={k} label={IDENTITY_LABELS[k]} value={entity.fields[k]} matched={matches.has(`${index}:${k}`)} compact={compact} />
         ))}
         {extraKeys.map((k) => (
-          <FieldRow key={k} label={humanize(k)} value={entity.fields[k]} matched={matches.has(`${index}:${k}`)} />
+          <FieldRow key={k} label={humanize(k)} value={entity.fields[k]} matched={matches.has(`${index}:${k}`)} compact={compact} />
         ))}
       </div>
       {entity.fields.comment && (

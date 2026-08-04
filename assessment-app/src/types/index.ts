@@ -80,3 +80,87 @@ export interface HybridAnswer {
 
 export type AnswerValue = string | string[] | HybridAnswer;
 export type AnswersMap = Record<string, AnswerValue>;
+
+export interface AnalyticsSignalMeta {
+  enough_data: boolean;
+  threshold: number;
+  samples: number;
+  thresholdNote?: string;
+}
+
+export interface ScoreTrendPoint {
+  date: string;
+  avgScore: number;
+  n: number;
+}
+
+export interface QuestionStatsRow {
+  qId: string;
+  correct: number;
+  incorrect: number;
+  ungraded: number;
+  sampleSize: number;
+  passRate: number | null;
+  enough_data: boolean;
+}
+
+export interface DiscriminationRow {
+  qId: string;
+  passTop: number;
+  passBottom: number;
+  delta: number;
+  sampleTop: number;
+  sampleBottom: number;
+}
+
+export interface TierDistributionItem {
+  tier: 'Strong Fit' | 'Consider' | 'Not Recommended';
+  pct: number;
+  n: number;
+  window: 'last20' | 'allTime';
+}
+
+export interface AnalyticsPayload {
+  success: boolean;
+  generatedAt: string;
+  meta: {
+    totalAttempts: number;
+    ungradedTotal: number;
+    aggregationMs: number;
+  };
+  scoreTrend: {
+    enough_data: boolean;
+    threshold: number;
+    samples: number;
+    thresholdNote?: string;
+    points: ScoreTrendPoint[];
+  };
+  questionStats: {
+    enough_data: boolean;
+    threshold: number;
+    samples: number;
+    rows: QuestionStatsRow[];
+  };
+  violationCorrelation: {
+    enough_data: boolean;
+    threshold: number;
+    samples: number;
+    violationsCount: number;
+    thresholdNote?: string;
+    points: Array<{ v: number; s: number }>;
+    r: number | null;
+    interpretation: 'weak' | 'moderate' | 'strong';
+  };
+  discriminationIndex: {
+    enough_data: boolean;
+    threshold: number;
+    samples: number;
+    rows: DiscriminationRow[];
+  };
+  biasSignals: {
+    enough_data: boolean;
+    threshold: number;
+    samples: number;
+    tierDistribution: TierDistributionItem[];
+  };
+}

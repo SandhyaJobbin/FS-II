@@ -119,10 +119,17 @@ export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: A
 
   // GRADE-02: Trait score percentages (A2: denominator excludes ungraded)
   const totalGraded = bankTotal.english + bankTotal.attention + bankTotal.critical;
-  const overallScore = totalGraded ? Math.round((correctCount / totalGraded) * 100) : 0;
   const language = bankTotal.english   ? Math.round((bankCorrect.english   / bankTotal.english)   * 100) : 0;
   const research = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
   const critical = bankTotal.critical  ? Math.round((bankCorrect.critical  / bankTotal.critical)  * 100) : 0;
+  
+  // Calculate overall score as the simple average of the 3 trait scores to match manual Excel calculations
+  let activeBanks = 0;
+  if (bankTotal.english) activeBanks++;
+  if (bankTotal.attention) activeBanks++;
+  if (bankTotal.critical) activeBanks++;
+  
+  const overallScore = activeBanks > 0 ? Math.round((language + research + critical) / activeBanks) : 0;
 
   // GRADE-04: Recommendation tier
   let recommendationTier: GradeResult['recommendationTier'] = 'Not Recommended';

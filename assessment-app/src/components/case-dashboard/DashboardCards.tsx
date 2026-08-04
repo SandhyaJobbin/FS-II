@@ -77,7 +77,7 @@ function FieldRow({ label, value, matched }: { label: string; value?: string; ma
   return (
     <div className={`flex flex-col xl:flex-row xl:items-baseline justify-between gap-1 xl:gap-3 py-1.5 border-b border-slate-200/50 last:border-b-0 ${matched ? 'bg-amber-500/10 -mx-2 px-2 rounded' : ''}`}>
       <span className="text-xs uppercase tracking-wide text-slate-500 font-semibold shrink-0">{label}</span>
-      <span className={`text-base xl:text-right font-medium break-words ${has ? 'text-slate-800' : 'text-slate-400 italic'}`}>
+      <span className={`xl:text-right font-medium break-words min-w-0 ${has ? 'text-base text-slate-800' : 'text-sm text-slate-400 italic'}`}>
         {has ? value : 'Not available'}
       </span>
     </div>

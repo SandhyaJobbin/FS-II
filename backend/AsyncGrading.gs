@@ -350,10 +350,17 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   // A2 policy: denominator excludes ungraded — totalGraded is bankTotal sum, not frozenIds.length.
   // Ungraded answers neither help nor hurt the candidate's percentage.
   const totalGraded = bankTotal.english + bankTotal.attention + bankTotal.critical;
-  const overallPercentage = totalGraded ? Math.round((correctCount / totalGraded) * 100) : 0;
   const englishPct = bankTotal.english ? Math.round((bankCorrect.english / bankTotal.english) * 100) : 0;
   const researchPct = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
   const criticalPct = bankTotal.critical ? Math.round((bankCorrect.critical / bankTotal.critical) * 100) : 0;
+
+  // Calculate overall score as the simple average of the 3 trait scores to match manual Excel calculations
+  let activeBanks = 0;
+  if (bankTotal.english) activeBanks++;
+  if (bankTotal.attention) activeBanks++;
+  if (bankTotal.critical) activeBanks++;
+  
+  const overallPercentage = activeBanks > 0 ? Math.round((englishPct + researchPct + criticalPct) / activeBanks) : 0;
 
   // --- GRADE-04: Recommendation tier (advisory only) — shared helper so post-override recomputation is byte-identical
   const recommendationTier = computeRecommendationTier(overallPercentage, criticalPct, researchPct);

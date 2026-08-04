@@ -4822,7 +4822,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -4908,7 +4908,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -4994,7 +4994,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -5080,7 +5080,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -5161,7 +5161,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5219,7 +5219,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5277,7 +5277,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5335,7 +5335,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5393,7 +5393,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5451,7 +5451,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5509,7 +5509,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5567,7 +5567,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5614,8 +5614,8 @@ const QUESTIONS = [
     "case_title": "DUPLICATE REVIEW PATTERN",
     "tabs": [
       {
-        "name": "Account Activity",
-        "content": "User A\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nAccount Created: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "name": "Alex Carterctivity",
+        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -5662,8 +5662,8 @@ const QUESTIONS = [
     "case_title": "DUPLICATE REVIEW PATTERN",
     "tabs": [
       {
-        "name": "Account Activity",
-        "content": "User A\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nAccount Created: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "name": "Alex Carterctivity",
+        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -5710,8 +5710,8 @@ const QUESTIONS = [
     "case_title": "DUPLICATE REVIEW PATTERN",
     "tabs": [
       {
-        "name": "Account Activity",
-        "content": "User A\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nAccount Created: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "name": "Alex Carterctivity",
+        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -5758,8 +5758,8 @@ const QUESTIONS = [
     "case_title": "DUPLICATE REVIEW PATTERN",
     "tabs": [
       {
-        "name": "Account Activity",
-        "content": "User A\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nAccount Created: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nAccount Created: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "name": "Alex Carterctivity",
+        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -6271,7 +6271,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6329,7 +6329,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6387,7 +6387,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6445,7 +6445,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6745,7 +6745,7 @@ const QUESTIONS = [
       },
       {
         "name": "Reviewer Profile",
-        "content": "Account Age: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
+        "content": "Alex Carterge: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -6803,7 +6803,7 @@ const QUESTIONS = [
       },
       {
         "name": "Reviewer Profile",
-        "content": "Account Age: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
+        "content": "Alex Carterge: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -6861,7 +6861,7 @@ const QUESTIONS = [
       },
       {
         "name": "Reviewer Profile",
-        "content": "Account Age: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
+        "content": "Alex Carterge: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -6919,7 +6919,7 @@ const QUESTIONS = [
       },
       {
         "name": "Reviewer Profile",
-        "content": "Account Age: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
+        "content": "Alex Carterge: 4 Years\nPrevious Reviews: 18\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -6967,7 +6967,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7030,7 +7030,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7093,7 +7093,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7156,7 +7156,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Account Created: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7229,7 +7229,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -7287,7 +7287,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -7345,7 +7345,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -7403,7 +7403,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -9570,7 +9570,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9633,7 +9633,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9696,7 +9696,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9759,7 +9759,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Account Created: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9807,17 +9807,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nAccount B\nAccount Created: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nAccount C\nAccount Created: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A\nDevice ID: Device-458\nLocation: Chennai, India\nAccount B\nDevice ID: Device-458\nLocation: Chennai, India\nAccount C\nDevice ID: Device-982\nLocation: Mumbai, India",
+        "content": "Alex Carter\nDevice ID: Device-458\nLocation: Chennai, India\nJordan Lee\nDevice ID: Device-458\nLocation: Chennai, India\nTaylor Smith\nDevice ID: Device-982\nLocation: Mumbai, India",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount B\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount C\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
+        "content": "Alex Carter\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nJordan Lee\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nTaylor Smith\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
         "position": 3
       }
     ],
@@ -9827,22 +9827,22 @@ const QUESTIONS = [
     "options": [
       {
         "letter": "A",
-        "text": "Account C has multiple reviews",
+        "text": "Taylor Smith has multiple reviews",
         "is_correct": false
       },
       {
         "letter": "B",
-        "text": "Account A and Account B reviewed the same property on the same date using the same device",
+        "text": "Alex Carter and Jordan Lee reviewed the same property on the same date using the same device",
         "is_correct": true
       },
       {
         "letter": "C",
-        "text": "Account A has no previous reviews",
+        "text": "Alex Carter has no previous reviews",
         "is_correct": false
       },
       {
         "letter": "D",
-        "text": "Account C uses a different device",
+        "text": "Taylor Smith uses a different device",
         "is_correct": false
       }
     ],
@@ -9865,23 +9865,23 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nAccount B\nAccount Created: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nAccount C\nAccount Created: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A\nDevice ID: Device-458\nLocation: Chennai, India\nAccount B\nDevice ID: Device-458\nLocation: Chennai, India\nAccount C\nDevice ID: Device-982\nLocation: Mumbai, India",
+        "content": "Alex Carter\nDevice ID: Device-458\nLocation: Chennai, India\nJordan Lee\nDevice ID: Device-458\nLocation: Chennai, India\nTaylor Smith\nDevice ID: Device-982\nLocation: Mumbai, India",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount B\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount C\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
+        "content": "Alex Carter\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nJordan Lee\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nTaylor Smith\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
         "position": 3
       }
     ],
     "tables": null,
     "response_type": "mcq_multi",
-    "stem": "Select ALL details that create a connection between Account A and Account B.",
+    "stem": "Select ALL details that create a connection between Alex Carter and Jordan Lee.",
     "options": [
       {
         "letter": "A",
@@ -9923,23 +9923,23 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nAccount B\nAccount Created: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nAccount C\nAccount Created: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A\nDevice ID: Device-458\nLocation: Chennai, India\nAccount B\nDevice ID: Device-458\nLocation: Chennai, India\nAccount C\nDevice ID: Device-982\nLocation: Mumbai, India",
+        "content": "Alex Carter\nDevice ID: Device-458\nLocation: Chennai, India\nJordan Lee\nDevice ID: Device-458\nLocation: Chennai, India\nTaylor Smith\nDevice ID: Device-982\nLocation: Mumbai, India",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount B\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount C\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
+        "content": "Alex Carter\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nJordan Lee\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nTaylor Smith\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
         "position": 3
       }
     ],
     "tables": null,
     "response_type": "mcq_single",
-    "stem": "Does the available information confirm that Account A and Account B are fraudulent?",
+    "stem": "Does the available information confirm that Alex Carter and Jordan Lee are fraudulent?",
     "options": [
       {
         "letter": "A",
@@ -9981,17 +9981,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nAccount B\nAccount Created: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nAccount C\nAccount Created: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A\nDevice ID: Device-458\nLocation: Chennai, India\nAccount B\nDevice ID: Device-458\nLocation: Chennai, India\nAccount C\nDevice ID: Device-982\nLocation: Mumbai, India",
+        "content": "Alex Carter\nDevice ID: Device-458\nLocation: Chennai, India\nJordan Lee\nDevice ID: Device-458\nLocation: Chennai, India\nTaylor Smith\nDevice ID: Device-982\nLocation: Mumbai, India",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount B\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nAccount C\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
+        "content": "Alex Carter\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nJordan Lee\nProperty Reviewed: Ocean View Hotel\nRating: 5 Stars\nReview Date: 15 January 2025\nTaylor Smith\nProperty Reviewed: City Palace Hotel\nRating: 4 Stars\nReview Date: 20 January 2025",
         "position": 3
       }
     ],
@@ -10039,7 +10039,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Alex Morgan\nAccount Age: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
+        "content": "Account Name: Alex Morgan\nAlex Carterge: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -10097,7 +10097,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Alex Morgan\nAccount Age: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
+        "content": "Account Name: Alex Morgan\nAlex Carterge: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -10155,7 +10155,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Alex Morgan\nAccount Age: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
+        "content": "Account Name: Alex Morgan\nAlex Carterge: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -10213,7 +10213,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Alex Morgan\nAccount Age: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
+        "content": "Account Name: Alex Morgan\nAlex Carterge: 4 Years\nPrevious Reviews: 6\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -10271,7 +10271,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nAccount Created: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10334,7 +10334,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nAccount Created: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10397,7 +10397,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nAccount Created: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10460,7 +10460,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nAccount Created: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10523,17 +10523,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Review Activity",
-        "content": "Property: Green Valley Resort\nAccount A Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount B Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount C Review:\n\"Beautiful property, amazing service, highly recommended.\"",
+        "content": "Property: Green Valley Resort\nAlex Carter Review:\n\"Beautiful property, amazing service, highly recommended.\"\nJordan Lee Review:\n\"Beautiful property, amazing service, highly recommended.\"\nTaylor Smith Review:\n\"Beautiful property, amazing service, highly recommended.\"",
         "position": 1
       },
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2 days before review\nPrevious Reviews: 0\nAccount B\nCreated: 3 days before review\nPrevious Reviews: 0\nAccount C\nCreated: 1 year before review\nPrevious Reviews: 15",
+        "content": "Alex Carter\nCreated: 2 days before review\nPrevious Reviews: 0\nJordan Lee\nCreated: 3 days before review\nPrevious Reviews: 0\nTaylor Smith\nCreated: 1 year before review\nPrevious Reviews: 15",
         "position": 2
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nDevice: Device-111\nAccount B:\nDevice: Device-222\nAccount C:\nDevice: Device-333",
+        "content": "Alex Carter:\nDevice: Device-111\nJordan Lee:\nDevice: Device-222\nTaylor Smith:\nDevice: Device-333",
         "position": 3
       }
     ],
@@ -10553,7 +10553,7 @@ const QUESTIONS = [
       },
       {
         "letter": "C",
-        "text": "Account C has previous reviews",
+        "text": "Taylor Smith has previous reviews",
         "is_correct": false
       },
       {
@@ -10581,17 +10581,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Review Activity",
-        "content": "Property: Green Valley Resort\nAccount A Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount B Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount C Review:\n\"Beautiful property, amazing service, highly recommended.\"",
+        "content": "Property: Green Valley Resort\nAlex Carter Review:\n\"Beautiful property, amazing service, highly recommended.\"\nJordan Lee Review:\n\"Beautiful property, amazing service, highly recommended.\"\nTaylor Smith Review:\n\"Beautiful property, amazing service, highly recommended.\"",
         "position": 1
       },
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2 days before review\nPrevious Reviews: 0\nAccount B\nCreated: 3 days before review\nPrevious Reviews: 0\nAccount C\nCreated: 1 year before review\nPrevious Reviews: 15",
+        "content": "Alex Carter\nCreated: 2 days before review\nPrevious Reviews: 0\nJordan Lee\nCreated: 3 days before review\nPrevious Reviews: 0\nTaylor Smith\nCreated: 1 year before review\nPrevious Reviews: 15",
         "position": 2
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nDevice: Device-111\nAccount B:\nDevice: Device-222\nAccount C:\nDevice: Device-333",
+        "content": "Alex Carter:\nDevice: Device-111\nJordan Lee:\nDevice: Device-222\nTaylor Smith:\nDevice: Device-333",
         "position": 3
       }
     ],
@@ -10601,17 +10601,17 @@ const QUESTIONS = [
     "options": [
       {
         "letter": "A",
-        "text": "Account A",
+        "text": "Alex Carter",
         "is_correct": true
       },
       {
         "letter": "B",
-        "text": "Account B",
+        "text": "Jordan Lee",
         "is_correct": true
       },
       {
         "letter": "C",
-        "text": "Account C",
+        "text": "Taylor Smith",
         "is_correct": false
       },
       {
@@ -10639,23 +10639,23 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Review Activity",
-        "content": "Property: Green Valley Resort\nAccount A Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount B Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount C Review:\n\"Beautiful property, amazing service, highly recommended.\"",
+        "content": "Property: Green Valley Resort\nAlex Carter Review:\n\"Beautiful property, amazing service, highly recommended.\"\nJordan Lee Review:\n\"Beautiful property, amazing service, highly recommended.\"\nTaylor Smith Review:\n\"Beautiful property, amazing service, highly recommended.\"",
         "position": 1
       },
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2 days before review\nPrevious Reviews: 0\nAccount B\nCreated: 3 days before review\nPrevious Reviews: 0\nAccount C\nCreated: 1 year before review\nPrevious Reviews: 15",
+        "content": "Alex Carter\nCreated: 2 days before review\nPrevious Reviews: 0\nJordan Lee\nCreated: 3 days before review\nPrevious Reviews: 0\nTaylor Smith\nCreated: 1 year before review\nPrevious Reviews: 15",
         "position": 2
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nDevice: Device-111\nAccount B:\nDevice: Device-222\nAccount C:\nDevice: Device-333",
+        "content": "Alex Carter:\nDevice: Device-111\nJordan Lee:\nDevice: Device-222\nTaylor Smith:\nDevice: Device-333",
         "position": 3
       }
     ],
     "tables": null,
     "response_type": "mcq_single",
-    "stem": "Why do Account A and B require closer attention?",
+    "stem": "Why do Alex Carter and B require closer attention?",
     "options": [
       {
         "letter": "A",
@@ -10697,17 +10697,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Review Activity",
-        "content": "Property: Green Valley Resort\nAccount A Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount B Review:\n\"Beautiful property, amazing service, highly recommended.\"\nAccount C Review:\n\"Beautiful property, amazing service, highly recommended.\"",
+        "content": "Property: Green Valley Resort\nAlex Carter Review:\n\"Beautiful property, amazing service, highly recommended.\"\nJordan Lee Review:\n\"Beautiful property, amazing service, highly recommended.\"\nTaylor Smith Review:\n\"Beautiful property, amazing service, highly recommended.\"",
         "position": 1
       },
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2 days before review\nPrevious Reviews: 0\nAccount B\nCreated: 3 days before review\nPrevious Reviews: 0\nAccount C\nCreated: 1 year before review\nPrevious Reviews: 15",
+        "content": "Alex Carter\nCreated: 2 days before review\nPrevious Reviews: 0\nJordan Lee\nCreated: 3 days before review\nPrevious Reviews: 0\nTaylor Smith\nCreated: 1 year before review\nPrevious Reviews: 15",
         "position": 2
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nDevice: Device-111\nAccount B:\nDevice: Device-222\nAccount C:\nDevice: Device-333",
+        "content": "Alex Carter:\nDevice: Device-111\nJordan Lee:\nDevice: Device-222\nTaylor Smith:\nDevice: Device-333",
         "position": 3
       }
     ],
@@ -10755,17 +10755,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Age: 3 Years\nPrevious Reviews: 8\nAccount B\nAccount Age: 2 Years\nPrevious Reviews: 5",
+        "content": "Alex Carter\nAlex Carterge: 3 Years\nPrevious Reviews: 8\nJordan Lee\nAlex Carterge: 2 Years\nPrevious Reviews: 5",
         "position": 1
       },
       {
         "name": "Booking Information",
-        "content": "Account A\nBooking Completed: Yes\nPayment Method Ending: 7821\nAccount B\nBooking Completed: Yes\nPayment Method Ending: 7821",
+        "content": "Alex Carter\nBooking Completed: Yes\nPayment Method Ending: 7821\nJordan Lee\nBooking Completed: Yes\nPayment Method Ending: 7821",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nAccount B:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
+        "content": "Alex Carter:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nJordan Lee:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
         "position": 3
       }
     ],
@@ -10813,17 +10813,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Age: 3 Years\nPrevious Reviews: 8\nAccount B\nAccount Age: 2 Years\nPrevious Reviews: 5",
+        "content": "Alex Carter\nAlex Carterge: 3 Years\nPrevious Reviews: 8\nJordan Lee\nAlex Carterge: 2 Years\nPrevious Reviews: 5",
         "position": 1
       },
       {
         "name": "Booking Information",
-        "content": "Account A\nBooking Completed: Yes\nPayment Method Ending: 7821\nAccount B\nBooking Completed: Yes\nPayment Method Ending: 7821",
+        "content": "Alex Carter\nBooking Completed: Yes\nPayment Method Ending: 7821\nJordan Lee\nBooking Completed: Yes\nPayment Method Ending: 7821",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nAccount B:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
+        "content": "Alex Carter:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nJordan Lee:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
         "position": 3
       }
     ],
@@ -10871,17 +10871,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Age: 3 Years\nPrevious Reviews: 8\nAccount B\nAccount Age: 2 Years\nPrevious Reviews: 5",
+        "content": "Alex Carter\nAlex Carterge: 3 Years\nPrevious Reviews: 8\nJordan Lee\nAlex Carterge: 2 Years\nPrevious Reviews: 5",
         "position": 1
       },
       {
         "name": "Booking Information",
-        "content": "Account A\nBooking Completed: Yes\nPayment Method Ending: 7821\nAccount B\nBooking Completed: Yes\nPayment Method Ending: 7821",
+        "content": "Alex Carter\nBooking Completed: Yes\nPayment Method Ending: 7821\nJordan Lee\nBooking Completed: Yes\nPayment Method Ending: 7821",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nAccount B:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
+        "content": "Alex Carter:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nJordan Lee:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
         "position": 3
       }
     ],
@@ -10929,17 +10929,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Age: 3 Years\nPrevious Reviews: 8\nAccount B\nAccount Age: 2 Years\nPrevious Reviews: 5",
+        "content": "Alex Carter\nAlex Carterge: 3 Years\nPrevious Reviews: 8\nJordan Lee\nAlex Carterge: 2 Years\nPrevious Reviews: 5",
         "position": 1
       },
       {
         "name": "Booking Information",
-        "content": "Account A\nBooking Completed: Yes\nPayment Method Ending: 7821\nAccount B\nBooking Completed: Yes\nPayment Method Ending: 7821",
+        "content": "Alex Carter\nBooking Completed: Yes\nPayment Method Ending: 7821\nJordan Lee\nBooking Completed: Yes\nPayment Method Ending: 7821",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nAccount B:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
+        "content": "Alex Carter:\nReviewed: Beach Resort\nReview Date: 10 August 2025\nJordan Lee:\nReviewed: Beach Resort\nReview Date: 11 August 2025",
         "position": 3
       }
     ],
@@ -10987,11 +10987,11 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Maria Thomas\nAccount Age: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
+        "content": "Account Name: Maria Thomas\nAlex Carterge: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
         "position": 1
       },
       {
-        "name": "Account Activity History",
+        "name": "Alex Carterctivity History",
         "content": "Previous Activity:\nNo reviews posted in the last 3 years\nRecent Changes:\nEmail updated: 5 December 2025\nName updated: 5 December 2025\nProfile picture updated: 5 December 2025",
         "position": 2
       },
@@ -11045,11 +11045,11 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Maria Thomas\nAccount Age: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
+        "content": "Account Name: Maria Thomas\nAlex Carterge: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
         "position": 1
       },
       {
-        "name": "Account Activity History",
+        "name": "Alex Carterctivity History",
         "content": "Previous Activity:\nNo reviews posted in the last 3 years\nRecent Changes:\nEmail updated: 5 December 2025\nName updated: 5 December 2025\nProfile picture updated: 5 December 2025",
         "position": 2
       },
@@ -11103,11 +11103,11 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Maria Thomas\nAccount Age: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
+        "content": "Account Name: Maria Thomas\nAlex Carterge: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
         "position": 1
       },
       {
-        "name": "Account Activity History",
+        "name": "Alex Carterctivity History",
         "content": "Previous Activity:\nNo reviews posted in the last 3 years\nRecent Changes:\nEmail updated: 5 December 2025\nName updated: 5 December 2025\nProfile picture updated: 5 December 2025",
         "position": 2
       },
@@ -11161,11 +11161,11 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Maria Thomas\nAccount Age: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
+        "content": "Account Name: Maria Thomas\nAlex Carterge: 5 Years\nPrevious Reviews: 2\nPrevious Reports: 0",
         "position": 1
       },
       {
-        "name": "Account Activity History",
+        "name": "Alex Carterctivity History",
         "content": "Previous Activity:\nNo reviews posted in the last 3 years\nRecent Changes:\nEmail updated: 5 December 2025\nName updated: 5 December 2025\nProfile picture updated: 5 December 2025",
         "position": 2
       },
@@ -11219,7 +11219,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2025\nPrevious Reviews: 0\nAccount B\nCreated: January 2025\nPrevious Reviews: 0\nAccount C\nCreated: January 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2025\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2025\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -11277,7 +11277,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2025\nPrevious Reviews: 0\nAccount B\nCreated: January 2025\nPrevious Reviews: 0\nAccount C\nCreated: January 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2025\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2025\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -11335,7 +11335,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2025\nPrevious Reviews: 0\nAccount B\nCreated: January 2025\nPrevious Reviews: 0\nAccount C\nCreated: January 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2025\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2025\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -11393,7 +11393,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2025\nPrevious Reviews: 0\nAccount B\nCreated: January 2025\nPrevious Reviews: 0\nAccount C\nCreated: January 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2025\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2025\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -11451,7 +11451,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: John Parker\nAccount Age: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
+        "content": "Account Name: John Parker\nAlex Carterge: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -11509,7 +11509,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: John Parker\nAccount Age: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
+        "content": "Account Name: John Parker\nAlex Carterge: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -11567,7 +11567,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: John Parker\nAccount Age: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
+        "content": "Account Name: John Parker\nAlex Carterge: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -11625,7 +11625,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: John Parker\nAccount Age: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
+        "content": "Account Name: John Parker\nAlex Carterge: 8 Years\nPrevious Reviews: 50\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -11683,7 +11683,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Emily Davis\nAccount Age: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
+        "content": "Account Name: Emily Davis\nAlex Carterge: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
         "position": 1
       },
       {
@@ -11741,7 +11741,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Emily Davis\nAccount Age: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
+        "content": "Account Name: Emily Davis\nAlex Carterge: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
         "position": 1
       },
       {
@@ -11799,7 +11799,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Emily Davis\nAccount Age: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
+        "content": "Account Name: Emily Davis\nAlex Carterge: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
         "position": 1
       },
       {
@@ -11857,7 +11857,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Emily Davis\nAccount Age: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
+        "content": "Account Name: Emily Davis\nAlex Carterge: 6 Years\nPrevious Reviews: 35\nPrevious Reports: 3 property reports",
         "position": 1
       },
       {
@@ -12271,17 +12271,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nAccount B\nAccount Created: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nAccount C\nAccount Created: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nRegistered Phone Number: +91 XXXXX1234\nAccount B:\nRegistered Phone Number: +91 XXXXX1234\nAccount C:\nRegistered Phone Number: +91 XXXXX9876",
+        "content": "Alex Carter:\nRegistered Phone Number: +91 XXXXX1234\nJordan Lee:\nRegistered Phone Number: +91 XXXXX1234\nTaylor Smith:\nRegistered Phone Number: +91 XXXXX9876",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount B:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount C:\nReviewed: City Inn Hotel\nRating: 4 Stars",
+        "content": "Alex Carter:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nJordan Lee:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nTaylor Smith:\nReviewed: City Inn Hotel\nRating: 4 Stars",
         "position": 3
       }
     ],
@@ -12291,17 +12291,17 @@ const QUESTIONS = [
     "options": [
       {
         "letter": "A",
-        "text": "Account C has more reviews",
+        "text": "Taylor Smith has more reviews",
         "is_correct": false
       },
       {
         "letter": "B",
-        "text": "Account A and B share the same registered phone number and reviewed the same property on the same date",
+        "text": "Alex Carter and B share the same registered phone number and reviewed the same property on the same date",
         "is_correct": true
       },
       {
         "letter": "C",
-        "text": "Account A has fewer reviews",
+        "text": "Alex Carter has fewer reviews",
         "is_correct": false
       },
       {
@@ -12329,17 +12329,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nAccount B\nAccount Created: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nAccount C\nAccount Created: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nRegistered Phone Number: +91 XXXXX1234\nAccount B:\nRegistered Phone Number: +91 XXXXX1234\nAccount C:\nRegistered Phone Number: +91 XXXXX9876",
+        "content": "Alex Carter:\nRegistered Phone Number: +91 XXXXX1234\nJordan Lee:\nRegistered Phone Number: +91 XXXXX1234\nTaylor Smith:\nRegistered Phone Number: +91 XXXXX9876",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount B:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount C:\nReviewed: City Inn Hotel\nRating: 4 Stars",
+        "content": "Alex Carter:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nJordan Lee:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nTaylor Smith:\nReviewed: City Inn Hotel\nRating: 4 Stars",
         "position": 3
       }
     ],
@@ -12387,17 +12387,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nAccount B\nAccount Created: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nAccount C\nAccount Created: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nRegistered Phone Number: +91 XXXXX1234\nAccount B:\nRegistered Phone Number: +91 XXXXX1234\nAccount C:\nRegistered Phone Number: +91 XXXXX9876",
+        "content": "Alex Carter:\nRegistered Phone Number: +91 XXXXX1234\nJordan Lee:\nRegistered Phone Number: +91 XXXXX1234\nTaylor Smith:\nRegistered Phone Number: +91 XXXXX9876",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount B:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount C:\nReviewed: City Inn Hotel\nRating: 4 Stars",
+        "content": "Alex Carter:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nJordan Lee:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nTaylor Smith:\nReviewed: City Inn Hotel\nRating: 4 Stars",
         "position": 3
       }
     ],
@@ -12445,17 +12445,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nAccount Created: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nAccount B\nAccount Created: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nAccount C\nAccount Created: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Account A:\nRegistered Phone Number: +91 XXXXX1234\nAccount B:\nRegistered Phone Number: +91 XXXXX1234\nAccount C:\nRegistered Phone Number: +91 XXXXX9876",
+        "content": "Alex Carter:\nRegistered Phone Number: +91 XXXXX1234\nJordan Lee:\nRegistered Phone Number: +91 XXXXX1234\nTaylor Smith:\nRegistered Phone Number: +91 XXXXX9876",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount B:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nAccount C:\nReviewed: City Inn Hotel\nRating: 4 Stars",
+        "content": "Alex Carter:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nJordan Lee:\nReviewed: Ocean Breeze Hotel\nRating: 5 Stars\nDate: 20 March 2025\nTaylor Smith:\nReviewed: City Inn Hotel\nRating: 4 Stars",
         "position": 3
       }
     ],
@@ -12465,7 +12465,7 @@ const QUESTIONS = [
     "options": [
       {
         "letter": "A",
-        "text": "Account A and B show possible linkage through multiple data points",
+        "text": "Alex Carter and B show possible linkage through multiple data points",
         "is_correct": true
       },
       {
@@ -12475,7 +12475,7 @@ const QUESTIONS = [
       },
       {
         "letter": "C",
-        "text": "Account C is the highest risk because it has more reviews",
+        "text": "Taylor Smith is the highest risk because it has more reviews",
         "is_correct": false
       },
       {
@@ -12503,7 +12503,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nAccount Created: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12561,7 +12561,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nAccount Created: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12619,7 +12619,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nAccount Created: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12677,7 +12677,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nAccount Created: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12735,12 +12735,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: April 2025\nPrevious Reviews: 2\nAccount B\nCreated: April 2025\nPrevious Reviews: 1\nAccount C\nCreated: April 2025\nPrevious Reviews: 3",
+        "content": "Alex Carter\nCreated: April 2025\nPrevious Reviews: 2\nJordan Lee\nCreated: April 2025\nPrevious Reviews: 1\nTaylor Smith\nCreated: April 2025\nPrevious Reviews: 3",
         "position": 1
       },
       {
         "name": "Activity History",
-        "content": "Within one week:\nAccount A:\nReviewed Property X and Property Y\nAccount B:\nReviewed Property X and Property Y\nAccount C:\nReviewed Property X and Property Y",
+        "content": "Within one week:\nAlex Carter:\nReviewed Property X and Property Y\nJordan Lee:\nReviewed Property X and Property Y\nTaylor Smith:\nReviewed Property X and Property Y",
         "position": 2
       },
       {
@@ -12793,12 +12793,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: April 2025\nPrevious Reviews: 2\nAccount B\nCreated: April 2025\nPrevious Reviews: 1\nAccount C\nCreated: April 2025\nPrevious Reviews: 3",
+        "content": "Alex Carter\nCreated: April 2025\nPrevious Reviews: 2\nJordan Lee\nCreated: April 2025\nPrevious Reviews: 1\nTaylor Smith\nCreated: April 2025\nPrevious Reviews: 3",
         "position": 1
       },
       {
         "name": "Activity History",
-        "content": "Within one week:\nAccount A:\nReviewed Property X and Property Y\nAccount B:\nReviewed Property X and Property Y\nAccount C:\nReviewed Property X and Property Y",
+        "content": "Within one week:\nAlex Carter:\nReviewed Property X and Property Y\nJordan Lee:\nReviewed Property X and Property Y\nTaylor Smith:\nReviewed Property X and Property Y",
         "position": 2
       },
       {
@@ -12851,12 +12851,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: April 2025\nPrevious Reviews: 2\nAccount B\nCreated: April 2025\nPrevious Reviews: 1\nAccount C\nCreated: April 2025\nPrevious Reviews: 3",
+        "content": "Alex Carter\nCreated: April 2025\nPrevious Reviews: 2\nJordan Lee\nCreated: April 2025\nPrevious Reviews: 1\nTaylor Smith\nCreated: April 2025\nPrevious Reviews: 3",
         "position": 1
       },
       {
         "name": "Activity History",
-        "content": "Within one week:\nAccount A:\nReviewed Property X and Property Y\nAccount B:\nReviewed Property X and Property Y\nAccount C:\nReviewed Property X and Property Y",
+        "content": "Within one week:\nAlex Carter:\nReviewed Property X and Property Y\nJordan Lee:\nReviewed Property X and Property Y\nTaylor Smith:\nReviewed Property X and Property Y",
         "position": 2
       },
       {
@@ -12909,12 +12909,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: April 2025\nPrevious Reviews: 2\nAccount B\nCreated: April 2025\nPrevious Reviews: 1\nAccount C\nCreated: April 2025\nPrevious Reviews: 3",
+        "content": "Alex Carter\nCreated: April 2025\nPrevious Reviews: 2\nJordan Lee\nCreated: April 2025\nPrevious Reviews: 1\nTaylor Smith\nCreated: April 2025\nPrevious Reviews: 3",
         "position": 1
       },
       {
         "name": "Activity History",
-        "content": "Within one week:\nAccount A:\nReviewed Property X and Property Y\nAccount B:\nReviewed Property X and Property Y\nAccount C:\nReviewed Property X and Property Y",
+        "content": "Within one week:\nAlex Carter:\nReviewed Property X and Property Y\nJordan Lee:\nReviewed Property X and Property Y\nTaylor Smith:\nReviewed Property X and Property Y",
         "position": 2
       },
       {
@@ -12967,7 +12967,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Sophia Williams\nAccount Age: 2 Years\nPrevious Reviews: 25",
+        "content": "Account Name: Sophia Williams\nAlex Carterge: 2 Years\nPrevious Reviews: 25",
         "position": 1
       },
       {
@@ -13025,7 +13025,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Sophia Williams\nAccount Age: 2 Years\nPrevious Reviews: 25",
+        "content": "Account Name: Sophia Williams\nAlex Carterge: 2 Years\nPrevious Reviews: 25",
         "position": 1
       },
       {
@@ -13083,7 +13083,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Sophia Williams\nAccount Age: 2 Years\nPrevious Reviews: 25",
+        "content": "Account Name: Sophia Williams\nAlex Carterge: 2 Years\nPrevious Reviews: 25",
         "position": 1
       },
       {
@@ -13141,7 +13141,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Sophia Williams\nAccount Age: 2 Years\nPrevious Reviews: 25",
+        "content": "Account Name: Sophia Williams\nAlex Carterge: 2 Years\nPrevious Reviews: 25",
         "position": 1
       },
       {
@@ -13199,12 +13199,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 0\nAccount C\nCreated: January 2026\nPrevious Reviews: 0",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2026\nPrevious Reviews: 0",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Device Activity:\nAccount A:\nDevice ID: D-555\nAccount B:\nDevice ID: D-555\nAccount C:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
+        "content": "Device Activity:\nAlex Carter:\nDevice ID: D-555\nJordan Lee:\nDevice ID: D-555\nTaylor Smith:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
         "position": 2
       },
       {
@@ -13257,12 +13257,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 0\nAccount C\nCreated: January 2026\nPrevious Reviews: 0",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2026\nPrevious Reviews: 0",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Device Activity:\nAccount A:\nDevice ID: D-555\nAccount B:\nDevice ID: D-555\nAccount C:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
+        "content": "Device Activity:\nAlex Carter:\nDevice ID: D-555\nJordan Lee:\nDevice ID: D-555\nTaylor Smith:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
         "position": 2
       },
       {
@@ -13315,12 +13315,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 0\nAccount C\nCreated: January 2026\nPrevious Reviews: 0",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2026\nPrevious Reviews: 0",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Device Activity:\nAccount A:\nDevice ID: D-555\nAccount B:\nDevice ID: D-555\nAccount C:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
+        "content": "Device Activity:\nAlex Carter:\nDevice ID: D-555\nJordan Lee:\nDevice ID: D-555\nTaylor Smith:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
         "position": 2
       },
       {
@@ -13373,12 +13373,12 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 0\nAccount C\nCreated: January 2026\nPrevious Reviews: 0",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 0\nTaylor Smith\nCreated: January 2026\nPrevious Reviews: 0",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Device Activity:\nAccount A:\nDevice ID: D-555\nAccount B:\nDevice ID: D-555\nAccount C:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
+        "content": "Device Activity:\nAlex Carter:\nDevice ID: D-555\nJordan Lee:\nDevice ID: D-555\nTaylor Smith:\nDevice ID: D-555\nLogin Pattern:\nAll accounts accessed within 10 minutes",
         "position": 2
       },
       {
@@ -13431,7 +13431,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Robert Miller\nAccount Age: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
+        "content": "Account Name: Robert Miller\nAlex Carterge: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -13489,7 +13489,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Robert Miller\nAccount Age: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
+        "content": "Account Name: Robert Miller\nAlex Carterge: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -13547,7 +13547,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Robert Miller\nAccount Age: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
+        "content": "Account Name: Robert Miller\nAlex Carterge: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -13605,7 +13605,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Robert Miller\nAccount Age: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
+        "content": "Account Name: Robert Miller\nAlex Carterge: 7 Years\nVerified Email: Yes\nVerified Phone: Yes\nPrevious Reviews: 45\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -13663,7 +13663,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Creation Details:",
+        "content": "Taylor Smithreation Details:",
         "position": 1
       },
       {
@@ -13686,15 +13686,15 @@ const QUESTIONS = [
         ],
         "rows": [
           [
-            "Account A",
+            "Alex Carter",
             "1 June 2026"
           ],
           [
-            "Account B",
+            "Jordan Lee",
             "2 June 2026"
           ],
           [
-            "Account C",
+            "Taylor Smith",
             "3 June 2026"
           ],
           [
@@ -13748,7 +13748,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Creation Details:",
+        "content": "Taylor Smithreation Details:",
         "position": 1
       },
       {
@@ -13771,15 +13771,15 @@ const QUESTIONS = [
         ],
         "rows": [
           [
-            "Account A",
+            "Alex Carter",
             "1 June 2026"
           ],
           [
-            "Account B",
+            "Jordan Lee",
             "2 June 2026"
           ],
           [
-            "Account C",
+            "Taylor Smith",
             "3 June 2026"
           ],
           [
@@ -13833,7 +13833,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Creation Details:",
+        "content": "Taylor Smithreation Details:",
         "position": 1
       },
       {
@@ -13856,15 +13856,15 @@ const QUESTIONS = [
         ],
         "rows": [
           [
-            "Account A",
+            "Alex Carter",
             "1 June 2026"
           ],
           [
-            "Account B",
+            "Jordan Lee",
             "2 June 2026"
           ],
           [
-            "Account C",
+            "Taylor Smith",
             "3 June 2026"
           ],
           [
@@ -13918,7 +13918,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Creation Details:",
+        "content": "Taylor Smithreation Details:",
         "position": 1
       },
       {
@@ -13941,15 +13941,15 @@ const QUESTIONS = [
         ],
         "rows": [
           [
-            "Account A",
+            "Alex Carter",
             "1 June 2026"
           ],
           [
-            "Account B",
+            "Jordan Lee",
             "2 June 2026"
           ],
           [
-            "Account C",
+            "Taylor Smith",
             "3 June 2026"
           ],
           [
@@ -14003,17 +14003,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2020\nPrevious Reviews: 50\nAccount B\nCreated: 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: 2020\nPrevious Reviews: 50\nJordan Lee\nCreated: 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Location:\nAccount A: Delhi, India\nAccount B: Delhi, India\nDevice:\nAccount A: Device-111\nAccount B: Device-222",
+        "content": "Location:\nAlex Carter: Delhi, India\nJordan Lee: Delhi, India\nDevice:\nAlex Carter: Device-111\nJordan Lee: Device-222",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed multiple properties over 5 years\nAccount B:\nPosted one review for the same property as Account A\nPosted on the same day",
+        "content": "Alex Carter:\nReviewed multiple properties over 5 years\nJordan Lee:\nPosted one review for the same property as Alex Carter\nPosted on the same day",
         "position": 3
       }
     ],
@@ -14033,12 +14033,12 @@ const QUESTIONS = [
       },
       {
         "letter": "C",
-        "text": "Account A has many reviews",
+        "text": "Alex Carter has many reviews",
         "is_correct": false
       },
       {
         "letter": "D",
-        "text": "Account B is a newer account",
+        "text": "Jordan Lee is a newer account",
         "is_correct": false
       }
     ],
@@ -14061,17 +14061,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2020\nPrevious Reviews: 50\nAccount B\nCreated: 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: 2020\nPrevious Reviews: 50\nJordan Lee\nCreated: 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Location:\nAccount A: Delhi, India\nAccount B: Delhi, India\nDevice:\nAccount A: Device-111\nAccount B: Device-222",
+        "content": "Location:\nAlex Carter: Delhi, India\nJordan Lee: Delhi, India\nDevice:\nAlex Carter: Device-111\nJordan Lee: Device-222",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed multiple properties over 5 years\nAccount B:\nPosted one review for the same property as Account A\nPosted on the same day",
+        "content": "Alex Carter:\nReviewed multiple properties over 5 years\nJordan Lee:\nPosted one review for the same property as Alex Carter\nPosted on the same day",
         "position": 3
       }
     ],
@@ -14119,17 +14119,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2020\nPrevious Reviews: 50\nAccount B\nCreated: 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: 2020\nPrevious Reviews: 50\nJordan Lee\nCreated: 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Location:\nAccount A: Delhi, India\nAccount B: Delhi, India\nDevice:\nAccount A: Device-111\nAccount B: Device-222",
+        "content": "Location:\nAlex Carter: Delhi, India\nJordan Lee: Delhi, India\nDevice:\nAlex Carter: Device-111\nJordan Lee: Device-222",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed multiple properties over 5 years\nAccount B:\nPosted one review for the same property as Account A\nPosted on the same day",
+        "content": "Alex Carter:\nReviewed multiple properties over 5 years\nJordan Lee:\nPosted one review for the same property as Alex Carter\nPosted on the same day",
         "position": 3
       }
     ],
@@ -14177,17 +14177,17 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: 2020\nPrevious Reviews: 50\nAccount B\nCreated: 2025\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: 2020\nPrevious Reviews: 50\nJordan Lee\nCreated: 2025\nPrevious Reviews: 1",
         "position": 1
       },
       {
         "name": "Connected Information",
-        "content": "Location:\nAccount A: Delhi, India\nAccount B: Delhi, India\nDevice:\nAccount A: Device-111\nAccount B: Device-222",
+        "content": "Location:\nAlex Carter: Delhi, India\nJordan Lee: Delhi, India\nDevice:\nAlex Carter: Device-111\nJordan Lee: Device-222",
         "position": 2
       },
       {
         "name": "Review Activity",
-        "content": "Account A:\nReviewed multiple properties over 5 years\nAccount B:\nPosted one review for the same property as Account A\nPosted on the same day",
+        "content": "Alex Carter:\nReviewed multiple properties over 5 years\nJordan Lee:\nPosted one review for the same property as Alex Carter\nPosted on the same day",
         "position": 3
       }
     ],
@@ -14467,7 +14467,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -14482,7 +14482,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account History",
-        "content": "Account A:\nNo previous reports\nAccount B:\nPreviously linked to a reported account",
+        "content": "Alex Carter:\nNo previous reports\nJordan Lee:\nPreviously linked to a reported account",
         "position": 4
       }
     ],
@@ -14530,7 +14530,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -14545,7 +14545,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account History",
-        "content": "Account A:\nNo previous reports\nAccount B:\nPreviously linked to a reported account",
+        "content": "Alex Carter:\nNo previous reports\nJordan Lee:\nPreviously linked to a reported account",
         "position": 4
       }
     ],
@@ -14593,7 +14593,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -14608,7 +14608,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account History",
-        "content": "Account A:\nNo previous reports\nAccount B:\nPreviously linked to a reported account",
+        "content": "Alex Carter:\nNo previous reports\nJordan Lee:\nPreviously linked to a reported account",
         "position": 4
       }
     ],
@@ -14656,7 +14656,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account A\nCreated: January 2026\nPrevious Reviews: 0\nAccount B\nCreated: January 2026\nPrevious Reviews: 1",
+        "content": "Alex Carter\nCreated: January 2026\nPrevious Reviews: 0\nJordan Lee\nCreated: January 2026\nPrevious Reviews: 1",
         "position": 1
       },
       {
@@ -14671,7 +14671,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account History",
-        "content": "Account A:\nNo previous reports\nAccount B:\nPreviously linked to a reported account",
+        "content": "Alex Carter:\nNo previous reports\nJordan Lee:\nPreviously linked to a reported account",
         "position": 4
       }
     ],
@@ -17595,7 +17595,7 @@ const QUESTIONS = [
     "section": "risk_assessment",
     "level": null,
     "case_id": "ct-case-16",
-    "case_title": "Sudden Change in Account Behavior",
+    "case_title": "Sudden Change in Jordan Leeehavior",
     "tabs": [
     {
         "name": "Case File",
@@ -17643,7 +17643,7 @@ const QUESTIONS = [
     "section": "risk_assessment",
     "level": null,
     "case_id": "ct-case-16",
-    "case_title": "Sudden Change in Account Behavior",
+    "case_title": "Sudden Change in Jordan Leeehavior",
     "tabs": [
     {
         "name": "Case File",
@@ -17691,7 +17691,7 @@ const QUESTIONS = [
     "section": "risk_assessment",
     "level": null,
     "case_id": "ct-case-16",
-    "case_title": "Sudden Change in Account Behavior",
+    "case_title": "Sudden Change in Jordan Leeehavior",
     "tabs": [
     {
         "name": "Case File",
@@ -17739,7 +17739,7 @@ const QUESTIONS = [
     "section": "risk_assessment",
     "level": null,
     "case_id": "ct-case-16",
-    "case_title": "Sudden Change in Account Behavior",
+    "case_title": "Sudden Change in Jordan Leeehavior",
     "tabs": [
     {
         "name": "Case File",

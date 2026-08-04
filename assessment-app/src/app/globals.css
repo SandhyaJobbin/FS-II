@@ -35,6 +35,8 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Ambient light effect behind layout */

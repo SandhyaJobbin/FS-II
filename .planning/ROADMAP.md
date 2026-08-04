@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 8: Cleanup & Test-Safety Net (F-06, F-03, F-04)** - Frontend dead-code removal, grading-mirror divergence fixture set, real-auth admin tests, CI workflow gating PRs
 - [x] **Phase 9: Async Grading & Report Delivery Pipeline** - Fast doPost enqueue to PendingGrading queue, single recurring trigger under LockService, MailApp candidate+recruiter emails, ThankYouScreen
-- [ ] **Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override** - Gemini responseSchema rubric grading, persisted rationale/transcript, override audit trail, distinct ungraded state, updated candidate copy
+- [x] **Phase 10: Rubric-Based LLM Grading + Recruiter Transcript & Override** - Gemini responseSchema rubric grading, persisted rationale/transcript, override audit trail, distinct ungraded state, updated candidate copy
 - [ ] **Phase 11: Recruiter Analytics Dashboard** - On-demand uncached aggregation: score trend, question pass-rate, violation-vs-score correlation, bias-direction indicator, low-N fallback
 - [ ] **Phase 12: Proctoring Upgrade (Fullscreen Detect-and-Escalate + MediaPipe Migration)** - Blocking re-entry modal on fullscreen exit, MediaPipe tasks-vision FaceDetector replacing BlazeFace/TF.js CDN
 - [ ] **Phase 13: Accessibility (F-05) & Remaining Polish** - ARIA landmarks/roles on ReportScreen.tsx

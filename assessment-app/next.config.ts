@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "/FS-assessment",
+  basePath: "/wayo",
   images: {
     unoptimized: true,
   },

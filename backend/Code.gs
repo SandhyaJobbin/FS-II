@@ -11,35 +11,31 @@
 // --- CONFIGURATION ---
 const QUOTAS = {
   "grammar": {
-    "count": 8,
+    "count": 4,
     "unit": "questions"
   },
   "sentence_correction": {
-    "count": 5,
+    "count": 3,
     "unit": "questions"
   },
   "macro": {
-    "count": 2,
+    "count": 3,
     "unit": "questions"
   },
   "reading": {
-    "count": 1,
-    "unit": "passages"
+    "count": 3,
+    "unit": "questions"
   },
   "closure": {
-    "count": 5,
+    "count": 3,
     "unit": "questions"
   },
   "attention_l1": {
-    "count": 5,
-    "unit": "cases"
-  },
-  "attention_l2": {
-    "count": 5,
+    "count": 2,
     "unit": "cases"
   },
   "critical": {
-    "count": 10,
+    "count": 2,
     "unit": "cases"
   }
 };
@@ -772,60 +768,24 @@ function assembleQuestionSet() {
     throw new Error("QUESTIONS bank is empty — re-deploy Code.gs with the embedded question data from ingestion/run.py sync");
   }
 
-  const selectedIds = [];
-  
-  // 1. Sample English Grammar (quota: 8 questions)
-  const grammarPool = QUESTIONS.filter(q => q.bank === "english" && q.section === "grammar");
-  selectedIds.push(...sampleRandom(grammarPool, QUOTAS.grammar.count).map(q => q.id));
-  
-  // 2. Sample English Sentence Correction (5 questions)
-  const sentencePool = QUESTIONS.filter(q => q.bank === "english" && q.section === "sentence_correction");
-  selectedIds.push(...sampleRandom(sentencePool, QUOTAS.sentence_correction.count).map(q => q.id));
-  
-  // 3. Sample English Macro (2 questions)
-  const macroPool = QUESTIONS.filter(q => q.bank === "english" && q.section === "macro");
-  selectedIds.push(...sampleRandom(macroPool, QUOTAS.macro.count).map(q => q.id));
-  
-  // 4. Sample English Reading Passage (quota: 1 passage → expands to 5 questions, all from chosen passage)
-  const readingPool = QUESTIONS.filter(q => q.bank === "english" && q.section === "reading");
-  // Group reading questions by case_id (passage) — each passage has exactly 5 questions
-  const readingPassages = groupBy(readingPool, "case_id");
-  const passageIds = Object.keys(readingPassages);
-  if (passageIds.length > 0) {
-    const chosenPassageId = passageIds[Math.floor(Math.random() * passageIds.length)];
-    const chosenQuestions = readingPassages[chosenPassageId];
-    selectedIds.push(...chosenQuestions.map(q => q.id));
-  }
-  
-  // 5. Sample English Case Closure Notes (5 questions)
-  const closurePool = QUESTIONS.filter(q => q.bank === "english" && q.section === "closure");
-  selectedIds.push(...sampleRandom(closurePool, QUOTAS.closure.count).map(q => q.id));
-  
-  // 6. Sample Attention Level 1 (5 cases = 20 questions)
-  const attL1Pool = QUESTIONS.filter(q => q.bank === "attention" && q.level === "L1");
-  const attL1Cases = groupBy(attL1Pool, "case_id");
-  const chosenL1CaseIds = sampleRandom(Object.keys(attL1Cases), QUOTAS.attention_l1.count);
-  chosenL1CaseIds.forEach(cId => {
-    selectedIds.push(...attL1Cases[cId].map(q => q.id));
-  });
-  
-  // 7. Sample Attention Level 2 (5 cases = 20 questions)
-  const attL2Pool = QUESTIONS.filter(q => q.bank === "attention" && q.level === "L2");
-  const attL2Cases = groupBy(attL2Pool, "case_id");
-  const chosenL2CaseIds = sampleRandom(Object.keys(attL2Cases), QUOTAS.attention_l2.count);
-  chosenL2CaseIds.forEach(cId => {
-    selectedIds.push(...attL2Cases[cId].map(q => q.id));
-  });
-  
-  // 8. Sample Critical Thinking (10 cases = 40 questions)
-  const ctPool = QUESTIONS.filter(q => q.bank === "critical");
-  const ctCases = groupBy(ctPool, "case_id");
-  const chosenCtCaseIds = sampleRandom(Object.keys(ctCases), QUOTAS.critical.count);
-  chosenCtCaseIds.forEach(cId => {
-    selectedIds.push(...ctCases[cId].map(q => q.id));
-  });
-  
-  return selectedIds;
+  // Deterministic fixed 24-question set (per "Changes required.docx").
+  // Fixed order, Zones 1-6 then 8; Zone 7 (attention_l2) removed.
+  // 24 Qs = 30 marks (Zone 3 macro x2, Zone 5 closure x2).
+  // Case mapping:
+  // - att-level-1-q05+q07 = attn-l1-case-02 "THE REVIEW BEFORE CHECK-IN"
+  // - att-level-1-q17+q19 = attn-l1-case-05 "THE NEGATIVE BUT VALID REVIEW"
+  // - cri-risk-assessment-q13+q15 = ct-case-04 "Repeat Policy Violation Pattern"
+  // - cri-risk-assessment-q21+q23 = ct-case-06 "Report Without Supporting Evidence"
+  // - eng-reading q71+q72 = passage 1, q76 = passage 2 (3 Qs total)
+  return [
+    "eng-grammar-q02", "eng-grammar-q05", "eng-grammar-q06", "eng-grammar-q14",
+    "eng-sentence-correction-q36", "eng-sentence-correction-q37", "eng-sentence-correction-q38",
+    "eng-macro-q61", "eng-macro-q66", "eng-macro-q70",
+    "eng-reading-q71", "eng-reading-q72", "eng-reading-q76",
+    "eng-closure-q96", "eng-closure-q97", "eng-closure-q100",
+    "att-level-1-q05", "att-level-1-q07", "att-level-1-q17", "att-level-1-q19",
+    "cri-risk-assessment-q13", "cri-risk-assessment-q15", "cri-risk-assessment-q21", "cri-risk-assessment-q23"
+  ];
 }
 
 // Helper: Group by property

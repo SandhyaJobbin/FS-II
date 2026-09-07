@@ -78,6 +78,17 @@ function computeNarrativeInsight(overallPercentage, englishPct, criticalPct, com
   return "Struggled to maintain consistent reasoning under ambiguous conditions. Foundational fraud-logic training is recommended before a live support role.";
 }
 
+// Weighted scoring per "Changes required.docx": Zone 3 macro (q61/q66/q70) and
+// Zone 5 closure (q96/q97/q100) are worth 2 marks each; all other questions 1.
+// 24 Qs = 30 marks. Explicit IDs (not prefix match) so legacy attempts that
+// sampled other eng-macro-/eng-closure- questions keep those at weight 1.
+function getQuestionWeight(qId) {
+  if (qId === "eng-macro-q61" || qId === "eng-macro-q66" || qId === "eng-macro-q70") return 2; // Zone 3
+  if (qId === "eng-closure-q96" || qId === "eng-closure-q97" || qId === "eng-closure-q100") return 2; // Zone 5
+  return 1;
+}
+
+// Weighted scoring: Zone3 macro & Zone5 closure ×2 marks → total 30 marks (24 Qs)
 /**
  * Phase 10: Re-aggregate all score/tier/narrative columns for an attempt by reading Responses +
  * GradingTranscripts + Attempts and applying effectiveVerdict per question. Used by
@@ -125,7 +136,11 @@ function computeAggregatesForAttempt(attemptId, ss) {
   }
 
   // Aggregate under A2 policy (ungraded excluded from denominator).
-  let correctCount = 0;
+  // Weighted overall (marks): Zone3 macro & Zone5 closure ×2, others ×1 → 30 marks.
+  // Trait percentages below stay UNWEIGHTED (1 question = 1 vote) so existing
+  // dashboards/report consumers of englishPct/researchPct/criticalPct are unchanged.
+  let weightedCorrect = 0;
+  let weightedTotal = 0;
   const bankCorrect = { english: 0, attention: 0, critical: 0 };
   const bankTotal = { english: 0, attention: 0, critical: 0 };
   const complexCorrect = { english: 0, attention: 0, critical: 0 };
@@ -142,10 +157,12 @@ function computeAggregatesForAttempt(attemptId, ss) {
     const verdict = effectiveVerdict(transcriptsByQId[qId] || null, responsesByQId[qId] || null);
 
     if (verdict !== "ungraded") {
+      const w = getQuestionWeight(qId);
       bankTotal[category]++;
+      weightedTotal += w;
       if (verdict === "correct") {
-        correctCount++;
         bankCorrect[category]++;
+        weightedCorrect += w;
       }
       if (q.difficulty_tier === "complex") {
         complexTotal[category]++;
@@ -156,8 +173,8 @@ function computeAggregatesForAttempt(attemptId, ss) {
     }
   });
 
-  const totalGraded = bankTotal.english + bankTotal.attention + bankTotal.critical;
-  const overallPercentage = totalGraded ? Math.round((correctCount / totalGraded) * 100) : 0;
+  // Weighted overall: marks earned / marks available (ungraded excluded per A2 policy).
+  const overallPercentage = weightedTotal ? Math.round((weightedCorrect / weightedTotal) * 100) : 0;
   const englishPct = bankTotal.english ? Math.round((bankCorrect.english / bankTotal.english) * 100) : 0;
   const researchPct = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
   const criticalPct = bankTotal.critical ? Math.round((bankCorrect.critical / bankTotal.critical) * 100) : 0;
@@ -201,6 +218,9 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   const timestamp = new Date().toISOString();
 
   // --- GRADE-02: Per-bank counters (correct / total / complex-tagged) ---
+  // Weighted overall (marks): Zone3 macro & Zone5 closure ×2 → 30 marks (24 Qs).
+  let weightedCorrect = 0;
+  let weightedTotal = 0;
   let correctCount = 0;
   let bankCorrect = { english: 0, attention: 0, critical: 0 };
   let bankTotal = { english: 0, attention: 0, critical: 0 };
@@ -292,10 +312,13 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
 
     // A2 denominator policy: ungraded is EXCLUDED from bankTotal/bankCorrect/complex tallies
     if (verdict !== "ungraded") {
+      const w = getQuestionWeight(qId);
       bankTotal[category]++;
+      weightedTotal += w;
       if (verdict === "correct") {
         correctCount++;
         bankCorrect[category]++;
+        weightedCorrect += w;
       }
       // GRADE-03: Track difficulty_tier === 'complex' items specifically (NOT level/section)
       if (q.difficulty_tier === "complex") {
@@ -354,13 +377,10 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   const researchPct = bankTotal.attention ? Math.round((bankCorrect.attention / bankTotal.attention) * 100) : 0;
   const criticalPct = bankTotal.critical ? Math.round((bankCorrect.critical / bankTotal.critical) * 100) : 0;
 
-  // Calculate overall score as the simple average of the 3 trait scores to match manual Excel calculations
-  let activeBanks = 0;
-  if (bankTotal.english) activeBanks++;
-  if (bankTotal.attention) activeBanks++;
-  if (bankTotal.critical) activeBanks++;
-  
-  const overallPercentage = activeBanks > 0 ? Math.round((englishPct + researchPct + criticalPct) / activeBanks) : 0;
+  // Weighted overall: marks earned / marks available (ungraded excluded per A2 policy).
+  // Matches computeAggregatesForAttempt so post-override recomputation stays
+  // byte-identical to initial grading. Zone3 macro & Zone5 closure ×2 → 30 marks.
+  const overallPercentage = weightedTotal ? Math.round((weightedCorrect / weightedTotal) * 100) : 0;
 
   // --- GRADE-04: Recommendation tier (advisory only) — shared helper so post-override recomputation is byte-identical
   const recommendationTier = computeRecommendationTier(overallPercentage, criticalPct, researchPct);

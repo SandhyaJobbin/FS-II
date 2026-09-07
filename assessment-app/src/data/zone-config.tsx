@@ -19,7 +19,7 @@ export interface ZoneConfig {
 
 export const ZONE_CONFIG: Record<string, ZoneConfig> = {
   'english/grammar': {
-    badge: 'Zone 1 of 8',
+    badge: 'Zone 1 of 7',
     title: 'English: Grammar',
     desc: 'Pick the grammatically correct option in each multiple-choice question.',
     timerLabel: '60s per question',
@@ -39,7 +39,7 @@ export const ZONE_CONFIG: Record<string, ZoneConfig> = {
     },
   },
   'english/sentence_correction': {
-    badge: 'Zone 2 of 8',
+    badge: 'Zone 2 of 7',
     title: 'English: Sentence Correction',
     desc: 'Rewrite a poorly written sentence with correct grammar, punctuation, and a professional tone.',
     timerLabel: '60s per question',
@@ -59,7 +59,7 @@ export const ZONE_CONFIG: Record<string, ZoneConfig> = {
     },
   },
   'english/macro': {
-    badge: 'Zone 3 of 8',
+    badge: 'Zone 3 of 7',
     title: 'English: Macro Editing',
     desc: 'Improve a canned customer-service reply so it reads correctly and personally.',
     timerLabel: '60s per question',
@@ -79,7 +79,7 @@ export const ZONE_CONFIG: Record<string, ZoneConfig> = {
     },
   },
   'english/reading': {
-    badge: 'Zone 4 of 8',
+    badge: 'Zone 4 of 7',
     title: 'English: Reading Comprehension',
     desc: 'Read a customer email/scenario, then answer questions about its content.',
     timerLabel: '180s per question',
@@ -98,7 +98,7 @@ export const ZONE_CONFIG: Record<string, ZoneConfig> = {
     },
   },
   'english/closure': {
-    badge: 'Zone 5 of 8',
+    badge: 'Zone 5 of 7',
     title: 'English: Case Closure Notes',
     desc: 'Pick the correct case status and write a short professional closure note.',
     timerLabel: '60s per question',
@@ -117,7 +117,7 @@ export const ZONE_CONFIG: Record<string, ZoneConfig> = {
     },
   },
   'attention/L1': {
-    badge: 'Zone 6 of 8',
+    badge: 'Zone 6 of 7',
     title: 'Attention to Detail (L1)',
     desc: 'Spot missing info or mismatches inside a single case dashboard.',
     timerLabel: '120s per question',
@@ -135,27 +135,8 @@ export const ZONE_CONFIG: Record<string, ZoneConfig> = {
       note: 'If the Transaction card shows $500 but the Invoice card shows $600, that is a discrepancy worth flagging.',
     },
   },
-  'attention/L2': {
-    badge: 'Zone 7 of 8',
-    title: 'Attention to Detail (L2)',
-    desc: 'Cross-reference multiple data tabs to find inconsistencies.',
-    timerLabel: '120s per question',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7">
-        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /><line x1="11" y1="8" x2="11" y2="14" /><line x1="8" y1="11" x2="14" y2="11" />
-      </svg>
-    ),
-    whatToDo: [
-      'Switch between the tabs on the left (Transactions, Customer, Notes, etc).',
-      'Track key fields — name, amount, date, reference IDs — across tabs.',
-      'Answer based on what actually matches (or does not) between tabs.',
-    ],
-    example: {
-      note: 'If the customer name is "R. Sharma" on the Account tab but "Ravi S." on the Payment tab with matching account numbers, decide if that is a mismatch or the same person.',
-    },
-  },
   'critical/': {
-    badge: 'Zone 8 of 8',
+    badge: 'Zone 7 of 7',
     title: 'Critical Thinking Cases',
     desc: 'Pick the best next action in a fraud investigation scenario.',
     timerLabel: '180s per question',
@@ -182,7 +163,6 @@ export const ZONE_ORDER: string[] = [
   'english/reading',
   'english/closure',
   'attention/L1',
-  'attention/L2',
   'critical/',
 ];
 

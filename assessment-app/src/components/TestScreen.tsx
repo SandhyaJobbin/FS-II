@@ -170,10 +170,11 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
   }, [currentIdx, currentQuestion]);
 
   // Set up timer when current question changes (only when not paused by overlay)
+  // Timer runs but does NOT auto-submit — user can take unlimited time
   useEffect(() => {
     if (!currentQuestion || timerPaused) return;
 
-    // Timer configuration based on bank/section
+    // Timer configuration based on bank/section (for reference/logging only)
     let duration = 60;
     if (currentQuestion.bank === 'english') {
       duration = currentQuestion.section === 'reading' ? 180 : 60;
@@ -188,12 +189,11 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
 
     if (timerRef.current) clearInterval(timerRef.current);
 
+    // Timer continues to count down but does NOT auto-submit
     timerRef.current = setInterval(() => {
       setTimerVal((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          // Auto submit answer when timer expires
-          handleNext(true);
+        // Just decrement, don't auto-submit
+        if (prev <= 0) {
           return 0;
         }
         return prev - 1;
@@ -424,7 +424,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
                     onChange={(e) => handleOpenTextChange(e.target.value)}
                     rows={6}
                     placeholder="Type your corrected version here..."
-                    className="w-full bg-slate-50 border border-[var(--card-border)] rounded-xl px-5 py-4 text-slate-900 text-base leading-relaxed font-medium outline-none transition-all resize-y min-h-[120px] placeholder:text-slate-500 placeholder:italic focus:border-accent focus:shadow-[0_0_0_3px_rgba(8,145,178,0.1)] focus:bg-white"
+                    className="w-full bg-slate-50 border border-[var(--card-border)] rounded-xl px-5 py-4 text-slate-900 text-base leading-relaxed font-medium outline-none transition-all resize-y"
                   />
                 </div>
               )}
@@ -440,7 +440,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
                     onChange={(e) => handleHybridTextChange(e.target.value)}
                     rows={5}
                     placeholder="Write a professional closure note for this case..."
-                    className="w-full bg-slate-50 border border-[var(--card-border)] rounded-xl px-5 py-4 text-slate-900 text-base leading-relaxed font-medium outline-none transition-all resize-y min-h-[100px] placeholder:text-slate-500 placeholder:italic focus:border-accent focus:shadow-[0_0_0_3px_rgba(8,145,178,0.1)] focus:bg-white"
+                    className="w-full bg-slate-50 border border-[var(--card-border)] rounded-xl px-5 py-4 text-slate-900 text-base leading-relaxed font-medium outline-none transition-all resize-y"
                   />
                 </div>
               )}
@@ -453,7 +453,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
 
               <button
                 onClick={() => handleNext(false)}
-                className="flex justify-center items-center gap-2 font-bold text-lg p-4 rounded-xl bg-linear-to-br from-[#4facfe] to-[#00f2fe] text-[#070a13] cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,242,254,0.3)] active:translate-y-0 disabled:opacity-50 transition-all w-full mt-4"
+                className="flex justify-center items-center gap-2 font-bold text-lg p-4 rounded-xl bg-linear-to-br from-[#4facfe] to-[#00f2fe] text-[#070a13] cursor-pointer hover:-translate-y-0.5 active:translate-y-0 transition-transform"
               >
                 <span>{currentIdx === questions.length - 1 ? 'Submit Assessment' : 'Submit Answer'}</span>
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -467,7 +467,7 @@ export default function TestScreen({ questions, onSubmit, attemptId, gasUrl }: T
 
       {/* Floating PIP Webcam Proctor Widget */}
       {CAMERA_PROCTORING_ENABLED && (
-        <div className="fixed bottom-4 right-4 z-50 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-2 shadow-2xl flex flex-col gap-2 w-[160px] animate-fade-in transition-all hover:border-accent/40">
+        <div className="fixed bottom-4 right-4 z-50 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-2 shadow-2xl flex flex-col gap-2 w-[160px] animate-fade-in transition-all hover:shadow-xl">
           <div className="relative aspect-video w-full bg-slate-100 rounded-lg overflow-hidden border border-slate-200">
             <video
               ref={videoRef}

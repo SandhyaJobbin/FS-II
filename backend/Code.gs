@@ -945,12 +945,12 @@ const QUESTIONS = [
     "tabs": null,
     "tables": null,
     "response_type": "mcq_single",
-    "stem": "Neither the screenshots nor the booking confirmation ___ attached.",
+    "stem": "Neither the booking confirmation nor the screenshots ___ attached.",
     "options": [
       {
         "letter": "a",
         "text": "are",
-        "is_correct": false
+        "is_correct": true
       },
       {
         "letter": "b",
@@ -960,7 +960,7 @@ const QUESTIONS = [
       {
         "letter": "c",
         "text": "was",
-        "is_correct": true
+        "is_correct": false
       },
       {
         "letter": "d",
@@ -1449,7 +1449,7 @@ const QUESTIONS = [
     "tabs": null,
     "tables": null,
     "response_type": "mcq_single",
-    "stem": "Please provide ___ update regarding your request.",
+    "stem": "Please provide ___ update on the status of your request.",
     "options": [
       {
         "letter": "a",
@@ -1463,7 +1463,7 @@ const QUESTIONS = [
       },
       {
         "letter": "c",
-        "text": "the",
+        "text": "many",
         "is_correct": false
       },
       {
@@ -1953,7 +1953,7 @@ const QUESTIONS = [
     "tabs": null,
     "tables": null,
     "response_type": "mcq_single",
-    "stem": "The listing ___ removed if it violates our policies.",
+    "stem": "The listing ___ removed if it violates our policies, subject to review.",
     "options": [
       {
         "letter": "a",
@@ -1962,7 +1962,7 @@ const QUESTIONS = [
       },
       {
         "letter": "b",
-        "text": "may",
+        "text": "may being",
         "is_correct": false
       },
       {
@@ -1995,7 +1995,7 @@ const QUESTIONS = [
     "tabs": null,
     "tables": null,
     "response_type": "mcq_single",
-    "stem": "The reviewer claimed they ___ at the property in June.",
+    "stem": "The reviewer claimed they ___ at the property for three nights last June.",
     "options": [
       {
         "letter": "a",
@@ -2137,9 +2137,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The agent was unable to open the link because it had expired.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn\'t sent' to 'didn\'t send' (base form after did); resolves double negative 'can\'t verify nothing' to 'can\'t verify anything' or 'can verify nothing'; proper punctuation and spelling" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains original meaning: customer failed to send screenshot, verification is impossible" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal register for case note; contractions replaced with full forms; professional phrasing" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing auxiliary 'was' before 'not able'; corrects 'was expired' to 'had expired' (intransitive verb not used in passive); adds article 'The' before 'Agent'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: agent could not access link due to expiration" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal register; avoids contractions; professional tone" }
     ] },
 
     "position": 33,
@@ -2164,9 +2164,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We have been following up for the past two days, but we have not yet received your response.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'is solve' to 'has been resolved' or 'is solved' (past participle required after auxiliary); adds punctuation between clauses" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case is resolved, customer should check account" },
-      { name: "Professional Tone", weight: 0.2, description: "Polite professional customer service tone; 'kindly' acceptable in context" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Changes to present perfect continuous 'have been following up for two days'; corrects 'you not respond' to 'you have not responded'; fixes preposition 'from' to 'for'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: repeated follow-ups over two days without response" },
+      { name: "Professional Tone", weight: 0.2, description: "Professional tone; avoids blaming language; formal register" }
     ] },
 
     "position": 34,
@@ -2191,9 +2191,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Kindly share the requested details as soon as possible so that we can complete the verification.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing auxiliary 'was' before 'not able'; corrects 'was expired' to 'had expired' (intransitive verb not used in passive); adds article 'The' before 'Agent'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: agent could not access link due to expiration" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal register; avoids contractions; professional tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Replaces nonstandard 'fastly' with 'as soon as possible' or 'promptly'; corrects 'we done' to 'we can complete' (wrong verb form and missing modal)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for details to complete verification" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; professional customer service register" }
     ] },
 
     "position": 35,
@@ -2218,9 +2218,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The property owner stated that the review is fake.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Changes to present perfect continuous 'have been following up for two days'; corrects 'you not respond' to 'you have not responded'; fixes preposition 'from' to 'for'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: repeated follow-ups over two days without response" },
-      { name: "Professional Tone", weight: 0.2, description: "Professional tone; avoids blaming language; formal register" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects subject-verb agreement 'owner say' to 'owner states' or 'stated'; adds appropriate tense marking for reported speech" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: owner claims review is fake" },
+      { name: "Professional Tone", weight: 0.2, description: "Uses past tense for reported speech; formal register" }
     ] },
 
     "position": 36,
@@ -2245,9 +2245,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We did not receive sufficient evidence to proceed with the investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Replaces nonstandard 'fastly' with 'as soon as possible' or 'promptly'; corrects 'we done' to 'we can complete' (wrong verb form and missing modal)" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for details to complete verification" },
-      { name: "Professional Tone", weight: 0.2, description: "Polite request; professional customer service register" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn't received' to 'did not receive' (base form after did); changes uncountable 'evidences' to 'evidence'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: insufficient evidence received" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal register; avoids contractions" }
     ] },
 
     "position": 37,
@@ -2272,9 +2272,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please provide your booking ID so that we can verify your stay.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects subject-verb agreement 'owner say' to 'owner states' or 'stated'; adds appropriate tense marking for reported speech" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: owner claims review is fake" },
-      { name: "Professional Tone", weight: 0.2, description: "Uses past tense for reported speech; formal register" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'for verify' to 'so that we can verify' or 'to verify' (infinitive of purpose or subordinate clause required)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for booking ID to verify stay" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; appropriate customer service tone" }
     ] },
 
     "position": 38,
@@ -2299,9 +2299,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Your request has already been forwarded to our specialist team.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn\'t received' to 'did not receive' (base form after did); changes uncountable 'evidences' to 'evidence'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: insufficient evidence received" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal register; avoids contractions" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing passive auxiliary 'has been' ('Your request has already been forwarded'); ensures correct present perfect passive construction" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request has been passed to specialists" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, reassuring tone" }
     ] },
 
     "position": 39,
@@ -2326,9 +2326,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We appreciate your patience during the investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'for verify' to 'so that we can verify' or 'to verify' (infinitive of purpose or subordinate clause required)" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for booking ID to verify stay" },
-      { name: "Professional Tone", weight: 0.2, description: "Polite request; appropriate customer service tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'patient' (adjective) to 'patience' (noun); adds article 'the' before 'investigation'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: gratitude for customer's patience during process" },
+      { name: "Professional Tone", weight: 0.2, description: "Warm, professional tone expressing appreciation" }
     ] },
 
     "position": 40,
@@ -2353,9 +2353,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The review has been removed because it violated our guidelines.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing passive auxiliary 'has been' ('Your request has already been forwarded'); ensures correct present perfect passive construction" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request has been passed to specialists" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, reassuring tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Review'; corrects 'has removed' to 'has been removed' (passive voice needed); corrects 'violate' to 'violated' (past tense) with subject 'it'; pluralizes 'guideline' to 'guidelines'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: review removed for policy violation" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone; avoids emotional language" }
     ] },
 
     "position": 41,
@@ -2380,9 +2380,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer has not provided sufficient evidence to continue the investigation.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'patient' (adjective) to 'patience' (noun); adds article 'the' before 'investigation'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: gratitude for customer's patience during process" },
-      { name: "Professional Tone", weight: 0.2, description: "Warm, professional tone expressing appreciation" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Customer'; corrects 'not provide' to 'has not provided'; resolves double negative 'not provide insufficient' to 'has not provided sufficient'; adds article 'the' before 'investigation'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer has not supplied enough evidence" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone" }
     ] },
 
     "position": 42,
@@ -2407,9 +2407,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please upload the document again because the images are blurry.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Review'; corrects 'has removed' to 'has been removed' (passive voice needed); corrects 'violate' to 'violated' (past tense) with subject 'it'; pluralizes 'guideline' to 'guidelines'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: review removed for policy violation" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone; avoids emotional language" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'image' to 'images' (plural to match 'are'); adds article 'the' before 'images'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: images unclear, re-upload needed" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; clear instruction" }
     ] },
 
     "position": 43,
@@ -2434,9 +2434,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We cannot process this request until the required documents are received.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Customer'; corrects 'not provide' to 'has not provided'; resolves double negative 'not provide insufficient' to 'has not provided sufficient'; adds article 'the' before 'investigation'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer has not supplied enough evidence" },
-      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'documents is' to 'documents are' (subject-verb agreement); adds article 'the required' before 'documents'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request blocked pending document receipt" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, clear tone" }
     ] },
 
     "position": 44,
@@ -2461,9 +2461,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Kindly wait while we investigate your issue. We will update you as soon as possible.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'image' to 'images' (plural to match 'are'); adds article 'the' before 'images'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: images unclear, re-upload needed" },
-      { name: "Professional Tone", weight: 0.2, description: "Polite request; clear instruction" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Replaces nonstandard 'soonest' with 'as soon as possible'; adds sentence boundary or conjunction for clarity between clauses" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: investigation in progress, update forthcoming" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite, reassuring tone" }
     ] },
 
     "position": 45,
@@ -2488,9 +2488,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Your appeal was rejected because there was insufficient evidence to support your request.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'documents is' to 'documents are' (subject-verb agreement); adds article 'the required' before 'documents'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request blocked pending document receipt" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, clear tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'there have no enough' to 'there was insufficient' or 'there was not enough' (wrong existential construction and adjective form)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: appeal rejected due to insufficient evidence" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, empathetic tone" }
     ] },
 
     "position": 46,
@@ -2515,9 +2515,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please contact us if you have any further questions.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Replaces nonstandard 'soonest' with 'as soon as possible'; adds sentence boundary or conjunction for clarity between clauses" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: investigation in progress, update forthcoming" },
-      { name: "Professional Tone", weight: 0.2, description: "Polite, reassuring tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Removes redundant 'back' from 'contact us back'; replaces 'doubt' with 'further questions' or 'concerns' for clarity" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: invitation to follow up if needed" },
+      { name: "Professional Tone", weight: 0.2, description: "Friendly, open tone; customer-service appropriate" }
     ] },
 
     "position": 47,
@@ -2542,9 +2542,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The investigation is still in progress. Kindly avoid creating multiple tickets, as this may delay the review process.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'there have no enough' to 'there was insufficient' or 'there was not enough' (wrong existential construction and adjective form)" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: appeal rejected due to insufficient evidence" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, empathetic tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Investigation'; adds missing verb 'is'; adds punctuation between clauses; replaces 'don't create' with 'kindly avoid creating'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case being worked, avoid duplicate tickets" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite instruction; professional tone" }
     ] },
 
     "position": 48,
@@ -2569,9 +2569,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer uploaded the wrong attachment twice.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Removes redundant 'back' from 'contact us back'; replaces 'doubt' with 'further questions' or 'concerns' for clarity" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: invitation to follow up if needed" },
-      { name: "Professional Tone", weight: 0.2, description: "Friendly, open tone; customer-service appropriate" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'the' before 'wrong attachment'; corrects 'two time' to 'twice' or 'two times'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer submitted incorrect file multiple times" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual, neutral tone" }
     ] },
 
     "position": 49,
@@ -2596,9 +2596,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We are unable to verify your booking because the booking details are missing.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'The' before 'Investigation'; adds missing verb 'is'; adds punctuation between clauses; replaces 'don\'t create' with 'kindly avoid creating'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case being worked, avoid duplicate tickets" },
-      { name: "Professional Tone", weight: 0.2, description: "Polite instruction; professional tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds 'to' after 'unable' ('unable to verify'); adds article 'the' before 'booking details'; adds missing verb 'are' ('details are missing')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: verification blocked due to missing details" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, clear tone" }
     ] },
 
     "position": 50,
@@ -2623,9 +2623,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer sent the booking confirmation yesterday.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds article 'the' before 'wrong attachment'; corrects 'two time' to 'twice' or 'two times'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer submitted incorrect file multiple times" },
-      { name: "Professional Tone", weight: 0.2, description: "Factual, neutral tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'send' to 'sent' (past tense required by 'yesterday')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer submitted confirmation on a previous day" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
     ] },
 
     "position": 51,
@@ -2650,9 +2650,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We have reviewed the evidence provided by the traveler.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds 'to' after 'unable' ('unable to verify'); adds article 'the' before 'booking details'; adds missing verb 'are' ('details are missing')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: verification blocked due to missing details" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, clear tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'has' to 'have' (subject-verb agreement with 'We')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: evidence has been reviewed" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
     ] },
 
     "position": 52,
@@ -2677,9 +2677,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The investigation is currently in progress.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'send' to 'sent' (past tense required by 'yesterday')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: customer submitted confirmation on a previous day" },
-      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'are' to 'is' (subject-verb agreement with singular 'investigation')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case is ongoing" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal status update tone" }
     ] },
 
     "position": 53,
@@ -2704,9 +2704,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The property owner did not provide sufficient evidence.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'has' to 'have' (subject-verb agreement with 'We')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: evidence has been reviewed" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn't provided' to 'did not provide' (base form required after 'did')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: owner's evidence was insufficient" },
+      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone" }
     ] },
 
     "position": 54,
@@ -2731,9 +2731,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The customer has uploaded the wrong attachment.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'are' to 'is' (subject-verb agreement with singular 'investigation')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: case is ongoing" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal status update tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'have' to 'has' (subject-verb agreement with singular 'Customer'); adds article 'The' before 'Customer'" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: incorrect file was submitted" },
+      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
     ] },
 
     "position": 55,
@@ -2758,9 +2758,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Please ensure all documents are attached before submitting your appeal.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'didn\'t provided' to 'did not provide' (base form required after 'did')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: owner's evidence was insufficient" },
-      { name: "Professional Tone", weight: 0.2, description: "Neutral, factual tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'all document' to 'all documents' (plural required); corrects 'is' to 'are' (subject-verb agreement with plural)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: all files must be attached prior to submission" },
+      { name: "Professional Tone", weight: 0.2, description: "Clear instruction; professional tone" }
     ] },
 
     "position": 56,
@@ -2785,9 +2785,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The review was removed because it violated our guidelines.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'have' to 'has' (subject-verb agreement with singular 'Customer'); adds article 'The' before 'Customer'" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: incorrect file was submitted" },
-      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'were' to 'was' (subject-verb agreement with singular 'review'); corrects 'violate' to 'violated' (past tense)" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: review removed for guideline violation" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
     ] },
 
     "position": 57,
@@ -2812,9 +2812,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "We appreciate your patience while we investigate the issue.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'all document' to 'all documents' (plural required); corrects 'is' to 'are' (subject-verb agreement with plural)" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: all files must be attached prior to submission" },
-      { name: "Professional Tone", weight: 0.2, description: "Clear instruction; professional tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'patient' (adjective) to 'patience' (noun needed as object of 'appreciate')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: gratitude for patience during investigation" },
+      { name: "Professional Tone", weight: 0.2, description: "Warm, appreciative tone" }
     ] },
 
     "position": 58,
@@ -2839,9 +2839,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Kindly provide more information regarding your booking.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'were' to 'was' (subject-verb agreement with singular 'review'); corrects 'violate' to 'violated' (past tense)" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: review removed for guideline violation" },
-      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects uncountable noun error 'informations' to 'information' (no plural form); ensures subject-verb agreement" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: request for additional booking details" },
+      { name: "Professional Tone", weight: 0.2, description: "Polite request; professional tone" }
     ] },
 
     "position": 59,
@@ -2866,9 +2866,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "The agent was unable to access the attachment.",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Corrects 'patient' (adjective) to 'patience' (noun needed as object of 'appreciate')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: gratitude for patience during investigation" },
-      { name: "Professional Tone", weight: 0.2, description: "Warm, appreciative tone" }
+      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds missing infinitive marker 'to' after 'unable' ('unable to access')" },
+      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: agent could not open the attachment" },
+      { name: "Professional Tone", weight: 0.2, description: "Formal, factual tone" }
     ] },
 
     "position": 60,
@@ -2893,9 +2893,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello {{ticket.requester.first_name}},\nThank you for contacting us.\nWe understand your concern regarding the review. After reviewing the information provided, we found that reviews discussing booking or check-in experiences may be allowed under our guidelines.\nIf you would like to share your perspective, we encourage you to post a management response to the review.\nThank you for your understanding.\n{{ticket.assignee.signature}}\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.5, description: "Adds 'to' after 'unable' ('unable to access' — infinitive required after adjective 'unable')" },
-      { name: "Meaning Preservation", weight: 0.3, description: "Retains meaning: agent could not open the file" },
-      { name: "Professional Tone", weight: 0.2, description: "Factual report tone" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and register throughout; no informal contractions; appropriate formal salutation and sign-off" },
+      { name: "Professional Tone", weight: 0.3, description: "Polite and empathetic; acknowledges the owner's concern about the review; does not dismiss or invalidate the complaint; avoids definitive promises about outcome" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Explains that reviews discussing booking or check-in experiences may be allowed under guidelines; suggests posting a management response as a constructive next step; does not incorrectly promise removal of the review" }
     ] },
 
     "position": 61,
@@ -2920,9 +2920,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe understand your concern regarding the review. After carefully assessing the available information, we did not identify any violations of our review guidelines. As a result, the review will remain published.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "All sentences grammatically correct with proper punctuation; no contractions in formal correspondence; correct articles and prepositions throughout" },
-      { name: "Professional Tone", weight: 0.3, description: "Polite, empathetic, non-defensive; acknowledges the owner's concern about the fake review; personalized rather than generic template language" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Notes that reviews discussing booking or check-in experiences may be allowed under guidelines; suggests posting a management response; does not promise removal of the review" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and spelling; appropriate register for customer-facing email" },
+      { name: "Professional Tone", weight: 0.3, description: "Empathetic but firm; explains outcome without being dismissive; maintains professional distance from the traveler's frustration" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Clearly states no policy violations were identified after investigation; confirms the review will remain published; explains the investigation outcome" }
     ] },
 
     "position": 62,
@@ -2947,9 +2947,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe appreciate you reporting your concerns. Our specialist team is currently investigating the reviews you reported. At this time, the investigation is still in progress, and no final decision has been made.\nWe will update you once the review is complete.\nThank you for your patience.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and spelling; appropriate register for customer-facing email" },
-      { name: "Professional Tone", weight: 0.3, description: "Empathetic but firm; explains outcome without being dismissive; maintains professional distance from the traveler's frustration" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Clearly states no policy violations were identified after investigation; confirms the review will remain published; explains the investigation outcome" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and sentence structure throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Reassuring tone; acknowledges the owner's report of multiple suspicious reviews; sets appropriate timeline expectations" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms investigation is currently in progress; does not claim the review was already removed (correcting the broken macro); promises to update once review is complete" }
     ] },
 
     "position": 63,
@@ -2974,9 +2974,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe reviewed the documents you submitted; however, they are not clear enough for verification. Kindly upload clear and readable copies of your ID so we can continue reviewing your case.\nThank you for your cooperation.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and sentence structure throughout" },
-      { name: "Professional Tone", weight: 0.3, description: "Reassuring tone; acknowledges the owner's report of multiple suspicious reviews; sets appropriate timeline expectations" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Confirms investigation is currently in progress; does not claim the review was already removed (correcting the broken macro); promises to update once review is complete" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; clear sentence structure; appropriate register for customer email" },
+      { name: "Professional Tone", weight: 0.3, description: "Polite and helpful; explains the document issue without blaming the traveler; provides a clear call to action" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Explains that submitted ID documents were unclear; requests clear and readable copies; specifies what is needed to continue verification" }
     ] },
 
     "position": 64,
@@ -3001,9 +3001,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe appreciate you submitting an appeal. After carefully reviewing your case again, we have determined that the original decision remains unchanged based on our review guidelines.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; clear sentence structure; appropriate register for customer email" },
-      { name: "Professional Tone", weight: 0.3, description: "Polite and helpful; explains the document issue without blaming the traveler; provides a clear call to action" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Explains that submitted ID documents were unclear; requests clear and readable copies; specifies what is needed to continue verification" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and spelling throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Respectful of the appeal process; firm but empathetic in communicating the unchanged decision; acknowledges the owner's effort" },
+      { name: "Instruction Adherence", weight: 0.4, description: "States the appeal was carefully reviewed; confirms the original decision remains unchanged; references review guidelines; does not promise future reversal" }
     ] },
 
     "position": 65,
@@ -3028,9 +3028,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe have received the documents you submitted. Your case is currently under review by our specialist team, and we will notify you once the investigation has been completed.\nThank you for your patience.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and spelling throughout" },
-      { name: "Professional Tone", weight: 0.3, description: "Respectful of the appeal process; firm but empathetic in communicating the unchanged decision; acknowledges the owner's effort" },
-      { name: "Instruction Adherence", weight: 0.4, description: "States the appeal was carefully reviewed; confirms the original decision remains unchanged; references review guidelines; does not promise future reversal" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; appropriate sentence structure and punctuation" },
+      { name: "Professional Tone", weight: 0.3, description: "Responsive and reassuring; acknowledges receipt of the traveler's submitted documents" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms documents have been received; states the case is currently under review; does not incorrectly request documents again; promises notification once complete" }
     ] },
 
     "position": 66,
@@ -3055,9 +3055,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nWe noticed that the incorrect booking confirmation was uploaded. Kindly submit the correct booking confirmation so that we can verify your booking and continue reviewing your request.\nThank you for your cooperation.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; appropriate sentence structure and punctuation" },
-      { name: "Professional Tone", weight: 0.3, description: "Responsive and reassuring; acknowledges receipt of the traveler's submitted documents" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Confirms documents have been received; states the case is currently under review; does not incorrectly request documents again; promises notification once complete" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Helpful and clear; identifies the wrong-document issue without assigning blame to the customer" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Notes that an incorrect document was uploaded; requests the correct booking confirmation; explains what is needed to proceed with verification" }
     ] },
 
     "position": 67,
@@ -3082,9 +3082,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nYour appeal has been escalated to our specialist team for further review. They will carefully assess the available information before making a final decision.\nWe will update you once the review has been completed.\nThank you for your patience.\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation throughout" },
-      { name: "Professional Tone", weight: 0.3, description: "Helpful and clear; identifies the wrong-document issue without assigning blame to the customer" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Notes that an incorrect document was uploaded; requests the correct booking confirmation; explains what is needed to proceed with verification" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; professional sentence structure and punctuation" },
+      { name: "Professional Tone", weight: 0.3, description: "Reassuring tone; acknowledges the escalation to specialist team; sets appropriate expectations for timeline" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms the appeal has been escalated to the specialist team; does not incorrectly claim rejection (correcting the broken macro); promises update once the review is complete" }
     ] },
 
     "position": 68,
@@ -3109,9 +3109,9 @@ const QUESTIONS = [
     "options": [],
     "model_answer": "Hello,\nThank you for contacting us.\nAfter reviewing your appeal, we confirmed that your review was removed because it did not comply with our review guidelines. Therefore, the original decision remains unchanged.\nThank you for your understanding.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
-      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; professional sentence structure and punctuation" },
-      { name: "Professional Tone", weight: 0.3, description: "Reassuring tone; acknowledges the escalation to specialist team; sets appropriate expectations for timeline" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Confirms the appeal has been escalated to the specialist team; does not incorrectly claim rejection (correcting the broken macro); promises update once the review is complete" }
+      { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and register throughout" },
+      { name: "Professional Tone", weight: 0.3, description: "Empathetic but firm; does not celebrate or cheerfully announce the review removal; maintains professionalism" },
+      { name: "Instruction Adherence", weight: 0.4, description: "Confirms the review was removed because it did not comply with guidelines; does not incorrectly claim restoration (correcting the broken macro); explains the decision stands after appeal review" }
     ] },
 
     "position": 69,
@@ -3137,8 +3137,8 @@ const QUESTIONS = [
     "model_answer": "Hello,\nThank you for contacting us.\nAt this time, we do not have sufficient information to continue our investigation. Kindly provide the requested supporting evidence so that we can review your report further.\nThank you for your cooperation.\nRegards,\nContent Integrity Team",
     rubric: { version: 1, criteria: [
       { name: "Grammar & Mechanics", weight: 0.3, description: "Grammatically correct; proper punctuation and register throughout" },
-      { name: "Professional Tone", weight: 0.3, description: "Empathetic but firm; does not celebrate or cheerfully announce the review removal; maintains professionalism" },
-      { name: "Instruction Adherence", weight: 0.4, description: "Confirms the review was removed because it did not comply with guidelines; does not incorrectly claim restoration (correcting the broken macro); explains the decision stands after appeal review" }
+      { name: "Professional Tone", weight: 0.3, description: "Polite and cooperative; does not falsely claim a violation was found or that the review was already removed" },
+      { name: "Instruction Adherence", weight: 0.4, description: "States that insufficient evidence has been provided; explains the investigation cannot proceed without it; requests the specific supporting evidence needed" }
     ] },
 
     "position": 70,
@@ -4784,7 +4784,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -4870,7 +4870,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -4956,7 +4956,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -5042,7 +5042,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: March 2024\nPrevious Reviews: 5\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -5123,7 +5123,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5181,7 +5181,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5239,7 +5239,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5297,7 +5297,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: January 2023\nPrevious Reviews: 15\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5355,7 +5355,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5413,7 +5413,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5471,7 +5471,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5529,7 +5529,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2023\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -5577,7 +5577,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Alex Carterctivity",
-        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "content": "User A\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smith\nCreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -5625,7 +5625,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Alex Carterctivity",
-        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "content": "User A\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smith\nCreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -5673,7 +5673,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Alex Carterctivity",
-        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "content": "User A\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smith\nCreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -5721,7 +5721,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Alex Carterctivity",
-        "content": "User A\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smithreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smithreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
+        "content": "User A\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser B\nTaylor Smith\nCreated: 10 January 2025\nReview Date: 12 January 2025\nDevice Used: Device X\nReview:\n\"Amazing hotel, excellent service.\"\nUser C\nTaylor Smith\nCreated: 2022\nReview Date: 15 January 2025\nDevice Used: Device Y\nReview:\n\"Comfortable stay and helpful staff.\"",
         "position": 1
       }
     ],
@@ -6233,7 +6233,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6291,7 +6291,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6349,7 +6349,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6407,7 +6407,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 5 December 2025\nReview Posted: 10 December 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6929,7 +6929,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -6992,7 +6992,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7055,7 +7055,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7118,7 +7118,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Reviewer Profile",
-        "content": "Taylor Smithreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
+        "content": "Taylor Smith\nCreated: 1 July 2025\nReview Posted: 2 July 2025\nPrevious Reviews: 0",
         "position": 1
       },
       {
@@ -7191,7 +7191,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -7249,7 +7249,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -7307,7 +7307,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -7365,7 +7365,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2021\nPrevious Reviews: 25\nPrevious Reports: 0",
         "position": 3
       }
     ],
@@ -9532,7 +9532,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9595,7 +9595,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9658,7 +9658,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9721,7 +9721,7 @@ const QUESTIONS = [
       },
       {
         "name": "Account Information",
-        "content": "Taylor Smithreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
+        "content": "Taylor Smith\nCreated: 2020\nPrevious Reviews: 30\nPrevious Reports: 0",
         "position": 4
       }
     ],
@@ -9769,7 +9769,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smith\nCreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smith\nCreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smith\nCreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
@@ -9827,7 +9827,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smith\nCreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smith\nCreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smith\nCreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
@@ -9885,7 +9885,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smith\nCreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smith\nCreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smith\nCreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
@@ -9943,7 +9943,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smithreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smithreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
+        "content": "Alex Carter\nTaylor Smith\nCreated: 10 January 2025\nPrevious Reviews: 0\nVerification Status: Verified\nJordan Lee\nTaylor Smith\nCreated: 12 January 2025\nPrevious Reviews: 1\nVerification Status: Verified\nTaylor Smith\nTaylor Smith\nCreated: 2021\nPrevious Reviews: 25\nVerification Status: Verified",
         "position": 1
       },
       {
@@ -10233,7 +10233,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smith\nCreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10296,7 +10296,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smith\nCreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10359,7 +10359,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smith\nCreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -10422,7 +10422,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Current Account\nTaylor Smithreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
+        "content": "Current Account\nTaylor Smith\nCreated: March 2025\nVerified Email: Yes\nPrevious Reviews: 2\nPrevious Violations: 0",
         "position": 1
       },
       {
@@ -12233,7 +12233,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smith\nCreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smith\nCreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smith\nCreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
@@ -12291,7 +12291,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smith\nCreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smith\nCreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smith\nCreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
@@ -12349,7 +12349,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smith\nCreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smith\nCreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smith\nCreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
@@ -12407,7 +12407,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Alex Carter\nTaylor Smithreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smithreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smithreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
+        "content": "Alex Carter\nTaylor Smith\nCreated: February 2025\nPrevious Reviews: 3\nVerified Email: Yes\nJordan Lee\nTaylor Smith\nCreated: March 2025\nPrevious Reviews: 2\nVerified Email: Yes\nTaylor Smith\nTaylor Smith\nCreated: 2022\nPrevious Reviews: 40\nVerified Email: Yes",
         "position": 1
       },
       {
@@ -12465,7 +12465,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smith\nCreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12523,7 +12523,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smith\nCreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12581,7 +12581,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smith\nCreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {
@@ -12639,7 +12639,7 @@ const QUESTIONS = [
     "tabs": [
       {
         "name": "Account Profile",
-        "content": "Account Name: Daniel Roberts\nTaylor Smithreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
+        "content": "Account Name: Daniel Roberts\nTaylor Smith\nCreated: 2018\nPrevious Reviews: 12\nPrevious Reports: 0",
         "position": 1
       },
       {

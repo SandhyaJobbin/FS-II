@@ -66,12 +66,23 @@ export function nextStageAfterGradingSuccess(): Stage {
 }
 
 /**
- * nextStageAfterCandidateEmailSent -- mirrors processQueueItem's
- * setPendingGradingStage(row.rowIndex, "done") call once the candidate
- * email send result is "sent".
+ * nextStageAfterEmailsSent -- mirrors processQueueItem's
+ * setPendingGradingStage(row.rowIndex, "done") call, which now requires BOTH
+ * the candidate and recruiter email results to be "sent". Recruiter failures
+ * stay retryable (stage unchanged, attempts counted separately); empty /
+ * misconfigured RECRUITER_EMAILS (D-06) fails safe and never blocks "done".
+ * Returns 'done' or the unchanged currentStage.
  */
-export function nextStageAfterCandidateEmailSent(): Stage {
-  return 'done';
+export function nextStageAfterEmailsSent(
+  candidateResult: string,
+  recruiterResult: string,
+  recruiterConfigured: boolean,
+  currentStage: Stage,
+): Stage {
+  if (candidateResult === 'sent' && (recruiterResult === 'sent' || !recruiterConfigured)) {
+    return 'done';
+  }
+  return currentStage;
 }
 
 /**

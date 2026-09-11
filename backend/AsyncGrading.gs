@@ -685,17 +685,25 @@ function processQueueItem(row) {
   }
 
   const candidateResult = sendCandidateEmailIfNeeded(row, report);
-  sendRecruiterEmailIfNeeded(row, report);
+  const recruiterResult = sendRecruiterEmailIfNeeded(row, report);
 
   if (candidateResult === "failed") {
     recordQueueItemFailure(row, "candidate email failed");
     return;
   }
-  if (candidateResult === "deferred") {
+  // Recruiter failures stay retryable and count toward the retry cap -- except
+  // empty/misconfigured RECRUITER_EMAILS (D-06), which fails safe and never
+  // blocks the candidate path.
+  const recruiterConfigured = parseRecruiterEmails(RECRUITER_EMAILS_RAW).length > 0;
+  if (recruiterResult === "failed" && recruiterConfigured) {
+    recordQueueItemFailure(row, "recruiter email failed");
+    return;
+  }
+  if (candidateResult === "deferred" || recruiterResult === "deferred") {
     // MailApp quota exhausted -- retry next run with Stage still "graded", no wasted retry budget
     return;
   }
-  if (candidateResult === "sent") {
+  if (candidateResult === "sent" && (recruiterResult === "sent" || !recruiterConfigured)) {
     setAttemptsStatus(row.attemptId, "emailed");
     setPendingGradingStage(row.rowIndex, "done");
   }

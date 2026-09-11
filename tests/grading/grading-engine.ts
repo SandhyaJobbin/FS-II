@@ -131,9 +131,10 @@ export function gradeAttempt(frozenQuestions: GasQuestion[], candidateAnswers: A
   
   const overallScore = activeBanks > 0 ? Math.round((language + research + critical) / activeBanks) : 0;
 
-  // GRADE-04: Recommendation tier
+  // GRADE-04: Recommendation tier (ungraded guardrail mirrors AsyncGrading.gs:
+  // Strong Fit blocked while any answer is ungraded; UngradedCount flags review)
   let recommendationTier: GradeResult['recommendationTier'] = 'Not Recommended';
-  if (overallScore >= 80 && critical >= 75 && research >= 75) {
+  if (overallScore >= 80 && critical >= 75 && research >= 75 && ungradedCount === 0) {
     recommendationTier = 'Strong Fit';
   } else if (overallScore >= 60) {
     recommendationTier = 'Consider';
@@ -200,8 +201,9 @@ export function computeTier(
   overall: number,
   critical: number,
   research: number,
+  ungradedCount = 0,
 ): 'Strong Fit' | 'Consider' | 'Not Recommended' {
-  if (overall >= 80 && critical >= 75 && research >= 75) return 'Strong Fit';
+  if (overall >= 80 && critical >= 75 && research >= 75 && ungradedCount === 0) return 'Strong Fit';
   if (overall >= 60) return 'Consider';
   return 'Not Recommended';
 }

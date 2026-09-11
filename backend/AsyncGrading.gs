@@ -48,8 +48,12 @@ function effectiveVerdict(transcriptRow, responsesRow) {
  * Phase 10: Pure function for GRADE-04 recommendation tier (advisory only -- never auto-executes).
  * Shared by gradeAndFinalizeAttempt (initial grading) and computeAggregatesForAttempt (post-override).
  */
-function computeRecommendationTier(overallPercentage, criticalPct, researchPct) {
-  if (overallPercentage >= 80 && criticalPct >= 75 && researchPct >= 75) return "Strong Fit";
+function computeRecommendationTier(overallPercentage, criticalPct, researchPct, ungradedCount) {
+  ungradedCount = ungradedCount || 0;
+  // Guardrail: ungraded answers are excluded from the denominator (A2 policy),
+  // so a Strong Fit must never be awarded while any answer is ungraded --
+  // cap at Consider and let UngradedCount flag the attempt for review/regrade.
+  if (overallPercentage >= 80 && criticalPct >= 75 && researchPct >= 75 && ungradedCount === 0) return "Strong Fit";
   if (overallPercentage >= 60) return "Consider";
   return "Not Recommended";
 }
@@ -184,7 +188,7 @@ function computeAggregatesForAttempt(attemptId, ss) {
     englishPct: englishPct,
     researchPct: researchPct,
     criticalPct: criticalPct,
-    recommendationTier: computeRecommendationTier(overallPercentage, criticalPct, researchPct),
+    recommendationTier: computeRecommendationTier(overallPercentage, criticalPct, researchPct, ungradedCount),
     narrativeInsight: computeNarrativeInsight(overallPercentage, englishPct, criticalPct, complexCorrect, complexTotal),
     ungradedCount: ungradedCount
   };
@@ -383,7 +387,7 @@ function gradeAndFinalizeAttempt(attemptId, submittedAnswersJson) {
   const overallPercentage = weightedTotal ? Math.round((weightedCorrect / weightedTotal) * 100) : 0;
 
   // --- GRADE-04: Recommendation tier (advisory only) — shared helper so post-override recomputation is byte-identical
-  const recommendationTier = computeRecommendationTier(overallPercentage, criticalPct, researchPct);
+  const recommendationTier = computeRecommendationTier(overallPercentage, criticalPct, researchPct, ungradedCount);
 
   // --- GRADE-03: Narrative insight — shared helper so post-override recomputation is byte-identical
   const narrativeInsight = computeNarrativeInsight(overallPercentage, englishPct, criticalPct, complexCorrect, complexTotal);

@@ -300,6 +300,17 @@ describe('GRADE-04 — Recommendation Tier Boundaries', () => {
     expect(computeTier(79, 75, 75)).toBe('Consider');
   });
 
+  it('any ungraded answer blocks Strong Fit (caps at Consider)', () => {
+    expect(computeTier(100, 100, 100, 1)).toBe('Consider');
+    expect(computeTier(80, 75, 75, 9)).toBe('Consider');
+    expect(computeTier(100, 100, 100, 0)).toBe('Strong Fit');
+  });
+
+  it('ungraded guardrail preserves lower tiers', () => {
+    expect(computeTier(70, 80, 80, 3)).toBe('Consider');
+    expect(computeTier(40, 90, 90, 2)).toBe('Not Recommended');
+  });
+
   it('gradeAttempt produces matching recommendation tier', () => {
     const qs = makeFixture12();
     const allCorrect: AnswersMap = { e1:'A', e2:'B', e3:'C', e4:'D', a1:'A', a2:'B', a3:'C', a4:'D', c1:'A', c2:'B', c3:'C', c4:'D' };

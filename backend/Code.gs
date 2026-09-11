@@ -599,7 +599,7 @@ function handleRegradeAttempt(attemptId, token) {
     for (let i = 1; i < attemptsData.length; i++) {
       if (attemptsData[i][0] === attemptId) {
         attemptRowIdx = i + 1;
-        frozenIds = (attemptsData[i][6] || "").split(",").map(function(s) { return s.trim(); }).filter(Boolean);
+        try { frozenIds = JSON.parse(attemptsData[i][6] || "[]"); } catch (e) { frozenIds = []; }
         break;
       }
     }
@@ -769,7 +769,8 @@ function assembleQuestionSet() {
   }
 
   // Deterministic fixed 24-question set (per "Changes required.docx").
-  // Fixed order, Zones 1-6 then 8; Zone 7 (attention_l2) removed.
+  // Fixed order across 7 live zones numbered 1-6 then 8 (legacy numbering kept:
+  // Zone 7 attention_l2 was removed, so there is no Zone 7; critical thinking = Zone 8).
   // 24 Qs = 30 marks (Zone 3 macro x2, Zone 5 closure x2).
   // Case mapping:
   // - att-level-1-q05+q07 = attn-l1-case-02 "THE REVIEW BEFORE CHECK-IN"
@@ -4403,7 +4404,7 @@ const QUESTIONS = [
     "model_answer": "Reviewed the reported review and available evidence. No policy violations were identified, and the review will remain published. Case resolved.",
     rubric: { version: 1, criteria: [
       { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct closure note; proper punctuation; register appropriate for an internal case note" },
-      { name: "Meaning Preservation", weight: 0.4, description: "Accurately reflects that the reported listing was already removed due to policy violations; does not claim the investigation is ongoing or that further user action is needed" },
+      { name: "Meaning Preservation", weight: 0.4, description: "Accurately reflects that no policy violations were identified, the review will remain published, and the case is resolved" },
       { name: "Professional Tone", weight: 0.2, description: "Factual and concise; confirms resolution without unnecessary elaboration" }
     ] },
 
@@ -4532,8 +4533,8 @@ const QUESTIONS = [
     "model_answer": "Reviewed the submitted verification documents and found the images to be unclear. Requested clearer copies to continue the verification process.",
     rubric: { version: 1, criteria: [
       { name: "Grammar & Mechanics", weight: 0.4, description: "Grammatically correct; clean punctuation throughout" },
-      { name: "Meaning Preservation", weight: 0.4, description: "Confirms all required documents were successfully verified; no further action is needed; accurately reflects completion of the case" },
-      { name: "Professional Tone", weight: 0.2, description: "Clear, affirmative tone; confirms resolution" }
+      { name: "Meaning Preservation", weight: 0.4, description: "Accurately reflects that the submitted ID images are unclear, clearer copies are required, and verification cannot continue until they are provided" },
+      { name: "Professional Tone", weight: 0.2, description: "Clear, polite tone; requests clearer copies without blaming the traveler; does not prematurely confirm resolution" }
     ] },
 
     "position": 100,

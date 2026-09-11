@@ -13,7 +13,7 @@ import {
   selectEligibleRows,
   isPermanentlyFailed,
   nextStageAfterGradingSuccess,
-  nextStageAfterCandidateEmailSent,
+  nextStageAfterEmailsSent,
   nextStageAfterFailure,
   type PendingGradingRow,
   type Stage,
@@ -75,9 +75,19 @@ describe('nextStageAfterGradingSuccess', () => {
   });
 });
 
-describe('nextStageAfterCandidateEmailSent', () => {
-  it('returns "done"', () => {
-    expect(nextStageAfterCandidateEmailSent()).toBe('done');
+describe('nextStageAfterEmailsSent', () => {
+  it('returns "done" only when both candidate and recruiter sends succeeded', () => {
+    expect(nextStageAfterEmailsSent('sent', 'sent', true, 'graded')).toBe('done');
+  });
+
+  it('stays retryable when recruiter send failed or deferred', () => {
+    expect(nextStageAfterEmailsSent('sent', 'failed', true, 'graded')).toBe('graded');
+    expect(nextStageAfterEmailsSent('sent', 'deferred', true, 'graded')).toBe('graded');
+    expect(nextStageAfterEmailsSent('deferred', 'sent', true, 'graded')).toBe('graded');
+  });
+
+  it('fails safe to "done" when recruiter emails unconfigured (D-06)', () => {
+    expect(nextStageAfterEmailsSent('sent', 'failed', false, 'graded')).toBe('done');
   });
 });
 

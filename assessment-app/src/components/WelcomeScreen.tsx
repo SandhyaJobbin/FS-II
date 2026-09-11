@@ -40,7 +40,7 @@ export default function WelcomeScreen({ onStart, loading, error }: WelcomeScreen
             Investigation Assessment
           </h1>
           <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-            Evaluate your grammatical accuracy, research depth, and risk judgement under ambiguous fraud scenarios.
+            Evaluate your language accuracy, attention to detail, case reasoning, and risk judgement through realistic fraud-support scenarios.
           </p>
         </div>
 

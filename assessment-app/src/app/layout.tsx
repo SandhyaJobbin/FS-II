@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Fraud Support Hiring Assessment",
-  description: "Evaluate your grammatical accuracy, research depth, and risk judgement under ambiguous fraud scenarios.",
+  description: "Evaluate your language accuracy, attention to detail, case reasoning, and risk judgement through realistic fraud-support scenarios.",
 };
 
 export default function RootLayout({

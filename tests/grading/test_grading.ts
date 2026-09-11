@@ -478,7 +478,7 @@ describe('DIVERGENCE — LLM-scored paths (F-03)', () => {
     ];
     const answers: AnswersMap = { e1: 'A', e2: 'B', a1: 'A', c1: 'Z' };
     const r = gradeAttempt(questions, answers);
-    expect(r.overallScore).toBe(75);
+    expect(r.overallScore).toBe(67); // (100 + 100 + 0) / 3 = 67
     expect(r.traitScores.language).toBe(100);
     expect(r.traitScores.research).toBe(100);
     expect(r.traitScores.critical).toBe(0);

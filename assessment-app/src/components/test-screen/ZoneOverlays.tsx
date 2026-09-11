@@ -41,9 +41,9 @@ export default function ZoneOverlays({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.97 }}
             transition={{ delay: 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center px-8 py-10 max-w-[560px] w-full"
+            className="text-center px-8 py-10 max-w-[560px] w-full flex flex-col items-center"
           >
-            <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center mx-auto mb-5 text-emerald-600 shadow-[0_0_24px_8px_rgba(16,185,129,0.14)]">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center mx-auto mb-5 text-emerald-600 shadow-[0_0_24px_8px_rgba(16,185,128,0.15)]">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-8 h-8">
                 <polyline points="20 6 9 17 4 12" />
               </svg>
@@ -77,7 +77,7 @@ export default function ZoneOverlays({
 
             <button
               onClick={onBeginZone}
-              className="flex justify-center items-center gap-2 font-bold text-lg py-4 px-10 rounded-xl bg-gradient-to-br from-[#4facfe] to-[#00f2fe] text-[#070a13] cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,242,254,0.3)] active:translate-y-0 transition-all mx-auto"
+              className="flex justify-center items-center gap-2 font-bold text-lg py-4 px-10 rounded-xl bg-gradient-to-br from-[#4facfe] to-[#00f2fe] text-[#070a13] cursor-pointer hover:-translate-y-0.5 transition-all active:translate-y-0 shadow-lg hover:shadow-xl w-full max-w-xs"
             >
               <span>Continue to Next Zone</span>
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -102,10 +102,10 @@ export default function ZoneOverlays({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.97 }}
             transition={{ delay: 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center px-8 py-6 max-w-[650px] w-full"
+            className="text-center px-8 py-6 max-w-[650px] w-full flex flex-col items-center"
           >
             {/* Animated Icon */}
-            <div className="w-16 h-16 rounded-full bg-accent/[0.08] border border-accent/20 flex items-center justify-center mx-auto mb-5 text-accent animate-pulse shadow-[0_0_24px_8px_rgba(8,145,178,0.12)]">
+            <div className="w-16 h-16 rounded-full bg-accent/[0.08] border border-accent/20 flex items-center justify-center mx-auto mb-5 text-accent animate-pulse shadow-[0_0_24px_8px_rgba(8,145,178,0.1)]">
               {activeZoneConfig.icon}
             </div>
 
@@ -126,7 +126,7 @@ export default function ZoneOverlays({
 
             {/* What to do — bulleted checklist */}
             {activeZoneConfig.whatToDo.length > 0 && (
-              <div className="text-left bg-slate-50 border border-[var(--card-border)] rounded-xl p-5 mb-6 max-w-[500px] mx-auto">
+              <div className="text-left bg-slate-50 border border-[var(--card-border)] rounded-xl p-5 mb-6 max-w-[500px] mx-auto w-full">
                 <div className="text-xs font-bold uppercase tracking-[1.5px] text-accent mb-3">
                   What to do
                 </div>
@@ -143,7 +143,7 @@ export default function ZoneOverlays({
 
             {/* Example */}
             {activeZoneConfig.example && (
-              <div className="text-left bg-white border border-[var(--card-border)] rounded-xl p-5 mb-8 max-w-[500px] mx-auto">
+              <div className="text-left bg-white border border-[var(--card-border)] rounded-xl p-5 mb-8 max-w-[500px] mx-auto w-full">
                 <div className="text-xs font-bold uppercase tracking-[1.5px] text-accent mb-3">
                   Example
                 </div>
@@ -178,7 +178,7 @@ export default function ZoneOverlays({
               </div>
             )}
 
-            {/* Meta badges */}
+            {/* Meta badges - Question count only (timer removed) */}
             <div className="flex justify-center gap-4 mb-8 flex-wrap">
               <div className="flex items-center gap-2 px-5 py-2.5 bg-slate-100 border border-[var(--card-border)] rounded-full text-sm font-semibold text-[var(--text-secondary)]">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent shrink-0">
@@ -187,18 +187,11 @@ export default function ZoneOverlays({
                 </svg>
                 <span>{zoneQuestionCount} question{zoneQuestionCount !== 1 ? 's' : ''}</span>
               </div>
-              <div className="flex items-center gap-2 px-5 py-2.5 bg-slate-100 border border-[var(--card-border)] rounded-full text-sm font-semibold text-[var(--text-secondary)]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-accent shrink-0">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-                <span>{activeZoneConfig.timerLabel}</span>
-              </div>
             </div>
 
             <button
               onClick={onBeginZone}
-              className="flex justify-center items-center gap-2 font-bold text-lg py-4 px-10 rounded-xl bg-gradient-to-br from-[#4facfe] to-[#00f2fe] text-[#070a13] cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,242,254,0.3)] active:translate-y-0 transition-all mx-auto"
+              className="flex justify-center items-center gap-2 font-bold text-lg py-4 px-10 rounded-xl bg-gradient-to-br from-[#4facfe] to-[#00f2fe] text-[#070a13] cursor-pointer hover:-translate-y-0.5 transition-all active:translate-y-0 shadow-lg hover:shadow-xl w-full max-w-xs"
             >
               <span>Begin Zone</span>
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

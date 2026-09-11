@@ -60,15 +60,6 @@ export default function QuestionHeader({
           </svg>
           <span>{cosmeticXp} XP</span>
         </motion.div>
-
-        {/* Countdown timer */}
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-bold transition-all ${timerColor} ${pulseClass}`}>
-          <svg className="w-4 h-4 animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-          <span>{showZoneOverlay ? '--' : timerVal}s</span>
-        </div>
       </div>
     </div>
   );
